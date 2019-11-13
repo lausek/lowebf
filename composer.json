@@ -1,0 +1,22 @@
+{
+    "name": "lausek/lowebf",
+    "description": "backend framework for webpages",
+    "type": "project",
+    "require": {
+        "twig/twig": "^2.5",
+        "michelf/php-markdown": "1.8.0",
+        "mustangostang/spyc": "0.6.2",
+        "leafo/scssphp": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "lowebf\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "lausek",
+            "email": "root@lausek.eu"
+        }
+    ]
+}
