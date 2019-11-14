@@ -1,5 +1,7 @@
 # lowebf
 
+Is a PHP backend for creating simple websites without too much user interaction.
+
 ## Directory structure
 
 - `cache/`

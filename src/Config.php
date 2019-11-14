@@ -19,9 +19,8 @@ final class Config {
     const NEWS_PAGE_COUNT = 10;
     const NEWS_SHORT_LENGTH = 80;
 
-    public static function new()
-    {
-        return new Config;
+    public function __construct(string $path) {
+
     }
 
     public static function asAbsolute(string $path): string

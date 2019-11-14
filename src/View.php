@@ -4,7 +4,6 @@ namespace lowebf;
 
 use Twig\Loader;
 use Twig\TwigFunction;
-use Twig\Environment;
 use Twig\Extension\DebugExtension;
 use Twig\Extension\ProfilerExtension;
 use Twig\Profiler\Profile;
@@ -15,27 +14,26 @@ use Leafo\ScssPhp\Formatter\Crunched;
 
 final class View
 {
+    private $_env;
+    private $_profile;
+    private $_twig;
 
     private function __construct()
     {
-        $template_path = Config::asAbsolute('/site/resources/template/');
+        $this->_env = Environment::getInstance();
+
+        $template_path = $this->_env->asAbsolutePath('/site/resources/template/');
         $loader = new Loader\FilesystemLoader($template_path);
+        $this->_twig = new \Twig\Environment($loader, $this->_env->data->getTwigSettings());
 
-        $this->twig = new Environment($loader, [
-            'debug' => true,
-            //'cache' => Config::getRoot() . '/cache/twig',
-        ]);
+        $this->_twig->addFunction(Extension\Stylesheet::new($this->_twig->getCache()));
 
-        $cache = $this->twig->getCache();
-
-        $this->twig->addFunction(Extension\Stylesheet::new($cache));
-
-        if ($this->twig->isDebug())
+        if ($this->_twig->isDebug())
         {
-            $this->profile = new Profile();
-            $this->twig->addExtension(new ProfilerExtension($this->profile));
+            $this->_profile = new Profile();
+            $this->_twig->addExtension(new ProfilerExtension($this->_profile));
 
-            $this->twig->addExtension(new DebugExtension());
+            $this->_twig->addExtension(new DebugExtension());
         }
     }
 
@@ -46,10 +44,11 @@ final class View
 
     public function renderPartially(string $filePath, array $args=[]): string
     {
-        $template = $this->twig->load($filePath);
+        $template = $this->_twig->load($filePath);
         return $template->render([
             'data' => $args,
-            'config' => Config::new(),
+            'config' => $this->_env->data->config,
+            'env' => $this->_env,
             'get' => $_GET,
             'post' => $_POST,
         ]);
@@ -70,12 +69,12 @@ final class View
                 break;
         }
 
-        if ($type === 'html' && $this->twig->isDebug())
+        if ($type === 'html' && $this->_twig->isDebug())
         {
             echo '<div display="block" style="border: 5px solid red; padding: 5px;">';
             echo '<b style="color:red;">DEBUG IS ACTIVE!</b>';
             echo '<hr />';
-            echo (new HtmlDumper)->dump($this->profile);
+            echo (new HtmlDumper)->dump($this->_profile);
             echo '</div>';
         }
 
