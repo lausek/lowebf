@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace lowebf;
 
-final class Config {
+final class Config
+{
+    public const SITE_TITLE = '';
+    public const SITE_URL = '';
 
-    const SITE_TITLE = '';
-    const SITE_URL = '';
-
-    const NEWS_PAGE_COUNT = 10;
-    const NEWS_SHORT_LENGTH = 80;
+    public const NEWS_PAGE_COUNT = 10;
+    public const NEWS_SHORT_LENGTH = 80;
 
     public $path;
     public $globals;

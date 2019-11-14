@@ -1,28 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Umpfertal\Extension;
 
 use Twig\TwigFilter;
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Formatter\Crunched;
-
-final class LinkFormat {
-
+final class LinkFormat
+{
     public static function new($env): TwigFilter
     {
-        $instance = new self;
+        $instance = new self();
         $use_fancy = true; // env->isDebug()
-        return new TwigFilter('link_format',
-            function ($name, $args=[]) use ($use_fancy)
-            {
+        return new TwigFilter(
+            'link_format',
+            function ($name, $args = []) use ($use_fancy): void {
                 switch ($name) {
                 case 'post':
                     preg_match('/(\d{4})-(\d{2})-(\d{2})-(.*)/', $args['name'], $groups);
                     echo $use_fancy
                         ? "/post.php?name=${args['name']}"
                         : "/post/${groups[1]}/${groups[2]}/${groups[3]}/${groups[4]}";
-                    break;
+                        break;
 
                 case 'team':
                     echo isset($args['team'])
@@ -30,9 +29,9 @@ final class LinkFormat {
                             ? "/team.php?team=${args['team']}"
                             : "/team/${args['team']}")
                         : ($use_fancy
-                            ? "/team.php"
-                            : "/team");
-                    break;
+                            ? '/team.php'
+                            : '/team');
+                        break;
 
                 case 'gallery':
                     echo isset($args['f'])
@@ -40,35 +39,35 @@ final class LinkFormat {
                             ? "/gallery.php?f=${args['f']}"
                             : "/gallery/${args['f']}")
                         : ($use_fancy
-                            ? "/gallery.php"
-                            : "/gallery");
-                    break;
+                            ? '/gallery.php'
+                            : '/gallery');
+                        break;
 
                 case 'news':
                     echo $use_fancy
                         ? "/news.php?p=${args['p']}"
                         : "/news/${args['p']}";
-                    break;
+                        break;
 
                 case 'static':
                     echo $use_fancy
                         ? "/static.php?t=${args['t']}"
                         : "/static/${args['t']}";
-                    break;
+                        break;
 
                 case 'feed':
                     echo $use_fancy
-                        ? "/feed.php"
-                        : "/feed";
-                    break;
+                        ? '/feed.php'
+                        : '/feed';
+                        break;
 
                 case 'download':
                     // fallthrough
                 case 'verein':
                     echo $use_fancy
-                        ? "/$name.php"
-                        : "/$name";
-                    break;
+                        ? "/${name}.php"
+                        : "/${name}";
+                        break;
 
                 default:
                     echo $name;
@@ -76,5 +75,4 @@ final class LinkFormat {
             }
         );
     }
-
 }

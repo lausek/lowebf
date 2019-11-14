@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace lowebf;
 
-use Leafo\ScssPhp\Compiler;
-use Leafo\ScssPhp\Formatter\Crunched;
 use Twig\Profiler\Dumper\HtmlDumper;
 
 final class View
@@ -17,12 +17,13 @@ final class View
 
     public static function new()
     {
-        return new View();
+        return new self();
     }
 
-    public function renderPartially(string $filePath, array $args=[]): string
+    public function renderPartially(string $filePath, array $args = []): string
     {
         $template = $this->_env->twig->load($filePath);
+
         return $template->render([
             'data' => $args,
             'config' => $this->_env->data->config,
@@ -30,13 +31,11 @@ final class View
         ]);
     }
 
-    public function render(string $filePath, array $args=[])
+    public function render(string $filePath, array $args = []): void
     {
-
         $type = pathinfo($filePath, PATHINFO_EXTENSION);
 
-        switch ($type)
-        {
+        switch ($type) {
             case 'html':
                 header('Content-Type: text/html');
                 break;
@@ -45,12 +44,11 @@ final class View
                 break;
         }
 
-        if ($type === 'html' && $this->_env->twig->isDebug())
-        {
+        if ('html' === $type && $this->_env->twig->isDebug()) {
             echo '<div display="block" style="border: 5px solid red; padding: 5px;">';
             echo '<b style="color:red;">DEBUG IS ACTIVE!</b>';
             echo '<hr />';
-            echo (new HtmlDumper)->dump($this->_env->profile);
+            echo (new HtmlDumper())->dump($this->_env->profile);
             echo '</div>';
         }
 
@@ -58,5 +56,4 @@ final class View
 
         exit;
     }
-
 }
