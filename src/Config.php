@@ -2,16 +2,6 @@
 
 namespace lowebf;
 
-function load_json_file(string $path): array
-{
-    $content = file_get_contents($path);
-    if($content === false) {
-        return [];
-    }
-    $json = json_decode($content);
-    return $json !== null ? (array)$json : [];
-}
-
 final class Config {
 
     const SITE_TITLE = '';
@@ -26,11 +16,11 @@ final class Config {
     public function __construct(string $path)
     {
         $this->path = $path;
-        $this->globals = load_json_file($this->path . '/globals.json');
+        $this->globals = Util::load_json_file($this->path . '/globals.json');
     }
 
     public function getTwig()
     {
-        return load_json_file($this->path . '/twig.json');
+        return Util::load_json_file($this->path . '/twig.json');
     }
 }

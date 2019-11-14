@@ -4,7 +4,7 @@ namespace lowebf;
 
 final class Util{
 
-    public static function readDir($dir)
+    public static function read_dir($dir): array
     {
         return array_filter(
             scandir($dir),
@@ -15,4 +15,13 @@ final class Util{
         );
     }
 
+    public static function load_json_file(string $path): array
+    {
+        $content = file_get_contents($path);
+        if($content === false) {
+            return [];
+        }
+        $json = json_decode($content);
+        return $json !== null ? (array)$json : [];
+    }
 }
