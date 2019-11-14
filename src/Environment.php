@@ -70,7 +70,13 @@ class Environment {
 
     public function asAbsolutePath(string $suffix): string
     {
-        return $this->getRoot() . $suffix;
+        $prefix = $this->getRoot();
+        return $prefix . $suffix;
+    }
+
+    public function asAbsoluteUrl(string $suffix): string
+    {
+        return $suffix;
     }
 
     public function getRoot(): string

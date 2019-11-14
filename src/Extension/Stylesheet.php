@@ -2,47 +2,44 @@
 
 namespace lowebf\Extension;
 
-use Twig\TwigFunction;
-
+use lowebf\Environment;
 use Leafo\ScssPhp\Compiler;
 use Leafo\ScssPhp\Formatter\Crunched;
+use Twig\TwigFunction;
 
 final class Stylesheet {
 
-    private static $scss = NULL;
-    private $cache = NULL;
+    private static $scss = null;
 
-    public static function new($cache): TwigFunction
+    public static function new(): TwigFunction
     {
-        $instance = new self($cache);
-        return new TwigFunction('stylesheet',
-            function ($sheets) use ($instance)
-            {
-                $filePath = '/resources/css/compiled.css';
-
-                $cssHandle = fopen($_SERVER['DOCUMENT_ROOT'] . $filePath, 'w');
-                if ($cssHandle !== NULL)
-                {
-                    foreach ($sheets as $stylesheet)
-                    {
-                        fwrite($cssHandle, self::$scss->compile(file_get_contents("${_SERVER['DOCUMENT_ROOT']}/$stylesheet")));
-                    }
-                    fclose($cssHandle);
-                }
-
-                echo "<link rel='stylesheet' type='text/css' href='$filePath'/>";
-            }
-        );
-    }
-
-    public function __construct($cache)
-    {
-        if (self::$scss === NULL)
+        if (self::$scss === null)
         {
             self::$scss = new Compiler();
             self::$scss->setFormatter(new Crunched());
         }
-        $this->cache = $cache;
-    }
 
+        return new TwigFunction('stylesheet',
+            function ($stylesheets)
+            {
+                $env = Environment::getInstance();
+
+                $out_path = '/cache/css/compiled.css';
+                $out_url = $env->asAbsoluteUrl('/cache/css/compiled.css');
+                $out_handle = fopen($env->asAbsolutePath($out_path), 'w');
+                if ($out_handle !== null)
+                {
+                    foreach ($stylesheets as $sheet)
+                    {
+                        $css_content_path = $env->asAbsolutePath($sheet);
+                        $css_content = file_get_contents($css_content_path);
+                        fwrite($out_handle, self::$scss->compile($css_content));
+                    }
+                    fclose($out_handle);
+                }
+
+                echo "<link rel='stylesheet' type='text/css' href='$out_url'/>";
+            }
+        );
+    }
 }

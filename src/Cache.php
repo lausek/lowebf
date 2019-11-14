@@ -2,6 +2,14 @@
 
 namespace lowebf;
 
+function create_dir_lazy(string $path)
+{
+    if(!is_dir($path))
+    {
+        mkdir($path);
+    }
+}
+
 class Cache {
     public $path;
 
@@ -9,15 +17,9 @@ class Cache {
     {
         $this->path = $path;
 
-        if(!is_dir($path))
-        {
-            mkdir($path);
-        }
-
-        if(!is_dir("$path/thumbs"))
-        {
-            mkdir("$path/thumbs");
-        }
+        create_dir_lazy($path);
+        create_dir_lazy("$path/thumbs");
+        create_dir_lazy("$path/css");
     }
 
     public function put(string $name, string $group, string $content): bool

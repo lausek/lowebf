@@ -8,7 +8,8 @@ function load_json_file(string $path): array
     if($content === false) {
         return [];
     }
-    return (array)json_decode($content);
+    $json = json_decode($content);
+    return $json !== null ? (array)$json : [];
 }
 
 final class Config {
