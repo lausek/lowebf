@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace lowebf;
 
+use Michelf\Markdown;
+use Spyc;
+
 final class Util
 {
     public static function read_dir($dir): array
@@ -76,7 +79,7 @@ final class Util
             ];
         }
 
-        $parsed['content'] = Markdown::defaultTransform($rawContent);
+        $parsed['content'] = Markdown::defaultTransform($text_content);
 
         $parsed['short'] = strip_tags($parsed['content']);
         $parsed['short'] = substr($parsed['short'], 0, Config::NEWS_SHORT_LENGTH - 3) . '...';
