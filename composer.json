@@ -1,8 +1,9 @@
 {
     "name": "lausek/lowebf",
     "description": "backend framework for webpages",
-    "type": "project",
+    "type": "library",
     "require": {
+        "php": "^7.0",
         "twig/twig": "^2.5",
         "michelf/php-markdown": "1.8.0",
         "mustangostang/spyc": "0.6.2",

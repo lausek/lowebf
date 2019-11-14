@@ -18,7 +18,8 @@ final class View
 
     private function __construct()
     {
-        $loader = new Loader\FilesystemLoader('resources/template/');
+        $template_path = Config::asAbsolute('/site/resources/template/');
+        $loader = new Loader\FilesystemLoader($template_path);
 
         $this->twig = new Environment($loader, [
             'debug' => true,
@@ -71,15 +72,14 @@ final class View
 
         if ($type === 'html' && $this->twig->isDebug())
         {
+            echo '<div display="block" style="border: 5px solid red; padding: 5px;">';
             echo '<b style="color:red;">DEBUG IS ACTIVE!</b>';
+            echo '<hr />';
+            echo (new HtmlDumper)->dump($this->profile);
+            echo '</div>';
         }
 
         echo $this->renderPartially($filePath, $args);
-
-        if ($type === 'html' && $this->twig->isDebug())
-        {
-            echo (new HtmlDumper)->dump($this->profile);
-        }
 
         exit;
     }
