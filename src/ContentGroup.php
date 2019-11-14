@@ -50,11 +50,11 @@ class ContentGroup implements \Iterator
         return Util::load_file($path);
     }
 
-    public function current(): void
+    public function current()
     {
         $obj = current($this->_array_comps);
         if (false === $obj) {
-            return;
+            return null;
         }
         if (! isset($obj[2])) {
             $obj[2] = Util::load_file($obj[1]);
@@ -63,11 +63,11 @@ class ContentGroup implements \Iterator
         return $obj[2];
     }
 
-    public function next(): void
+    public function next()
     {
         $obj = next($this->_array_comps);
         if (false === $obj) {
-            return;
+            return null;
         }
         if (! isset($obj[2])) {
             $obj[2] = Util::load_file($obj[1]);
