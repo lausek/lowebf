@@ -16,10 +16,18 @@ class ContentGroup implements \Iterator {
             $matches = [];
             $full_path = "$path/$item";
             $is_dir = is_dir($full_path);
+
+            // idx is the key e.g. 01-team.json
             if(!$is_dir && preg_match('/(\d+)-(\S+)\.(\S+)/', $item, $matches) === 1)
             {
                 $idx = intval($matches[1]);
                 $this->_array_comps[$idx] = [$matches[2], $full_path];
+            }
+            // date is the key e.g. 2018-1-1-my-post-title.md
+            else if(!$is_dir && preg_match('(\d{4}-\d{1,2}-\d{1,2})-(\S+)\.(\S+)', $item, $matches) === 1)
+            {
+                $date = $matches[1];
+                $this->_array_comps[$date] = [$matches[2], $full_path];
             }
             else
             {
@@ -43,7 +51,7 @@ class ContentGroup implements \Iterator {
         }
         else
         {
-            return Util::load_json_file($path);
+            return Util::load_file($path);
         }
     }
 
@@ -56,7 +64,7 @@ class ContentGroup implements \Iterator {
         }
         if(!isset($obj[2]))
         {
-            $obj[2] = Util::load_json_file($obj[1]);
+            $obj[2] = Util::load_file($obj[1]);
         }
         return $obj[2];
     }
@@ -70,7 +78,7 @@ class ContentGroup implements \Iterator {
         }
         if(!isset($obj[2]))
         {
-            $obj[2] = Util::load_json_file($obj[1]);
+            $obj[2] = Util::load_file($obj[1]);
         }
         return $obj[2];
     }
