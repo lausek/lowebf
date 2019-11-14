@@ -10,15 +10,7 @@ class DataProvider {
     public function __construct(string $path)
     {
         $this->path = $path;
-        $this->cache = new Cache('cache');
+        $this->cache = new Cache(Config::getRoot() . '/cache');
+        $this->config = new Config("$path/config");
     }
-
-    public function getTwigSettings()
-    {
-        return [
-            'debug' => true,
-            //'cache' => Config::getRoot() . '/cache/twig',
-        ];
-    }
-
 }

@@ -2,39 +2,17 @@
 
 namespace lowebf;
 
-use Twig\Loader;
-use Twig\TwigFunction;
-use Twig\Extension\DebugExtension;
-use Twig\Extension\ProfilerExtension;
-use Twig\Profiler\Profile;
-use Twig\Profiler\Dumper\HtmlDumper;
-
 use Leafo\ScssPhp\Compiler;
 use Leafo\ScssPhp\Formatter\Crunched;
+use Twig\Profiler\Dumper\HtmlDumper;
 
 final class View
 {
     private $_env;
-    private $_profile;
-    private $_twig;
 
     private function __construct()
     {
         $this->_env = Environment::getInstance();
-
-        $template_path = $this->_env->asAbsolutePath('/site/resources/template/');
-        $loader = new Loader\FilesystemLoader($template_path);
-        $this->_twig = new \Twig\Environment($loader, $this->_env->data->getTwigSettings());
-
-        $this->_twig->addFunction(Extension\Stylesheet::new($this->_twig->getCache()));
-
-        if ($this->_twig->isDebug())
-        {
-            $this->_profile = new Profile();
-            $this->_twig->addExtension(new ProfilerExtension($this->_profile));
-
-            $this->_twig->addExtension(new DebugExtension());
-        }
     }
 
     public static function new()
@@ -44,13 +22,11 @@ final class View
 
     public function renderPartially(string $filePath, array $args=[]): string
     {
-        $template = $this->_twig->load($filePath);
+        $template = $this->_env->twig->load($filePath);
         return $template->render([
             'data' => $args,
             'config' => $this->_env->data->config,
             'env' => $this->_env,
-            'get' => $_GET,
-            'post' => $_POST,
         ]);
     }
 
@@ -69,12 +45,12 @@ final class View
                 break;
         }
 
-        if ($type === 'html' && $this->_twig->isDebug())
+        if ($type === 'html' && $this->_env->twig->isDebug())
         {
             echo '<div display="block" style="border: 5px solid red; padding: 5px;">';
             echo '<b style="color:red;">DEBUG IS ACTIVE!</b>';
             echo '<hr />';
-            echo (new HtmlDumper)->dump($this->_profile);
+            echo (new HtmlDumper)->dump($this->_env->profile);
             echo '</div>';
         }
 
