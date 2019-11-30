@@ -18,11 +18,11 @@ final class Config
     public function __construct(string $path)
     {
         $this->path = $path;
-        $this->globals = Util::load_json_file($this->path . '/globals.json');
+        $this->globals = util()->load_json_file($this->path . '/globals.json');
     }
 
     public function getTwig()
     {
-        return Util::load_json_file($this->path . '/twig.json');
+        return util()->load_json_file($this->path . '/twig.json');
     }
 }

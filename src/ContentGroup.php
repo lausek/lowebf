@@ -14,7 +14,7 @@ class ContentGroup implements \Iterator
     {
         $this->_path = $path;
         assert(is_dir($this->_path));
-        foreach (Util::read_dir($this->_path) as $item) {
+        foreach (util()->read_dir($this->_path) as $item) {
             $matches = [];
             $full_path = "${path}/${item}";
             $is_dir = is_dir($full_path);
@@ -47,7 +47,7 @@ class ContentGroup implements \Iterator
             return new self($path);
         }
 
-        return Util::load_file($path);
+        return util()->load_file($path);
     }
 
     public function current()
@@ -57,7 +57,7 @@ class ContentGroup implements \Iterator
             return null;
         }
         if (! isset($obj[2])) {
-            $obj[2] = Util::load_file($obj[1]);
+            $obj[2] = util()->load_file($obj[1]);
         }
 
         return $obj[2];
@@ -70,7 +70,7 @@ class ContentGroup implements \Iterator
             return null;
         }
         if (! isset($obj[2])) {
-            $obj[2] = Util::load_file($obj[1]);
+            $obj[2] = util()->load_file($obj[1]);
         }
 
         return $obj[2];

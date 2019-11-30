@@ -7,9 +7,22 @@ namespace lowebf;
 use Michelf\Markdown;
 use Spyc;
 
-final class Util
+function util() : Util {
+    return Util::get();
+}
+
+class Util
 {
-    public static function read_dir($dir): array
+    private static $_instance = null;
+
+    public static function get() : self {
+        if (self::$_instance === null) {
+            self::$_instance = new Util();
+        }
+        return self::$_instance;
+    }
+
+    public function read_dir($dir): array
     {
         return array_filter(
             scandir($dir),
@@ -19,7 +32,7 @@ final class Util
         );
     }
 
-    public static function load_file(string $path): array
+    public function load_file(string $path): array
     {
         $ext = pathinfo($path, PATHINFO_EXTENSION);
         switch ($ext) {
@@ -32,7 +45,7 @@ final class Util
         }
     }
 
-    public static function load_json_file(string $path): array
+    public function load_json_file(string $path): array
     {
         $content = file_get_contents($path);
         if (false === $content) {
@@ -43,7 +56,7 @@ final class Util
         return null !== $json ? (array) $json : [];
     }
 
-    public static function load_md_file(string $path): array
+    public function load_md_file(string $path): array
     {
         $matches = [];
         $content = file_get_contents($path);
@@ -53,7 +66,6 @@ final class Util
         }
 
         $parsed = Spyc::YAMLLoadString($matches[1]);
-        //$parsed = Spyc::YAMLLoadString($matches[1]);
 
         $text_content = $matches[2];
 
