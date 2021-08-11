@@ -2,11 +2,6 @@
 
 namespace lowebf;
 
-use lowebf\Module\PostModule;
-use lowebf\Module\ViewModule;
-use lowebf\Module\CacheModule;
-use lowebf\Module\DownloadModule;
-use lowebf\Module\ContentModule;
 use lowebf\Module\CacheModule;
 use lowebf\Module\ConfigModule;
 use lowebf\Module\ContentModule;
@@ -17,33 +12,37 @@ use lowebf\Module\ViewModule;
 class Environment {
 
     /* @var PhpRuntime */
-	private $phpRuntime = null;
+	protected $phpRuntime = null;
     /* @var string */
-	private $rootPath;
+	protected $rootPath;
     /* @var string */
-	private $dataPath;
+	protected $dataPath;
 
     /* @var CacheModule */
-	private $cacheModule = null;
+	protected $cacheModule = null;
     /* @var ConfigModule */
-	private $configModule = null;
+	protected $configModule = null;
     /* @var ContentModule */
-	private $contentModule = null;
+	protected $contentModule = null;
     /* @var DownloadModule */
-	private $downloadModule = null;
+	protected $downloadModule = null;
     /* @var PostModule */
-	private $postModule = null;
+	protected $postModule = null;
     /* @var ViewModule */
-	private $viewModule = null;
+	protected $viewModule = null;
 
     public static function getInstance(): Environment {
-        $rootPath = rtrim($_SERVER["DOCUMENT_ROOT"], "/");
-        $dataPath = "$rootPath/data";
-
-        return new Environment($rootPath, $dataPath);
+        return new Environment($_SERVER["DOCUMENT_ROOT"]);
     }
 
-    public function __construct(string $rootPath, string $dataPath) {
+    public function __construct(string $rootPath, string $dataPath = null) {
+        // TODO: also trim backslash '\'
+        $rootPath = rtrim($rootPath, "/");
+
+        if($dataPath === null) {
+            $dataPath = "$rootPath/data";
+        }
+
         $this->rootPath = $rootPath;
         $this->dataPath = $dataPath;
 
@@ -56,27 +55,75 @@ class Environment {
 	    $this->viewModule = new ViewModule($this);
     }
 
-	public function asAbsolutePath(string $subpath): ?string {}
+    public function asAbsolutePath(string $subpath): string {
+        $left = rtrim($this->getRootPath(), "/");
+        $right = ltrim($subpath, "/");
+        $path = realpath("$left/$right");
 
-	public function asAbsoluteDataPath(string $subpath): ?string {}
+        if($path === false) {
+            throw new \Exception();
+        }
 
-	public function loadFile(string $path): ?mixed {}
+        return $path;
+    }
 
-	public function saveFile(string $path, mixed $content) {}
+    public function asAbsoluteDataPath(string $subpath): string {
+        $left = rtrim($this->getDataPath(), "/");
+        $right = ltrim($subpath, "/");
+        $path = realpath("$left/$right");
 
-	public function list(string $path): ?array {}
+        if($path === false) {
+            throw new \Exception();
+        }
 
-	public function cache(): CacheModule {}
+        return $path;
+    }
 
-	public function config(): ConfigModule {}
+    public function getRootPath(): string {
+        return $this->rootPath;
+    }
 
-	public function content(): ContentModule {}
+    public function getDataPath(): string {
+        return $this->dataPath;
+    }
 
-	public function download(): DownloadModule {}
+    public function loadFile(string $path): ?mixed {
 
-	public function posts(): PostModule {}
+    }
 
-	public function runtime(): PhpRuntime {}
+    public function saveFile(string $path, mixed $content) {
 
-	public function view(): ViewModule {}
+    }
+
+    public function list(string $path): ?array {
+
+    }
+
+    public function cache(): CacheModule {
+        return $this->cacheModule;
+    }
+
+    public function config(): ConfigModule {
+        return $this->configModule;
+    }
+
+    public function content(): ContentModule {
+        return $this->contentModule;
+    }
+
+    public function download(): DownloadModule {
+        return $this->downloadModule;
+    }
+
+    public function posts(): PostModule {
+        return $this->postModule;
+    }
+
+    public function runtime(): PhpRuntime {
+        return $this->phpRuntime;
+    }
+
+    public function view(): ViewModule {
+        return $this->viewModule;
+    }
 }

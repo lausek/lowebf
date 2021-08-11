@@ -2,6 +2,8 @@
 
 namespace lowebf\Module;
 
+use lowebf\Environment;
+
 abstract class Module {
 
     /* @var Environment */

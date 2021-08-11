@@ -4,7 +4,8 @@ namespace lowebf;
 
 class PhpRuntime {
 
-	private Environment $environment;
+    /* @var Environment */
+	private $environment;
 
 	function __construct() {
 	}
