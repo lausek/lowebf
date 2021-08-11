@@ -3,20 +3,28 @@
 namespace lowebf;
 
 class PhpRuntime {
+    public function exit(?int $statusCode = null) {
+        if($statusCode !== null) {
+            $this->setResponseCode($statusCode);
+        }
 
-    /* @var Environment */
-	private $environment;
+        exit;
+    }
 
-	function __construct() {
-	}
+    public function raiseFileNotFoundAndExit() {
+        $this->setResponseCode(404);
+        $this->exit();
+    }
 
-	public function exit(?int $statusCode) {}
+    public function raiseForbiddenErrorAndExit() {
+        $this->setResponseCode(403);
+        $this->exit();
+    }
 
-	public function raiseFileNotFoundAndExit() {}
-
-	public function raiseForbiddenErrorAndExit() {}
-
-	public function raiseInternalErrorAndExit() {}
+    public function raiseInternalErrorAndExit() {
+        $this->setResponseCode(500);
+        $this->exit();
+    }
 
 	public function setResponseCode(int $statusCode) {}
 

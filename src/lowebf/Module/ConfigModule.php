@@ -4,11 +4,9 @@ namespace lowebf\Module;
 
 use lowebf\Data\StorableTrait;
 
-class ConfigModule {
+class ConfigModule extends Module {
     use StorableTrait;
 
-    /* @var Environment */
-	private $environment;
     /* @var ContentUnit */
 	private $contentUnit;
 

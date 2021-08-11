@@ -20,9 +20,9 @@ final class EnvironmentTest extends TestCase {
         $this->assertSame("/tmp", $env->getRootPath());
         $this->assertSame("/tmp/data", $env->getDataPath());
 
-        $env = new Environment("/tmp/", "/etc");
+        $env = new Environment("/tmp/", "/tmp");
         $this->assertSame("/tmp", $env->getRootPath(), "/tmp");
-        $this->assertSame("/etc", $env->getDataPath(), "/etc");
+        $this->assertSame("/tmp", $env->getDataPath(), "/tmp");
     }
 
     public function testAbsolutePath() {
@@ -44,5 +44,12 @@ final class EnvironmentTest extends TestCase {
         $env = new Environment("/tmp/", "/tmp/deep");
         $this->assertSame("/tmp/deep/index.php", $env->asAbsoluteDataPath("/index.php"));
         $this->assertSame("/tmp/deep/index.php", $env->asAbsoluteDataPath("index.php"));
+    }
+
+    public function testCachePath() {
+        dummy("/tmp/cache");
+
+        $env = new Environment("/tmp/");
+        $this->assertSame("/tmp/cache", $env->cache()->getPath());
     }
 }
