@@ -2,15 +2,10 @@
 
 namespace lowebf\Test;
 
+require_once("TmpEnvironment.php");
+
 use lowebf\Environment;
 use PHPUnit\Framework\TestCase;
-
-function dummy(string $path, string $content = null) {
-    // only allow touch in /tmp
-    assert(strpos($path, "/tmp") === 0);
-    // ignore errors if file exists already
-    @mkdir($path, 0755, true);
-}
 
 final class EnvironmentTest extends TestCase {
     public function testPathCreation() {

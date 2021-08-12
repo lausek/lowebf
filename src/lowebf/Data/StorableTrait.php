@@ -3,19 +3,19 @@
 namespace lowebf\Data;
 
 trait StorableTrait {
-    public function get(string $name): mixed {
-        return parent::__get($name);
+    public function get(string $name) {
+        return $this->__get($name);
     }
 
     public function exists(string $name): bool {
-        return parent::__isset($name);
+        return $this->__isset($name);
     }
 
-    public function set(string $name, mixed $value) {
-        parent::__set($name, $value);
+    public function set(string $name, $value) {
+        $this->__set($name, $value);
     }
 
     public function unset(string $name) {
-        parent::__unset($name);
+        $this->__unset($name);
     }
 }

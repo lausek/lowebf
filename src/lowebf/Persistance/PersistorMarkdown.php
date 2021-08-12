@@ -4,7 +4,8 @@ namespace lowebf\Persistance;
 
 class PersistorMarkdown implements IPersistance {
 
-	private ?PersistorMarkdown $instance = null;
+    /* @var PersistorMarkdown|null */
+	private static $instance = null;
 
     public static function getInstance(): PersistorMarkdown {
         if(self::$instance === null) {

@@ -3,29 +3,49 @@
 namespace lowebf\Data;
 
 use lowebf\Persistance\IPersistance;
+use lowebf\Persistance\PersistorJson;
+use lowebf\Persistance\PersistorMarkdown;
+use lowebf\Persistance\PersistorYaml;
 
 class ContentUnit {
     use StorableTrait;
 
-    /* @var ConfigModule */
-	private $configModule;
     /* @var array */
 	protected $data = [];
     /* @var string */
 	protected $path;
     /* @var IPersistance */
-	private $persistance;
+	private $persistance = null;
 
-	function __construct() {
+	function __construct(string $path, array $data, IPersistance $persistance = null) {
+        $this->data = $data;
+        $this->path = $path;
+        $this->persistance = $persistance;
+
+        if($this->persistance === null) {
+            $this->persistance = PersistanceJson::getInstance();
+        }
 	}
 
-    /*
-     * @param string $path
-     * @param IPersistance $persistance
-     * @return ContentUnit
-     */
-    public function loadFromFile(string $path, IPersistance $persistance): ContentUnit {
-        throw new \Exception();
+    private static function getPersistorFromPath(string $path): IPersistance {
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+        switch($extension) {
+        case "yml":
+            // fallthrough
+        case "yaml":
+            return PersistorYaml::getInstance();
+
+        case "md":
+            // fallthrough
+        case "markdown":
+            return PersistorMarkdown::getInstance();
+
+        case "json":
+            // fallthrough
+        default:
+            return PersistorJson::getInstance();
+        }
     }
 
     /*
@@ -33,15 +53,43 @@ class ContentUnit {
      * @param IPersistance $persistance
      * @return ContentUnit
      */
-    public function loadFromFileOrCreate(string $path, IPersistance $persistance): ContentUnit {
-        throw new \Exception();
+    public static function loadFromFile(string $path, IPersistance $persistance = null): ContentUnit {
+        if($persistance === null) {
+            $persistance = self::getPersistorFromPath($path);
+        }
+
+        $data = $persistance->load($path);
+        return new ContentUnit($path, $data, $persistance);
+    }
+
+    /*
+     * @param string $path
+     * @param IPersistance $persistance
+     * @return ContentUnit
+     */
+    public static function loadFromFileOrCreate(string $path, IPersistance $persistance = null): ContentUnit {
+        if($persistance === null) {
+            $persistance = self::getPersistorFromPath($path);
+        }
+
+        try {
+            $data = $persistance->load($path);
+        } catch(\Throwable $e) {
+            // ignore exception if loading fails
+            $data = [];
+        }
+
+        $contentUnit = new ContentUnit($path, $data, $persistance);
+        $contentUnit->save();
+
+        return $contentUnit;
     }
 
     public function __destruct() {
         $this->save();
     }
 
-    public function __get(string $name): mixed {
+    public function __get(string $name) {
         if(isset($this->data[$name])) {
             return $this->data[$name];
         }
@@ -49,7 +97,7 @@ class ContentUnit {
         return null;
     }
 
-    public function __set(string $name, mixed $value) {
+    public function __set(string $name, $value) {
         $this->data[$name] = $value;
     }
 
@@ -61,5 +109,7 @@ class ContentUnit {
         unset($this->data[$name]);
     }
 
-	protected function save() {}
+    protected function save() {
+        $this->persistance->save($this->path, $this->data);
+    }
 }

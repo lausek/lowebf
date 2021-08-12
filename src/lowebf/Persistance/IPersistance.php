@@ -2,7 +2,7 @@
 
 namespace lowebf\Persistance;
 
-public interface IPersistance {
+interface IPersistance {
 
 	public function load(string $path): array;
 

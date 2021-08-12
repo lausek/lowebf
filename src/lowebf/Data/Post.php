@@ -7,12 +7,52 @@ class Post {
     /* @var ContentUnit */
 	private $contentUnit;
 
-    function __construct(string $title, \DateTime $date, string $content) {
+    private function __construct(ContentUnit $contentUnit, array $attributes) {
+        $this->contentUnit = $contentUnit;
 
+        foreach($attributes as $key => $value) {
+            if(!$this->contentUnit->exists($key)) {
+                $this->contentUnit->set($key, $value);
+            }
+        }
     }
 
-    public function loadFromFile(string $path): ?Post {
-        return null;
+    public static function extractAttributesFromPath(string $path): array {
+        $title = "";
+        $date = "";
+
+        return [
+            "title" => $title,
+            "date" => \DateTime::createFromFormat("Y-m-d", $date),
+        ];
+    }
+
+    public static function loadFromFile(string $path): ?Post {
+        $contentUnit = ContentUnit::loadFromFile($path);
+        $attributes = self::extractAttributesFromPath($path);
+
+        /*
+        $title = $attributes["title"];
+        $date = $attributes["date"];
+
+        if($contentUnit->exists("title")) {
+            $title = $contentUnit->get("title");
+        }
+
+        if($contentUnit->exists("date")) {
+            $date = $contentUnit->get("date");
+        }
+        $post = new Post($title, $date, $content);
+        */
+
+        return new Post($contentUnit, $attributes);
+    }
+
+    public static function loadFromFileOrCreate(string $path): ?Post {
+        $contentUnit = ContentUnit::loadFromFileOrCreate($path);
+        $attributes = self::extractAttributesFromPath($path);
+
+        return new Post($contentUnit, $attributes);
     }
 
     public function getAuthor(): ?string {

@@ -2,6 +2,7 @@
 
 namespace lowebf\Module;
 
+use lowebf\Environment;
 use lowebf\Data\Post;
 
 class PostModule extends Module {
@@ -9,11 +10,39 @@ class PostModule extends Module {
     /* @var int */
 	private $postsPerPage;
 
-	public function loadPage(int $page): ?array {}
+    public function __construct(Environment $env) {
+        parent::__construct($env);
 
-	public function load(string $postId): ?Post {}
+        $this->postsPerPage = 15;
+    }
+
+    private function getPostPath(string $postId): string {
+        return $this->env->asAbsoluteDataPath("posts/$postId.md");
+    }
+
+    public function loadPage(int $page): array {
+
+    }
+
+    public function load(string $postId): Post {
+        $path = $this->getPostPath($postId);
+        return Post::loadFromFile($path);
+    }
+
+    public function loadOrCreate(string $postId): Post {
+        try {
+            return $this->load($postId);
+        } catch(\Throwable $e) {
+            $path = $this->getPostPath($postId);
+            return Post::loadFromFileOrCreate($path);
+        }
+    }
         
-	public function save(Post $post) {}
+    public function delete(string $postId) {
 
-	public function provideRssAndExit() {}
+    }
+
+    public function provideRssAndExit() {
+
+    }
 }

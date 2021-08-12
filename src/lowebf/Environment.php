@@ -47,12 +47,6 @@ class Environment {
         $this->dataPath = $dataPath;
 
 	    $this->phpRuntime = new PhpRuntime($this);
-	    $this->cacheModule = new CacheModule($this);
-	    $this->configModule = new ConfigModule($this);
-	    $this->contentModule = new ContentModule($this);
-	    $this->downloadModule = new DownloadModule($this);
-	    $this->postModule = new PostModule($this);
-	    $this->viewModule = new ViewModule($this);
     }
 
     public function asAbsolutePath(string $subpath): string {
@@ -70,10 +64,11 @@ class Environment {
     public function asAbsoluteDataPath(string $subpath): string {
         $left = rtrim($this->getDataPath(), "/");
         $right = ltrim($subpath, "/");
-        $path = realpath("$left/$right");
+        $joined = "$left/$right";
+        $path = realpath($joined);
 
         if($path === false) {
-            throw new \Exception();
+            throw new \Exception("cannot create realpath '$joined': path does not exist.");
         }
 
         return $path;
@@ -95,27 +90,46 @@ class Environment {
 
     }
 
-    public function list(string $path): ?array {
-
+    public function listDirectory(string $path): array {
     }
 
     public function cache(): CacheModule {
+        if($this->cacheModule === null) {
+	        $this->cacheModule = new CacheModule($this);
+        }
+
         return $this->cacheModule;
     }
 
     public function config(): ConfigModule {
+        if($this->configModule === null) {
+	        $this->configModule = new ConfigModule($this);
+        }
+
         return $this->configModule;
     }
 
     public function content(): ContentModule {
+        if($this->contentModule === null) {
+	        $this->contentModule = new ContentModule($this);
+        }
+
         return $this->contentModule;
     }
 
     public function download(): DownloadModule {
+        if($this->downloadModule === null) {
+	        $this->downloadModule = new DownloadModule($this);
+        }
+
         return $this->downloadModule;
     }
 
     public function posts(): PostModule {
+        if($this->postModule === null) {
+	        $this->postModule = new PostModule($this);
+        }
+
         return $this->postModule;
     }
 
@@ -124,6 +138,10 @@ class Environment {
     }
 
     public function view(): ViewModule {
+        if($this->viewModule === null) {
+	        $this->viewModule = new ViewModule($this);
+        }
+
         return $this->viewModule;
     }
 }

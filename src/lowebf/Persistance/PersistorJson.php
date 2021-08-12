@@ -4,7 +4,8 @@ namespace lowebf\Persistance;
 
 class PersistorJson implements IPersistance {
 
-	private static ?PersistorJson $instance = null;
+    /* @var PersistorJson|null */
+	private static $instance = null;
 
     public static function getInstance(): PersistorJson {
         if(self::$instance === null) {

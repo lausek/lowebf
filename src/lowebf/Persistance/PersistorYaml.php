@@ -4,7 +4,8 @@ namespace lowebf\Persistance;
 
 class PersistorYaml implements IPersistance {
 
-	private ?PersistorYaml $instance = null;
+    /* @var PersistorYaml|null */
+	private static $instance = null;
 
     public static function getInstance(): PersistorYaml {
         if(self::$instance === null) {
