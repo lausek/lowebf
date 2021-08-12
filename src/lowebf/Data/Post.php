@@ -2,22 +2,24 @@
 
 namespace lowebf\Data;
 
-class Post {
-
+class Post
+{
     /* @var ContentUnit */
-	private $contentUnit;
+	    private $contentUnit;
 
-    private function __construct(ContentUnit $contentUnit, array $attributes) {
+    private function __construct(ContentUnit $contentUnit, array $attributes)
+    {
         $this->contentUnit = $contentUnit;
 
-        foreach($attributes as $key => $value) {
-            if(!$this->contentUnit->exists($key)) {
+        foreach ($attributes as $key => $value) {
+            if (!$this->contentUnit->exists($key)) {
                 $this->contentUnit->set($key, $value);
             }
         }
     }
 
-    public static function extractAttributesFromPath(string $path): array {
+    public static function extractAttributesFromPath(string $path) : array
+    {
         $title = "";
         $date = "";
 
@@ -27,7 +29,8 @@ class Post {
         ];
     }
 
-    public static function loadFromFile(string $path): ?Post {
+    public static function loadFromFile(string $path) : ?Post
+    {
         $contentUnit = ContentUnit::loadFromFile($path);
         $attributes = self::extractAttributesFromPath($path);
 
@@ -48,37 +51,43 @@ class Post {
         return new Post($contentUnit, $attributes);
     }
 
-    public static function loadFromFileOrCreate(string $path): ?Post {
+    public static function loadFromFileOrCreate(string $path) : ?Post
+    {
         $contentUnit = ContentUnit::loadFromFileOrCreate($path);
         $attributes = self::extractAttributesFromPath($path);
 
         return new Post($contentUnit, $attributes);
     }
 
-    public function getAuthor(): ?string {
+    public function getAuthor() : ?string
+    {
         return $this->contentUnit->get("author");
     }
 
-    public function getContent(): string {
+    public function getContent() : string
+    {
         return $this->contentUnit->get("content");
     }
 
-    public function getDate(): \DateTime {
+    public function getDate() : \DateTime
+    {
         $date = $this->contentUnit->get("date");
         $dateTime = \DateTime::createFromFormat("Y-m-d", $date);
 
-        if($dateTime === false) {
+        if ($dateTime === false) {
             throw new \Exception("invalid date format");
         }
 
         return $dateTime;
     }
 
-    public function getTitle(): string {
+    public function getTitle() : string
+    {
         return $this->contentUnit->get("title");
     }
 
-    public function setAuthor(string $author): Post {
+    public function setAuthor(string $author) : Post
+    {
         return $this;
     }
 }

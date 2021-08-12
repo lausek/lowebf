@@ -6,32 +6,38 @@ use lowebf\Environment;
 use lowebf\Data\ContentUnit;
 use lowebf\Data\StorableTrait;
 
-class ConfigModule extends Module {
+class ConfigModule extends Module
+{
     use StorableTrait;
 
     /* @var ContentUnit */
-	private $contentUnit;
+	    private $contentUnit;
 
-    public function __construct(Environment $env) {
+    public function __construct(Environment $env)
+    {
         parent::__construct($env);
 
         $configPath = $this->env->asAbsoluteDataPath("config.json");
         $this->contentUnit = ContentUnit::loadFileOrCreate($configPath);
     }
 
-    public function __get(string $name) {
+    public function __get(string $name)
+    {
         return $this->contentUnit->get($name);
     }
 
-    public function __set(string $name, $value) {
+    public function __set(string $name, $value)
+    {
         $this->contentUnit->set($name, $value);
     }
 
-    public function __isset(string $name): bool {
+    public function __isset(string $name) : bool
+    {
         return $this->contentUnit->exists($name);
     }
 
-    public function __unset(string $name) {
+    public function __unset(string $name)
+    {
         $this->contentUnit->unset($name);
     }
 }

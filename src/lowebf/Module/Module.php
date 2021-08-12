@@ -4,12 +4,13 @@ namespace lowebf\Module;
 
 use lowebf\Environment;
 
-abstract class Module {
-
+abstract class Module
+{
     /* @var Environment */
-	protected $env;
+	    protected $env;
 
-	function __construct(Environment $env) {
+    function __construct(Environment $env)
+    {
         $this->env = $env;
-	}
+    }
 }

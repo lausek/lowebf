@@ -2,10 +2,9 @@
 
 namespace lowebf\Persistance;
 
-interface IPersistance {
+interface IPersistance
+{
+    public function load(string $path) : array;
 
-	public function load(string $path): array;
-
-	public function save(string $path, array $data);
-
+    public function save(string $path, array $data);
 }

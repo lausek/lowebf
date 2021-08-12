@@ -2,16 +2,20 @@
 
 namespace lowebf\Data;
 
-trait StorableTrait {
-    public function get(string $name) {
+trait StorableTrait
+{
+    public function get(string $name)
+    {
         return $this->__get($name);
     }
 
-    public function exists(string $name): bool {
+    public function exists(string $name) : bool
+    {
         return $this->__isset($name);
     }
 
-    public function set(string $name, $value) {
+    public function set(string $name, $value)
+    {
         $this->__set($name, $value);
     }
 

@@ -7,44 +7,47 @@ use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
 use lowebf\Persistance\PersistorYaml;
 
-class ContentUnit {
+class ContentUnit
+{
     use StorableTrait;
 
-    /* @var array */
-	protected $data = [];
-    /* @var string */
-	protected $path;
-    /* @var IPersistance */
-	private $persistance = null;
+    /** @var array */
+	    protected $data = [];
+    /** @var string */
+	    protected $path;
+    /** @var IPersistance */
+	    private $persistance = null;
 
-	function __construct(string $path, array $data, IPersistance $persistance = null) {
+    function __construct(string $path, array $data, IPersistance $persistance = null)
+    {
         $this->data = $data;
         $this->path = $path;
         $this->persistance = $persistance;
 
-        if($this->persistance === null) {
+        if ($this->persistance === null) {
             $this->persistance = PersistanceJson::getInstance();
         }
-	}
+    }
 
-    private static function getPersistorFromPath(string $path): IPersistance {
+    private static function getPersistorFromPath(string $path) : IPersistance
+    {
         $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-        switch($extension) {
-        case "yml":
+        switch ($extension) {
+            case "yml":
             // fallthrough
-        case "yaml":
-            return PersistorYaml::getInstance();
+            case "yaml":
+                return PersistorYaml::getInstance();
 
-        case "md":
+            case "md":
             // fallthrough
-        case "markdown":
-            return PersistorMarkdown::getInstance();
+            case "markdown":
+                return PersistorMarkdown::getInstance();
 
-        case "json":
+            case "json":
             // fallthrough
-        default:
-            return PersistorJson::getInstance();
+            default:
+                return PersistorJson::getInstance();
         }
     }
 
@@ -53,8 +56,9 @@ class ContentUnit {
      * @param IPersistance $persistance
      * @return ContentUnit
      */
-    public static function loadFromFile(string $path, IPersistance $persistance = null): ContentUnit {
-        if($persistance === null) {
+    public static function loadFromFile(string $path, IPersistance $persistance = null) : ContentUnit
+    {
+        if ($persistance === null) {
             $persistance = self::getPersistorFromPath($path);
         }
 
@@ -67,14 +71,15 @@ class ContentUnit {
      * @param IPersistance $persistance
      * @return ContentUnit
      */
-    public static function loadFromFileOrCreate(string $path, IPersistance $persistance = null): ContentUnit {
-        if($persistance === null) {
+    public static function loadFromFileOrCreate(string $path, IPersistance $persistance = null) : ContentUnit
+    {
+        if ($persistance === null) {
             $persistance = self::getPersistorFromPath($path);
         }
 
         try {
             $data = $persistance->load($path);
-        } catch(\Throwable $e) {
+        } catch (\Throwable $e) {
             // ignore exception if loading fails
             $data = [];
         }
@@ -85,31 +90,37 @@ class ContentUnit {
         return $contentUnit;
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->save();
     }
 
-    public function __get(string $name) {
-        if(isset($this->data[$name])) {
+    public function __get(string $name)
+    {
+        if (isset($this->data[$name])) {
             return $this->data[$name];
         }
 
         return null;
     }
 
-    public function __set(string $name, $value) {
+    public function __set(string $name, $value)
+    {
         $this->data[$name] = $value;
     }
 
-    public function __isset(string $name): bool {
+    public function __isset(string $name) : bool
+    {
         return isset($this->data[$name]);
     }
 
-    public function __unset(string $name) {
+    public function __unset(string $name)
+    {
         unset($this->data[$name]);
     }
 
-    protected function save() {
+    protected function save()
+    {
         $this->persistance->save($this->path, $this->data);
     }
 }

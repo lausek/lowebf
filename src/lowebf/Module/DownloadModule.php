@@ -2,6 +2,7 @@
 
 namespace lowebf\Module;
 
-class DownloadModule extends Module {
-	public function provideAndExit(string $path) {}
+class DownloadModule extends Module
+{
+    public function provideAndExit(string $path) {}
 }
