@@ -4,12 +4,10 @@ namespace lowebf\Module;
 
 use lowebf\Environment;
 use lowebf\Data\ContentUnit;
-use lowebf\Data\StorableTrait;
+use lowebf\Data\IStorable;
 
-class ConfigModule extends Module
+class ConfigModule extends Module implements IStorable
 {
-    use StorableTrait;
-
     /* @var ContentUnit */
 	    private $contentUnit;
 
@@ -21,22 +19,22 @@ class ConfigModule extends Module
         $this->contentUnit = ContentUnit::loadFileOrCreate($configPath);
     }
 
-    public function __get(string $name)
+    public function get(string $name)
     {
         return $this->contentUnit->get($name);
     }
 
-    public function __set(string $name, $value)
+    public function set(string $name, $value)
     {
         $this->contentUnit->set($name, $value);
     }
 
-    public function __isset(string $name) : bool
+    public function exists(string $name) : bool
     {
         return $this->contentUnit->exists($name);
     }
 
-    public function __unset(string $name)
+    public function unset(string $name)
     {
         $this->contentUnit->unset($name);
     }

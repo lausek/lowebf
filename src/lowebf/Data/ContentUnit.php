@@ -7,10 +7,8 @@ use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
 use lowebf\Persistance\PersistorYaml;
 
-class ContentUnit
+class ContentUnit implements IStorable
 {
-    use StorableTrait;
-
     /** @var array */
 	    protected $data = [];
     /** @var string */
@@ -95,7 +93,7 @@ class ContentUnit
         $this->save();
     }
 
-    public function __get(string $name)
+    public function get(string $name)
     {
         if (isset($this->data[$name])) {
             return $this->data[$name];
@@ -104,17 +102,17 @@ class ContentUnit
         return null;
     }
 
-    public function __set(string $name, $value)
+    public function set(string $name, $value)
     {
         $this->data[$name] = $value;
     }
 
-    public function __isset(string $name) : bool
+    public function exists(string $name) : bool
     {
         return isset($this->data[$name]);
     }
 
-    public function __unset(string $name)
+    public function unset(string $name)
     {
         unset($this->data[$name]);
     }

@@ -9,16 +9,15 @@ use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
 final class PostTest extends TestCase {
-    public function testSavingPost() {
-    }
+    public function testSavingPost() { }
 
     public function testSetAttributesFromPath() {
         dummy("/tmp/data/posts/2021-01-02-a-b-c-d.md");
 
         $env = new TmpEnvironment();
-        $post = $env->posts()->loadOrCreate("2021-01-02-a-b-c-d");
+        $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
-        $this->assertSame("A B C D", $post->getTitle());
+        $this->assertSame("Ab C D", $post->getTitle());
     }
 }

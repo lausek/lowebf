@@ -15,7 +15,7 @@ Is a PHP backend for creating simple websites without too much user interaction.
         - `misc/`:
     - `posts/`:
     - `config.yaml`:
-- `template/`
+- `site/`
     - `css/`:
     - `html/`:
     - `js/`:

@@ -20,12 +20,16 @@ class Post
 
     public static function extractAttributesFromPath(string $path) : array
     {
-        $title = "";
-        $date = "";
+        $fileName = pathinfo($path, PATHINFO_FILENAME);
+        $date = substr($fileName, 0, 10);
+
+        $title = substr($fileName, 11);
+        $title = str_replace("-", " ", $title);
+        $title = ucwords($title);
 
         return [
             "title" => $title,
-            "date" => \DateTime::createFromFormat("Y-m-d", $date),
+            "date" => $date,
         ];
     }
 
