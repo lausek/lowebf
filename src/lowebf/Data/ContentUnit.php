@@ -3,6 +3,7 @@
 namespace lowebf\Data;
 
 use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
 use lowebf\Persistance\IPersistance;
 use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
@@ -81,13 +82,13 @@ class ContentUnit implements IStorable
 
         try {
             $data = $persistance->load($env, $path);
-        } catch (\Throwable $e) {
+        } catch (FileNotFoundException $e) {
             // ignore exception if loading fails
             $data = [];
         }
 
         $contentUnit = new ContentUnit($env, $path, $data, $persistance);
-        $contentUnit->save();
+        #$contentUnit->save();
 
         return $contentUnit;
     }
@@ -121,7 +122,7 @@ class ContentUnit implements IStorable
         unset($this->data[$name]);
     }
 
-    protected function save()
+    public function save()
     {
         $this->persistance->save($this->env, $this->path, $this->data);
     }

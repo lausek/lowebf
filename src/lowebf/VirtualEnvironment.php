@@ -2,8 +2,11 @@
 
 namespace lowebf;
 
+use lowebf\Error\FileNotFoundException;
+
 class VirtualEnvironment extends Environment
 {
+    /** @var array */
     private $fileSystem = [];
 
     public function __construct(string $dir) {
@@ -14,11 +17,19 @@ class VirtualEnvironment extends Environment
         return $path;
     }
 
-    public function loadFile(string $path) {
+    public function loadFile(string $path) : string {
+        //$present= isset($this->fileSystem[$path]) ? "true" : "false";
+        //echo "looking for $path: $present". "\n";
+
+        if(!isset($this->fileSystem[$path])) {
+            throw new FileNotFoundException($path);
+        }
+
         return $this->fileSystem[$path];
     }
 
     public function saveFile(string $path, $content) {
+        //echo "persisting $path: $content". "\n";
         $this->fileSystem[$path] = $content;
     }
 

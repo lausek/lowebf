@@ -2,6 +2,7 @@
 
 namespace lowebf;
 
+use lowebf\Error\FileNotFoundException;
 use lowebf\Module\CacheModule;
 use lowebf\Module\ConfigModule;
 use lowebf\Module\ContentModule;
@@ -92,7 +93,15 @@ class Environment
         return $this->dataPath;
     }
 
-    public function loadFile(string $path) {}
+    public function loadFile(string $path) : string {
+        $content = file_get_contents($path);
+
+        if($content === false) {
+            throw new FileNotFoundException($path);
+        }
+
+        return $content;
+    }
 
     public function saveFile(string $path, $content) {}
 

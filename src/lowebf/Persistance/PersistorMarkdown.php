@@ -4,6 +4,8 @@ namespace lowebf\Persistance;
 
 use lowebf\Environment;
 
+use Spyc;
+
 class PersistorMarkdown implements IPersistance
 {
     /* @var PersistorMarkdown|null */
@@ -21,7 +23,15 @@ class PersistorMarkdown implements IPersistance
     public function load(Environment $env, string $path) : array {
         $rawContent = $env->loadFile($path);
 
-        return [];
+        if (!preg_match('/---\s([\s\S]*)\s---\s([\s\S]*)/m', $rawContent, $matches))
+        {
+            return [];
+        }
+
+        $parsed = Spyc::YAMLLoadString($matches[1]);
+        $parsed["content"] = ltrim($matches[2], "\n ");
+
+        return $parsed;
     }
 
     public function save(Environment $env, string $path, array $data) {
@@ -36,7 +46,7 @@ class PersistorMarkdown implements IPersistance
             $lines[] = "$key: $value";
         }
 
-        $lines[] = "---";
+        $lines[] = "---\n";
 
         if(isset($data["content"])) {
             $lines[] = $data["content"];

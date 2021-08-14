@@ -94,6 +94,25 @@ class Post
 
     public function setAuthor(string $author) : Post
     {
+        $this->contentUnit->set("author", $author);
+        return $this;
+    }
+
+    public function setContent(string $content) : Post
+    {
+        $this->contentUnit->set("content", $content);
+        return $this;
+    }
+
+    public function setDate(string $date) : Post
+    {
+        $this->contentUnit->set("date", $date);
+        return $this;
+    }
+
+    public function setTitle(string $title) : Post
+    {
+        $this->contentUnit->set("title", $title);
         return $this;
     }
 

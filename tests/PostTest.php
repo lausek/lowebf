@@ -12,10 +12,9 @@ use PHPUnit\Framework\TestCase;
 
 final class PostTest extends TestCase {
     public function testSavingPost() {
-        $dir = tmpdir();
-        $postFilePath = "$dir/data/posts/2021-01-02-ab-c-d.md";
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
-        $env = new VirtualEnvironment($dir);
+        $env = new VirtualEnvironment("/ve");
 
         $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
@@ -23,15 +22,36 @@ final class PostTest extends TestCase {
     }
 
     public function testSetAttributesFromPath() {
-        $dir = tmpdir();
-        $postFilePath = "$dir/data/posts/2021-01-02-ab-c-d.md";
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
-        $env = new VirtualEnvironment($dir);
+        $env = new VirtualEnvironment("/ve");
+
+        $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
         $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
+        $this->assertSame(null, $post->getAuthor());
+        $this->assertTrue($env->hasFile($postFilePath));
+    }
+
+    public function testSavingContent() {
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
+
+        $env = new VirtualEnvironment("/ve");
+
+        $env->posts()->loadOrCreate("2021-01-02-ab-c-d")
+                    ->setAuthor("root")
+                    ->setContent("TestContent")
+                    ->save();
+
+        $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
+
+        $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
+        $this->assertSame("Ab C D", $post->getTitle());
+        $this->assertSame("root", $post->getAuthor());
+        $this->assertSame("TestContent", $post->getContent());
         $this->assertTrue($env->hasFile($postFilePath));
     }
 }
