@@ -4,6 +4,8 @@ namespace lowebf\Data;
 
 use lowebf\Environment;
 
+use Michelf\Markdown;
+
 class Post
 {
     /* @var ContentUnit */
@@ -73,6 +75,11 @@ class Post
     public function getContent() : string
     {
         return $this->contentUnit->get("content");
+    }
+
+    public function getContentHtml() : string
+    {
+        return rtrim(Markdown::defaultTransform($this->getContent()), "\n ");
     }
 
     public function getDate() : \DateTime

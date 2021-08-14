@@ -43,7 +43,7 @@ final class PostTest extends TestCase {
 
         $env->posts()->loadOrCreate("2021-01-02-ab-c-d")
                     ->setAuthor("root")
-                    ->setContent("TestContent")
+                    ->setContent("TestContent **big**")
                     ->save();
 
         $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
@@ -51,7 +51,8 @@ final class PostTest extends TestCase {
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
         $this->assertSame("root", $post->getAuthor());
-        $this->assertSame("TestContent", $post->getContent());
+        $this->assertSame("TestContent **big**", $post->getContent());
+        $this->assertSame("<p>TestContent <strong>big</strong></p>", $post->getContentHtml());
         $this->assertTrue($env->hasFile($postFilePath));
     }
 }
