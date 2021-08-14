@@ -15,9 +15,10 @@ function dummy(string $path, string $content = null) {
     } else {
         // remove filename from directory path
         $dirPath = substr($path, 0, strrpos($path, "/"));
+        $content = $content !== null ? $content : "";
         @mkdir($dirPath, 0755, true);
         // create a dummy file
-        file_put_contents($path, "");
+        file_put_contents($path, $content);
     }
 }
 

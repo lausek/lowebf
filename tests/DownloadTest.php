@@ -5,6 +5,7 @@ namespace lowebf\Test;
 require_once("util.php");
 
 use lowebf\Environment;
+use lowebf\PhpRuntime;
 use lowebf\VirtualEnvironment;
 use lowebf\Data\Post;
 use lowebf\Persistance\IPersistance;
@@ -22,5 +23,21 @@ final class DownloadTest extends TestCase {
         $this->assertArrayHasKey("a.pdf", $downloadFiles);
         $this->assertArrayHasKey("b.html", $downloadFiles);
         $this->assertArrayHasKey("deep/c.json", $downloadFiles);
+    }
+
+    public function testProvidingFile() {
+        dummy("/tmp/data/downloads/a.json", "{}");
+
+        $env = new VirtualEnvironment("/tmp");
+        $runtime = $this->createMock(PhpRuntime::class);
+
+        $runtime->expects($this->once())
+                ->method("setHeader")
+                ->with($this->equalTo("Content-Type"), $this->equalTo("text/plain"));
+        $runtime->expects($this->once())
+                ->method("sendFromFile");
+
+        $env->setRuntime($runtime);
+        $env->download()->provideAndExit("a.json");
     }
 }

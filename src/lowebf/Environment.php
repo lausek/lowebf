@@ -194,4 +194,8 @@ class Environment
 
         return $this->viewModule;
     }
+
+    public function setRuntime($phpRuntime) {
+        $this->phpRuntime = $phpRuntime;
+    }
 }

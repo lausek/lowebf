@@ -30,9 +30,15 @@ class PhpRuntime
         $this->exit();
     }
 
-    public function setResponseCode(int $statusCode) {}
+    public function setResponseCode(int $statusCode) {
 
-    public function setHeader(string $name, string $value) {}
+    }
 
-    public function sendBody(resource $body) {}
+    public function setHeader(string $name, string $value) {
+
+    }
+
+    public function sendFromFile(string $path) {
+        readfile($path);
+    }
 }
