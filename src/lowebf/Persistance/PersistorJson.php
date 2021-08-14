@@ -3,6 +3,7 @@
 namespace lowebf\Persistance;
 
 use lowebf\Environment;
+use lowebf\Error\InvalidFileFormatException;
 
 class PersistorJson implements IPersistance
 {
@@ -18,7 +19,19 @@ class PersistorJson implements IPersistance
         return self::$instance;
     }
 
-    public function load(Environment $env, string $path) : array {}
+    public function load(Environment $env, string $path) : array {
+        $rawContent = $env->loadFile($path);
+        $content = json_decode($rawContent, true);
 
-    public function save(Environment $env, string $path, array $data) {}
+        if($content === null) {
+            throw new InvalidFileFormatException(json_last_error_msg());
+        }
+
+        return $content;
+    }
+
+    public function save(Environment $env, string $path, array $data) {
+        $serializedContent = json_encode($data, JSON_PRETTY_PRINT);
+        $env->saveFile($path, $serializedContent);
+    }
 }

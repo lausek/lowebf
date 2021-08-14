@@ -33,7 +33,7 @@ class VirtualEnvironment extends Environment
         $this->fileSystem[$path] = $content;
     }
 
-    public function getFileSystem() : array {
+    public function & getFileSystem() : array {
         return $this->fileSystem;
     }
 
