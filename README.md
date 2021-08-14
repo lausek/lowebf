@@ -1,6 +1,6 @@
 # lowebf
 
-Is a PHP backend for creating simple websites without too much user interaction.
+Is a microframework for creating simple websites without much user interaction.
 
 ## Directory structure
 
@@ -9,6 +9,7 @@ Is a PHP backend for creating simple websites without too much user interaction.
     - `twig/`:
 - `data/`
     - `content/`:
+    - `download/`:
     - `media/`:
         - `img/`:
         - `vid/`:

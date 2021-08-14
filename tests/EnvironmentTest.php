@@ -47,4 +47,17 @@ final class EnvironmentTest extends TestCase {
         $env = new Environment("/tmp/");
         $this->assertSame("/tmp/cache", $env->cache()->getPath());
     }
+
+    public function testListingDirectory() {
+        dummy("/tmp/lsCache/a");
+        dummy("/tmp/lsCache/b");
+        dummy("/tmp/lsCache/deep/c");
+
+        $env = new Environment("/tmp/");
+        $files = $env->listDirectory("/tmp/lsCache");
+        $filesDeep = $env->listDirectory("/tmp/lsCache", true);
+
+        $this->assertSame(["a", "b"], $files);
+        $this->assertSame(["a", "b", "deep/c"], $filesDeep);
+    }
 }

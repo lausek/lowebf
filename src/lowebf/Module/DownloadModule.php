@@ -4,5 +4,13 @@ namespace lowebf\Module;
 
 class DownloadModule extends Module
 {
-    public function provideAndExit(string $path) {}
+    public function getFiles() : array {
+        $path = $env->asAbsoluteDataPath("downloads");
+
+        foreach($env->listDirectory($path, true)) {}
+
+        return [];
+    }
+
+    public function provideAndExit(string $downloadId) {}
 }

@@ -37,7 +37,7 @@ class VirtualEnvironment extends Environment
         return $this->fileSystem;
     }
 
-    public function listDirectory(string $path) : array {
+    public function listDirectory(string $path, bool $recursive = false) : array {
 
     }
 

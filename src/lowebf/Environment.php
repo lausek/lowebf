@@ -103,9 +103,36 @@ class Environment
         return $content;
     }
 
-    public function saveFile(string $path, $content) {}
+    public function saveFile(string $path, $content) {
+        // TODO: check return code
+        $returnCode = file_put_contents($path, $content);
+    }
 
-    public function listDirectory(string $path) : array {}
+    public function listDirectory(string $path, bool $recursive = false) : array {
+        $files = [];
+
+        foreach(scandir($path) as $childPath) {
+            if($childPath === "." || $childPath === "..") {
+                continue;
+            }
+
+            $childPathAbsolute = "$path/$childPath";
+
+            if(is_dir($childPathAbsolute)) {
+                if($recursive) {
+                    foreach($this->listDirectory($childPathAbsolute, true) as $dirChildPath) {
+                        $files[] = "$childPath/$dirChildPath";
+                    }
+                }
+
+                continue;
+            }
+
+            $files[] = $childPath;
+        }
+
+        return $files;
+    }
 
     public function cache() : CacheModule
     {
