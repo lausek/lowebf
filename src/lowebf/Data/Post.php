@@ -8,8 +8,10 @@ use Michelf\Markdown;
 
 class Post
 {
-    /* @var ContentUnit */
+    /** @var ContentUnit */
 	    private $contentUnit;
+
+    // TODO: add attribute for lazy loading values like 'author' and 'content'
 
     private function __construct(ContentUnit $contentUnit, array $attributes)
     {

@@ -18,9 +18,6 @@ class VirtualEnvironment extends Environment
     }
 
     public function loadFile(string $path) : string {
-        //$present= isset($this->fileSystem[$path]) ? "true" : "false";
-        //echo "looking for $path: $present". "\n";
-
         if(!isset($this->fileSystem[$path])) {
             throw new FileNotFoundException($path);
         }
@@ -29,7 +26,6 @@ class VirtualEnvironment extends Environment
     }
 
     public function saveFile(string $path, $content) {
-        //echo "persisting $path: $content". "\n";
         $this->fileSystem[$path] = $content;
     }
 
@@ -38,7 +34,17 @@ class VirtualEnvironment extends Environment
     }
 
     public function listDirectory(string $path, bool $recursive = false) : array {
+        assert($recursive);
+        $filtered = [];
 
+        foreach($this->fileSystem as $key => $value) {
+            if(str_starts_with($key, $path)) {
+                $keyWithoutParent = substr($key, strlen($path) + 1);
+                $filtered[$keyWithoutParent] = $key;
+            }
+        }
+
+        return $filtered;
     }
 
     public function hasFile(string $path) : bool {

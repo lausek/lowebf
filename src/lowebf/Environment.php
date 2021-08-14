@@ -108,6 +108,9 @@ class Environment
         $returnCode = file_put_contents($path, $content);
     }
 
+    /**
+     * @return an array of files where the key is the relative and the value is the absolute path.
+     * */
     public function listDirectory(string $path, bool $recursive = false) : array {
         $files = [];
 
@@ -120,15 +123,14 @@ class Environment
 
             if(is_dir($childPathAbsolute)) {
                 if($recursive) {
-                    foreach($this->listDirectory($childPathAbsolute, true) as $dirChildPath) {
-                        $files[] = "$childPath/$dirChildPath";
+                    foreach($this->listDirectory($childPathAbsolute, true) as $dirChildRelative => $dirChildAbsolute) {
+                        $relativePath = "$childPath/$dirChildRelative";
+                        $files[$relativePath] = "$childPathAbsolute/$dirChildAbsolute";
                     }
                 }
-
-                continue;
+            } else {
+                $files[$childPath] = $childPathAbsolute;
             }
-
-            $files[] = $childPath;
         }
 
         return $files;

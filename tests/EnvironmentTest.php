@@ -57,7 +57,10 @@ final class EnvironmentTest extends TestCase {
         $files = $env->listDirectory("/tmp/lsCache");
         $filesDeep = $env->listDirectory("/tmp/lsCache", true);
 
-        $this->assertSame(["a", "b"], $files);
-        $this->assertSame(["a", "b", "deep/c"], $filesDeep);
+        $this->assertArrayHasKey("a", $files);
+        $this->assertArrayHasKey("b", $files);
+        $this->assertArrayHasKey("a", $filesDeep);
+        $this->assertArrayHasKey("b", $filesDeep);
+        $this->assertArrayHasKey("deep/c", $filesDeep);
     }
 }
