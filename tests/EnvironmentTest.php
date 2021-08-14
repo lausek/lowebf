@@ -2,7 +2,7 @@
 
 namespace lowebf\Test;
 
-require_once("TmpEnvironment.php");
+require_once("util.php");
 
 use lowebf\Environment;
 use PHPUnit\Framework\TestCase;

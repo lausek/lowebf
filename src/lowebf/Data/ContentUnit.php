@@ -2,6 +2,7 @@
 
 namespace lowebf\Data;
 
+use lowebf\Environment;
 use lowebf\Persistance\IPersistance;
 use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
@@ -9,6 +10,8 @@ use lowebf\Persistance\PersistorYaml;
 
 class ContentUnit implements IStorable
 {
+    /** @var Environment */
+        private $env;
     /** @var array */
 	    protected $data = [];
     /** @var string */
@@ -16,8 +19,9 @@ class ContentUnit implements IStorable
     /** @var IPersistance */
 	    private $persistance = null;
 
-    function __construct(string $path, array $data, IPersistance $persistance = null)
+    function __construct(Environment $env, string $path, array $data, IPersistance $persistance = null)
     {
+        $this->env = $env;
         $this->data = $data;
         $this->path = $path;
         $this->persistance = $persistance;
@@ -54,7 +58,7 @@ class ContentUnit implements IStorable
      * @param IPersistance $persistance
      * @return ContentUnit
      */
-    public static function loadFromFile(string $path, IPersistance $persistance = null) : ContentUnit
+    public static function loadFromFile(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
     {
         if ($persistance === null) {
             $persistance = self::getPersistorFromPath($path);
@@ -69,20 +73,20 @@ class ContentUnit implements IStorable
      * @param IPersistance $persistance
      * @return ContentUnit
      */
-    public static function loadFromFileOrCreate(string $path, IPersistance $persistance = null) : ContentUnit
+    public static function loadFromFileOrCreate(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
     {
         if ($persistance === null) {
             $persistance = self::getPersistorFromPath($path);
         }
 
         try {
-            $data = $persistance->load($path);
+            $data = $persistance->load($env, $path);
         } catch (\Throwable $e) {
             // ignore exception if loading fails
             $data = [];
         }
 
-        $contentUnit = new ContentUnit($path, $data, $persistance);
+        $contentUnit = new ContentUnit($env, $path, $data, $persistance);
         $contentUnit->save();
 
         return $contentUnit;
@@ -119,6 +123,6 @@ class ContentUnit implements IStorable
 
     protected function save()
     {
-        $this->persistance->save($this->path, $this->data);
+        $this->persistance->save($this->env, $this->path, $this->data);
     }
 }

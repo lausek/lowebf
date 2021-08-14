@@ -51,11 +51,15 @@ class Environment
         $this->phpRuntime = new PhpRuntime($this);
     }
 
+    public function asRealpath(string $path) : string {
+        return realpath($path);
+    }
+
     public function asAbsolutePath(string $subpath) : string
     {
         $left = rtrim($this->getRootPath(), "/");
         $right = ltrim($subpath, "/");
-        $path = realpath("$left/$right");
+        $path = $this->asRealpath("$left/$right");
 
         if ($path === false) {
             throw new \Exception();
@@ -69,7 +73,7 @@ class Environment
         $left = rtrim($this->getDataPath(), "/");
         $right = ltrim($subpath, "/");
         $joined = "$left/$right";
-        $path = realpath($joined);
+        $path = $this->asRealpath($joined);
 
         if ($path === false) {
             throw new \Exception("cannot create realpath '$joined': path does not exist.");
@@ -88,9 +92,9 @@ class Environment
         return $this->dataPath;
     }
 
-    public function loadFile(string $path) : ?mixed {}
+    public function loadFile(string $path) {}
 
-    public function saveFile(string $path, mixed $content) {}
+    public function saveFile(string $path, $content) {}
 
     public function listDirectory(string $path) : array {}
 

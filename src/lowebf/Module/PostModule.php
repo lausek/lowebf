@@ -27,7 +27,7 @@ class PostModule extends Module
     public function load(string $postId) : Post
     {
         $path = $this->getPostPath($postId);
-        return Post::loadFromFile($path);
+        return Post::loadFromFile($this->env, $path);
     }
 
     public function loadOrCreate(string $postId) : Post
@@ -36,7 +36,7 @@ class PostModule extends Module
             return $this->load($postId);
         } catch (\Throwable $e) {
             $path = $this->getPostPath($postId);
-            return Post::loadFromFileOrCreate($path);
+            return Post::loadFromFileOrCreate($this->env, $path);
         }
     }
 

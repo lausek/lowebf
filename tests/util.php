@@ -12,11 +12,7 @@ function dummy(string $path, string $content = null) {
     @mkdir($path, 0755, true);
 }
 
-
-class TmpEnvironment extends Environment {
-    public function __construct() {
-        $rootPath = "/tmp";
-
-        parent::__construct($rootPath);
-    }
+function tmpdir(): string {
+    return "/tmp";
 }
+

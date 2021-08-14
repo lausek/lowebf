@@ -2,6 +2,8 @@
 
 namespace lowebf\Persistance;
 
+use lowebf\Environment;
+
 class PersistorMarkdown implements IPersistance
 {
     /* @var PersistorMarkdown|null */
@@ -16,7 +18,32 @@ class PersistorMarkdown implements IPersistance
         return self::$instance;
     }
 
-    public function load(string $path) : array {}
+    public function load(Environment $env, string $path) : array {
+        $rawContent = $env->loadFile($path);
 
-    public function save(string $path, array $data) {}
+        return [];
+    }
+
+    public function save(Environment $env, string $path, array $data) {
+        $lines = [];
+        $lines[] = "---";
+
+        foreach($data as $key => $value) {
+            if($key === "content") {
+                continue;
+            }
+
+            $lines[] = "$key: $value";
+        }
+
+        $lines[] = "---";
+
+        if(isset($data["content"])) {
+            $lines[] = $data["content"];
+        }
+
+        $serializedContent = implode($lines, "\n");
+
+        $env->saveFile($path, $serializedContent);
+    }
 }

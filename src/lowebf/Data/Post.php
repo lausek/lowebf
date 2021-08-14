@@ -2,6 +2,8 @@
 
 namespace lowebf\Data;
 
+use lowebf\Environment;
+
 class Post
 {
     /* @var ContentUnit */
@@ -33,9 +35,9 @@ class Post
         ];
     }
 
-    public static function loadFromFile(string $path) : ?Post
+    public static function loadFromFile(Environment $env, string $path) : ?Post
     {
-        $contentUnit = ContentUnit::loadFromFile($path);
+        $contentUnit = ContentUnit::loadFromFile($env, $path);
         $attributes = self::extractAttributesFromPath($path);
 
         /*
@@ -55,9 +57,9 @@ class Post
         return new Post($contentUnit, $attributes);
     }
 
-    public static function loadFromFileOrCreate(string $path) : ?Post
+    public static function loadFromFileOrCreate(Environment $env, string $path) : ?Post
     {
-        $contentUnit = ContentUnit::loadFromFileOrCreate($path);
+        $contentUnit = ContentUnit::loadFromFileOrCreate($env, $path);
         $attributes = self::extractAttributesFromPath($path);
 
         return new Post($contentUnit, $attributes);
@@ -93,5 +95,9 @@ class Post
     public function setAuthor(string $author) : Post
     {
         return $this;
+    }
+
+    public function save() {
+        $this->contentUnit->save();
     }
 }

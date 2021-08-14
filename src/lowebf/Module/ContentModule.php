@@ -9,13 +9,13 @@ class ContentModule extends Module
     public function load(string $contentUnitId) : ContentUnit
     {
         $path = $this->env->asAbsoluteDataPath($contentUnitId);
-        return ContentUnit::loadFromFile($path);
+        return ContentUnit::loadFromFile($this->env, $path);
     }
 
     public function loadOrCreate(string $contentUnitId) : ContentUnit
     {
         $path = $this->env->asAbsoluteDataPath($contentUnitId);
-        return ContentUnit::loadFromFileOrCreate($path);
+        return ContentUnit::loadFromFileOrCreate($this->env, $path);
     }
 
     public function delete(string $contentUnitId) {}

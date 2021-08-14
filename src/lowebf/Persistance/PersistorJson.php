@@ -2,6 +2,8 @@
 
 namespace lowebf\Persistance;
 
+use lowebf\Environment;
+
 class PersistorJson implements IPersistance
 {
     /* @var PersistorJson|null */
@@ -16,7 +18,7 @@ class PersistorJson implements IPersistance
         return self::$instance;
     }
 
-    public function load(string $path) : array {}
+    public function load(Environment $env, string $path) : array {}
 
-    public function save(string $path, array $data) {}
+    public function save(Environment $env, string $path, array $data) {}
 }
