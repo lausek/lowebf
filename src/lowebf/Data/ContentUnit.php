@@ -65,8 +65,8 @@ class ContentUnit implements IStorable
             $persistance = self::getPersistorFromPath($path);
         }
 
-        $data = $persistance->load($path);
-        return new ContentUnit($path, $data, $persistance);
+        $data = $persistance->load($env, $path);
+        return new ContentUnit($env, $path, $data, $persistance);
     }
 
     /*

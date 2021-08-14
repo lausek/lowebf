@@ -3,6 +3,7 @@
 namespace lowebf\Persistance;
 
 use lowebf\Environment;
+use lowebf\Error\InvalidFileFormatException;
 
 use Spyc;
 
@@ -25,7 +26,7 @@ class PersistorMarkdown implements IPersistance
 
         if (!preg_match('/---\s([\s\S]*)\s---\s([\s\S]*)/m', $rawContent, $matches))
         {
-            return [];
+            throw new InvalidFileFormatException("invalid markdown file format.");
         }
 
         $parsed = Spyc::YAMLLoadString($matches[1]);

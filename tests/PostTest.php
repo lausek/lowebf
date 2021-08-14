@@ -7,6 +7,7 @@ require_once("util.php");
 use lowebf\Environment;
 use lowebf\VirtualEnvironment;
 use lowebf\Data\Post;
+use lowebf\Error\InvalidFileFormatException;
 use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
@@ -54,5 +55,15 @@ final class PostTest extends TestCase {
         $this->assertSame("TestContent **big**", $post->getContent());
         $this->assertSame("<p>TestContent <strong>big</strong></p>", $post->getContentHtml());
         $this->assertTrue($env->hasFile($postFilePath));
+    }
+
+    public function testInvalidMarkdownLoading() {
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile($postFilePath, "abc");
+
+        $this->expectException(InvalidFileFormatException::class);
+        $env->posts()->load("2021-01-02-ab-c-d");
     }
 }
