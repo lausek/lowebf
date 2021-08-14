@@ -26,7 +26,7 @@ final class ConfigTest extends TestCase {
         $fileContent = '{"debug": false, "homepage": "www.example.de"}';
 
         $env = new VirtualEnvironment("/ve");
-        $env->getFileSystem()["/ve/data/config.json"] = $fileContent;
+        $env->saveFile("/ve/data/config.json", $fileContent);
         $config = $env->config();
 
         $this->assertSame(false, $config->get("debug"));
