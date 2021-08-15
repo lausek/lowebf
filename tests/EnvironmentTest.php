@@ -7,8 +7,10 @@ require_once("util.php");
 use lowebf\Environment;
 use PHPUnit\Framework\TestCase;
 
-final class EnvironmentTest extends TestCase {
-    public function testPathCreation() {
+final class EnvironmentTest extends TestCase
+{
+    public function testPathCreation()
+    {
         dummy("/tmp/data/");
 
         $env = new Environment("/tmp/");
@@ -20,7 +22,8 @@ final class EnvironmentTest extends TestCase {
         $this->assertSame("/tmp", $env->getDataPath(), "/tmp");
     }
 
-    public function testAbsolutePath() {
+    public function testAbsolutePath()
+    {
         dummy("/tmp/index.php");
 
         $env = new Environment("/tmp/");
@@ -28,7 +31,8 @@ final class EnvironmentTest extends TestCase {
         $this->assertSame("/tmp/index.php", $env->asAbsolutePath("index.php"));
     }
 
-    public function testAbsoluteDataPath() {
+    public function testAbsoluteDataPath()
+    {
         dummy("/tmp/data/index.php");
         dummy("/tmp/deep/index.php");
 
@@ -41,14 +45,16 @@ final class EnvironmentTest extends TestCase {
         $this->assertSame("/tmp/deep/index.php", $env->asAbsoluteDataPath("index.php"));
     }
 
-    public function testCachePath() {
+    public function testCachePath()
+    {
         dummy("/tmp/cache");
 
         $env = new Environment("/tmp/");
         $this->assertSame("/tmp/cache", $env->cache()->getPath());
     }
 
-    public function testListingDirectory() {
+    public function testListingDirectory()
+    {
         dummy("/tmp/lsCache/a");
         dummy("/tmp/lsCache/b");
         dummy("/tmp/lsCache/deep/c");

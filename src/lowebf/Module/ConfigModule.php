@@ -15,7 +15,7 @@ class ConfigModule extends Module implements IStorable
     {
         parent::__construct($env);
 
-        $configPath = $this->env->asAbsoluteDataPath("config.json");
+        $configPath = $this->env->asAbsoluteDataPath("config.yaml");
         $this->contentUnit = ContentUnit::loadFromFileOrCreate($env, $configPath);
     }
 
@@ -34,8 +34,7 @@ class ConfigModule extends Module implements IStorable
         return $this->contentUnit->exists($name);
     }
 
-    public function unset(string $name)
-    {
+    public function unset(string $name) {
         $this->contentUnit->unset($name);
     }
 

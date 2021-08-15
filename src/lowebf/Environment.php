@@ -52,7 +52,8 @@ class Environment
         $this->phpRuntime = new PhpRuntime($this);
     }
 
-    public function asRealpath(string $path) : string {
+    public function asRealpath(string $path) : string
+    {
         return realpath($path);
     }
 
@@ -93,37 +94,45 @@ class Environment
         return $this->dataPath;
     }
 
-    public function loadFile(string $path) : string {
+    public function loadFile(string $path) : string
+    {
         $content = file_get_contents($path);
 
-        if($content === false) {
+        if ($content === false) {
             throw new FileNotFoundException($path);
         }
 
         return $content;
     }
 
-    public function saveFile(string $path, $content) {
+    public function saveFile(string $path, $content)
+    {
         // TODO: check return code
         $returnCode = file_put_contents($path, $content);
+    }
+
+    public function sendFile(string $path)
+    {
+        readfile($path);
     }
 
     /**
      * @return an array of files where the key is the relative and the value is the absolute path.
      * */
-    public function listDirectory(string $path, bool $recursive = false) : array {
+    public function listDirectory(string $path, bool $recursive = false) : array
+    {
         $files = [];
 
-        foreach(scandir($path) as $childPath) {
-            if($childPath === "." || $childPath === "..") {
+        foreach (scandir($path) as $childPath) {
+            if ($childPath === "." || $childPath === "..") {
                 continue;
             }
 
             $childPathAbsolute = "$path/$childPath";
 
-            if(is_dir($childPathAbsolute)) {
-                if($recursive) {
-                    foreach($this->listDirectory($childPathAbsolute, true) as $dirChildRelative => $dirChildAbsolute) {
+            if (is_dir($childPathAbsolute)) {
+                if ($recursive) {
+                    foreach ($this->listDirectory($childPathAbsolute, true) as $dirChildRelative => $dirChildAbsolute) {
                         $relativePath = "$childPath/$dirChildRelative";
                         $files[$relativePath] = "$childPathAbsolute/$dirChildAbsolute";
                     }
@@ -195,7 +204,8 @@ class Environment
         return $this->viewModule;
     }
 
-    public function setRuntime($phpRuntime) {
+    public function setRuntime($phpRuntime)
+    {
         $this->phpRuntime = $phpRuntime;
     }
 }

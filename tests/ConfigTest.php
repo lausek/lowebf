@@ -10,8 +10,10 @@ use lowebf\Data\Post;
 use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
-final class ConfigTest extends TestCase {
-    public function testSaving() {
+final class ConfigTest extends TestCase
+{
+    public function testSaving()
+    {
         $env = new VirtualEnvironment("/ve");
 
         $config = $env->config();
@@ -19,14 +21,15 @@ final class ConfigTest extends TestCase {
         $config->set("homepage", "www.example.de");
         $config->save();
 
-        $this->assertTrue($env->hasFile("/ve/data/config.json"));
+        $this->assertTrue($env->hasFile("/ve/data/config.yaml"));
     }
 
-    public function testLoading() {
-        $fileContent = '{"debug": false, "homepage": "www.example.de"}';
+    public function testLoading()
+    {
+        $fileContent = "debug: false\nhomepage: 'www.example.de'\n";
 
         $env = new VirtualEnvironment("/ve");
-        $env->saveFile("/ve/data/config.json", $fileContent);
+        $env->saveFile("/ve/data/config.yaml", $fileContent);
         $config = $env->config();
 
         $this->assertSame(false, $config->get("debug"));

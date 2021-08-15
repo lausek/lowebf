@@ -11,8 +11,10 @@ use lowebf\Data\Post;
 use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
-final class DownloadTest extends TestCase {
-    public function testSaving() {
+final class DownloadTest extends TestCase
+{
+    public function testSaving()
+    {
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/downloads/a.pdf", "");
         $env->saveFile("/ve/data/downloads/b.html", "");
@@ -25,17 +27,19 @@ final class DownloadTest extends TestCase {
         $this->assertArrayHasKey("deep/c.json", $downloadFiles);
     }
 
-    public function testProvidingFile() {
-        dummy("/tmp/data/downloads/a.json", "{}");
-
+    public function testProvidingFile()
+    {
         $env = new VirtualEnvironment("/tmp");
-        $runtime = $this->createMock(PhpRuntime::class);
+        $env->saveFile("/tmp/data/downloads/a.json", "{}");
 
+        $runtime = $this->createMock(PhpRuntime::class);
         $runtime->expects($this->once())
-                ->method("setHeader")
-                ->with($this->equalTo("Content-Type"), $this->equalTo("text/plain"));
+            ->method("setHeader")
+            ->with($this->equalTo("Content-Type"), $this->equalTo("application/json"));
         $runtime->expects($this->once())
-                ->method("sendFromFile");
+            ->method("sendFromFile");
+        $runtime->expects($this->once())
+            ->method("exit");
 
         $env->setRuntime($runtime);
         $env->download()->provideAndExit("a.json");

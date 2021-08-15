@@ -19,18 +19,20 @@ class PersistorJson implements IPersistance
         return self::$instance;
     }
 
-    public function load(Environment $env, string $path) : array {
+    public function load(Environment $env, string $path) : array
+    {
         $rawContent = $env->loadFile($path);
         $content = json_decode($rawContent, true);
 
-        if($content === null) {
+        if ($content === null) {
             throw new InvalidFileFormatException(json_last_error_msg());
         }
 
         return $content;
     }
 
-    public function save(Environment $env, string $path, array $data) {
+    public function save(Environment $env, string $path, array $data)
+    {
         $serializedContent = json_encode($data, JSON_PRETTY_PRINT);
         $env->saveFile($path, $serializedContent);
     }

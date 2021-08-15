@@ -21,11 +21,11 @@ class PersistorMarkdown implements IPersistance
         return self::$instance;
     }
 
-    public function load(Environment $env, string $path) : array {
+    public function load(Environment $env, string $path) : array
+    {
         $rawContent = $env->loadFile($path);
 
-        if (!preg_match('/---\s([\s\S]*)\s---\s([\s\S]*)/m', $rawContent, $matches))
-        {
+        if (!preg_match('/---\s([\s\S]*)\s---\s([\s\S]*)/m', $rawContent, $matches)) {
             throw new InvalidFileFormatException("invalid markdown file format.");
         }
 
@@ -35,12 +35,13 @@ class PersistorMarkdown implements IPersistance
         return $parsed;
     }
 
-    public function save(Environment $env, string $path, array $data) {
+    public function save(Environment $env, string $path, array $data)
+    {
         $lines = [];
         $lines[] = "---";
 
-        foreach($data as $key => $value) {
-            if($key === "content") {
+        foreach ($data as $key => $value) {
+            if ($key === "content") {
                 continue;
             }
 
@@ -49,7 +50,7 @@ class PersistorMarkdown implements IPersistance
 
         $lines[] = "---\n";
 
-        if(isset($data["content"])) {
+        if (isset($data["content"])) {
             $lines[] = $data["content"];
         }
 

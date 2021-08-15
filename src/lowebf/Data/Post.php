@@ -125,7 +125,8 @@ class Post
         return $this;
     }
 
-    public function save() {
+    public function save()
+    {
         $this->contentUnit->save();
     }
 }

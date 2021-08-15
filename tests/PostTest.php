@@ -11,8 +11,10 @@ use lowebf\Error\InvalidFileFormatException;
 use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
-final class PostTest extends TestCase {
-    public function testSavingPost() {
+final class PostTest extends TestCase
+{
+    public function testSavingPost()
+    {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");
@@ -22,7 +24,8 @@ final class PostTest extends TestCase {
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
-    public function testSetAttributesFromPath() {
+    public function testSetAttributesFromPath()
+    {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");
@@ -37,15 +40,16 @@ final class PostTest extends TestCase {
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
-    public function testSavingContent() {
+    public function testSavingContent()
+    {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");
 
         $env->posts()->loadOrCreate("2021-01-02-ab-c-d")
-                    ->setAuthor("root")
-                    ->setContent("TestContent **big**")
-                    ->save();
+            ->setAuthor("root")
+            ->setContent("TestContent **big**")
+            ->save();
 
         $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
@@ -57,7 +61,8 @@ final class PostTest extends TestCase {
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
-    public function testInvalidMarkdownLoading() {
+    public function testInvalidMarkdownLoading()
+    {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");

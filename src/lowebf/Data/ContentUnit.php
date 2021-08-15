@@ -12,7 +12,7 @@ use lowebf\Persistance\PersistorYaml;
 class ContentUnit implements IStorable
 {
     /** @var Environment */
-        private $env;
+    private $env;
     /** @var array */
 	    protected $data = [];
     /** @var string */
@@ -88,7 +88,7 @@ class ContentUnit implements IStorable
         }
 
         $contentUnit = new ContentUnit($env, $path, $data, $persistance);
-        #$contentUnit->save();
+        //$contentUnit->save();
 
         return $contentUnit;
     }
@@ -117,8 +117,7 @@ class ContentUnit implements IStorable
         return isset($this->data[$name]);
     }
 
-    public function unset(string $name)
-    {
+    public function unset(string $name) {
         unset($this->data[$name]);
     }
 

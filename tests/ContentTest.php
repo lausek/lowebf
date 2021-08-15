@@ -10,8 +10,10 @@ use lowebf\Data\Post;
 use lowebf\Persistance\IPersistance;
 use PHPUnit\Framework\TestCase;
 
-final class ContentTest extends TestCase {
-    public function testSaving() {
+final class ContentTest extends TestCase
+{
+    public function testSaving()
+    {
         $env = new VirtualEnvironment("/ve");
 
         $contentOne = $env->content()->loadOrCreate("a.yaml");
@@ -27,7 +29,8 @@ final class ContentTest extends TestCase {
         $this->assertTrue($env->hasFile("/ve/data/content/c.markdown"));
     }
 
-    public function testLoading() {
+    public function testLoading()
+    {
         $contentJson = '{"team": "B", "names": ["Alfred", "Bernd"]}';
         $contentYaml = "section: Imprint\nage: 15\nhtml:\n\tlink: abc.de";
 
