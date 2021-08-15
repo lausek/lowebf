@@ -94,6 +94,11 @@ class Environment
         return $this->dataPath;
     }
 
+    public function hasFile(string $path) : bool
+    {
+        return file_exists($path);
+    }
+
     public function loadFile(string $path) : string
     {
         $content = file_get_contents($path);

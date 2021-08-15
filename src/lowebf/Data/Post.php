@@ -8,20 +8,29 @@ use Michelf\Markdown;
 
 class Post
 {
-    /** @var ContentUnit */
-	    private $contentUnit;
+    /** @var Environment */
+	    private $env;
+
+    /** @var string */
+	    private $path;
+
+    /** @var string */
+	    private $title;
+
+    /** @var string */
+	    private $date;
+
+    /** @var ContentUnit|null */
+	    private $contentUnit = null;
 
     // TODO: add attribute for lazy loading values like 'author' and 'content'
 
-    private function __construct(ContentUnit $contentUnit, array $attributes)
+    private function __construct(Environment $env, string $path, string $title, string $date)
     {
-        $this->contentUnit = $contentUnit;
-
-        foreach ($attributes as $key => $value) {
-            if (!$this->contentUnit->exists($key)) {
-                $this->contentUnit->set($key, $value);
-            }
-        }
+        $this->env = $env;
+        $this->path = $path;
+        $this->title = $title;
+        $this->date = $date;
     }
 
     public static function extractAttributesFromPath(string $path) : array
@@ -39,43 +48,44 @@ class Post
         ];
     }
 
-    public static function loadFromFile(Environment $env, string $path) : ?Post
+    public static function loadFromFile(Environment $env, string $path) : Post
     {
-        $contentUnit = ContentUnit::loadFromFile($env, $path);
-        $attributes = self::extractAttributesFromPath($path);
+        if(!$env->hasFile($path)) {
+            throw new \Exception("file does not exist: $path");
+        }
 
-        /*
+        $attributes = self::extractAttributesFromPath($path);
         $title = $attributes["title"];
         $date = $attributes["date"];
 
-        if($contentUnit->exists("title")) {
-            $title = $contentUnit->get("title");
-        }
-
-        if($contentUnit->exists("date")) {
-            $date = $contentUnit->get("date");
-        }
-        $post = new Post($title, $date, $content);
-        */
-
-        return new Post($contentUnit, $attributes);
+        return new Post($env, $path, $title, $date);
     }
 
-    public static function loadFromFileOrCreate(Environment $env, string $path) : ?Post
+    public static function loadFromFileOrCreate(Environment $env, string $path) : Post
     {
-        $contentUnit = ContentUnit::loadFromFileOrCreate($env, $path);
-        $attributes = self::extractAttributesFromPath($path);
+        if(!$env->hasFile($path)) {
+            ContentUnit::loadFromFileOrCreate($env, $path);
+        }
 
-        return new Post($contentUnit, $attributes);
+        return self::loadFromFile($env, $path);
+    }
+
+    public function loadContentUnit()
+    {
+        if($this->contentUnit === null) {
+            $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path);
+        }
     }
 
     public function getAuthor() : ?string
     {
+        $this->loadContentUnit();
         return $this->contentUnit->get("author");
     }
 
     public function getContent() : string
     {
+        $this->loadContentUnit();
         return $this->contentUnit->get("content");
     }
 
@@ -86,8 +96,7 @@ class Post
 
     public function getDate() : \DateTime
     {
-        $date = $this->contentUnit->get("date");
-        $dateTime = \DateTime::createFromFormat("Y-m-d", $date);
+        $dateTime = \DateTime::createFromFormat("Y-m-d", $this->date);
 
         if ($dateTime === false) {
             throw new \Exception("invalid date format");
@@ -98,12 +107,14 @@ class Post
 
     public function getTitle() : string
     {
-        return $this->contentUnit->get("title");
+        return $this->title;
     }
 
     public function setAuthor(string $author) : Post
     {
+        $this->loadContentUnit();
         $this->contentUnit->set("author", $author);
+
         return $this;
     }
 

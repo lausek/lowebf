@@ -33,11 +33,14 @@ final class DownloadTest extends TestCase
         $env->saveFile("/tmp/data/downloads/a.json", "{}");
 
         $runtime = $this->createMock(PhpRuntime::class);
+
         $runtime->expects($this->once())
             ->method("setHeader")
             ->with($this->equalTo("Content-Type"), $this->equalTo("application/json"));
+
         $runtime->expects($this->once())
             ->method("sendFromFile");
+
         $runtime->expects($this->once())
             ->method("exit");
 

@@ -61,14 +61,28 @@ final class PostTest extends TestCase
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
-    public function testInvalidMarkdownLoading()
+    public function testLazyLoading()
     {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
-        $env = new VirtualEnvironment("/ve");
-        $env->saveFile($postFilePath, "abc");
+        $env = $this->getMockBuilder(VirtualEnvironment::class)
+                    ->setConstructorArgs(["/ve"])
+                    ->setMethodsExcept(["hasFile", "saveFile", "posts"])
+                    ->getMock();
 
-        $this->expectException(InvalidFileFormatException::class);
-        $env->posts()->load("2021-01-02-ab-c-d");
+        $env->saveFile($postFilePath, "");
+
+        $env->expects($this->once())
+            ->method("asAbsoluteDataPath")
+            ->will($this->returnValue($postFilePath));
+
+        $env->expects($this->never())
+            ->method("loadFile")
+            ->with($postFilePath)
+            ->will($this->returnValue("---\n---\n"));
+
+        $post = $env->posts()->load("2021-01-02-ab-c-d");
+        $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
+        $this->assertSame("Ab C D", $post->getTitle());
     }
 }

@@ -21,13 +21,20 @@ class PersistorMarkdown implements IPersistance
         return self::$instance;
     }
 
+    public function parseMarkdown(string $rawContent)
+    {
+        if (!preg_match('/---\s([\s\S]*)---\s?([\s\S]*)/m', $rawContent, $matches)) {
+            throw new InvalidFileFormatException("invalid markdown file format.");
+        }
+
+        return $matches;
+    }
+
     public function load(Environment $env, string $path) : array
     {
         $rawContent = $env->loadFile($path);
 
-        if (!preg_match('/---\s([\s\S]*)\s---\s([\s\S]*)/m', $rawContent, $matches)) {
-            throw new InvalidFileFormatException("invalid markdown file format.");
-        }
+        $matches = $this->parseMarkdown($rawContent);
 
         $parsed = Spyc::YAMLLoadString($matches[1]);
         $parsed["content"] = ltrim($matches[2], "\n ");
