@@ -66,9 +66,9 @@ final class PostTest extends TestCase
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = $this->getMockBuilder(VirtualEnvironment::class)
-                    ->setConstructorArgs(["/ve"])
-                    ->setMethodsExcept(["hasFile", "saveFile", "posts"])
-                    ->getMock();
+            ->setConstructorArgs(["/ve"])
+            ->setMethodsExcept(["hasFile", "saveFile", "posts"])
+            ->getMock();
 
         $env->saveFile($postFilePath, "");
 
@@ -84,5 +84,32 @@ final class PostTest extends TestCase
         $post = $env->posts()->load("2021-01-02-ab-c-d");
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
+    }
+
+    public function testLazyLoadingContent()
+    {
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
+        $postFileContent = "---\n---\nabc";
+
+        $env = $this->getMockBuilder(VirtualEnvironment::class)
+            ->setConstructorArgs(["/ve"])
+            ->setMethodsExcept(["hasFile", "saveFile", "posts"])
+            ->getMock();
+
+        $env->saveFile($postFilePath, $postFileContent);
+
+        $env->expects($this->once())
+            ->method("asAbsoluteDataPath")
+            ->will($this->returnValue($postFilePath));
+
+        $env->expects($this->once())
+            ->method("loadFile")
+            ->with($postFilePath)
+            ->will($this->returnValue($postFileContent));
+
+        $post = $env->posts()->load("2021-01-02-ab-c-d");
+        $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
+        $this->assertSame("Ab C D", $post->getTitle());
+        $this->assertSame("abc", $post->getContent());
     }
 }

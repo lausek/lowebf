@@ -33,6 +33,7 @@ class PersistorMarkdown implements IPersistance
     public function load(Environment $env, string $path) : array
     {
         $rawContent = $env->loadFile($path);
+        var_dump($rawContent);
 
         $matches = $this->parseMarkdown($rawContent);
 

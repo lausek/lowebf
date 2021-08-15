@@ -50,7 +50,7 @@ class Post
 
     public static function loadFromFile(Environment $env, string $path) : Post
     {
-        if(!$env->hasFile($path)) {
+        if (!$env->hasFile($path)) {
             throw new \Exception("file does not exist: $path");
         }
 
@@ -63,7 +63,7 @@ class Post
 
     public static function loadFromFileOrCreate(Environment $env, string $path) : Post
     {
-        if(!$env->hasFile($path)) {
+        if (!$env->hasFile($path)) {
             ContentUnit::loadFromFileOrCreate($env, $path);
         }
 
@@ -72,7 +72,7 @@ class Post
 
     public function loadContentUnit()
     {
-        if($this->contentUnit === null) {
+        if ($this->contentUnit === null) {
             $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path);
         }
     }
