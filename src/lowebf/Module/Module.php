@@ -6,7 +6,7 @@ use lowebf\Environment;
 
 abstract class Module
 {
-    /* @var Environment */
+    /** @var Environment */
 	    protected $env;
 
     function __construct(Environment $env)

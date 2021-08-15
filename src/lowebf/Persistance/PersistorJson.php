@@ -7,7 +7,7 @@ use lowebf\Error\InvalidFileFormatException;
 
 class PersistorJson implements IPersistance
 {
-    /* @var PersistorJson|null */
+    /** @var PersistorJson|null */
 	    private static $instance = null;
 
     public static function getInstance() : PersistorJson

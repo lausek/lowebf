@@ -7,7 +7,7 @@ use lowebf\Data\Post;
 
 class PostModule extends Module
 {
-    /* @var int */
+    /** @var int */
 	    private $postsPerPage;
 
     public function __construct(Environment $env)

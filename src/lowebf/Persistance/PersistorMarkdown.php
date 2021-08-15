@@ -9,7 +9,7 @@ use Spyc;
 
 class PersistorMarkdown implements IPersistance
 {
-    /* @var PersistorMarkdown|null */
+    /** @var PersistorMarkdown|null */
 	    private static $instance = null;
 
     public static function getInstance() : PersistorMarkdown

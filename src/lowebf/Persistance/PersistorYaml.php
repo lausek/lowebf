@@ -8,7 +8,7 @@ use Spyc;
 
 class PersistorYaml implements IPersistance
 {
-    /* @var PersistorYaml|null */
+    /** @var PersistorYaml|null */
 	    private static $instance = null;
 
     public static function getInstance() : PersistorYaml

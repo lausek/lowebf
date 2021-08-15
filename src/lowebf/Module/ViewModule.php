@@ -6,7 +6,7 @@ use lowebf\Environment;
 
 class ViewModule extends Module
 {
-    /* @var Twig */
+    /** @var Twig */
 	    protected $twig;
 
     public function __construct(Environment $env)
@@ -18,5 +18,5 @@ class ViewModule extends Module
 
     public function render(string $template, array $data) {}
 
-    public function renderToString(string $template, array $data) : ?string {}
+    public function renderToString(string $template, array $data) : string {}
 }

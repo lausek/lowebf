@@ -12,24 +12,24 @@ use lowebf\Module\ViewModule;
 
 class Environment
 {
-    /* @var PhpRuntime */
+    /** @var PhpRuntime */
 	    protected $phpRuntime = null;
-    /* @var string */
+    /** @var string */
 	    protected $rootPath;
-    /* @var string */
+    /** @var string */
 	    protected $dataPath;
 
-    /* @var CacheModule */
+    /** @var CacheModule */
 	    protected $cacheModule = null;
-    /* @var ConfigModule */
+    /** @var ConfigModule */
 	    protected $configModule = null;
-    /* @var ContentModule */
+    /** @var ContentModule */
 	    protected $contentModule = null;
-    /* @var DownloadModule */
+    /** @var DownloadModule */
 	    protected $downloadModule = null;
-    /* @var PostModule */
+    /** @var PostModule */
 	    protected $postModule = null;
-    /* @var ViewModule */
+    /** @var ViewModule */
 	    protected $viewModule = null;
 
     public static function getInstance() : Environment

@@ -8,7 +8,7 @@ use lowebf\Data\IStorable;
 
 class ConfigModule extends Module implements IStorable
 {
-    /* @var ContentUnit */
+    /** @var ContentUnit */
 	    private $contentUnit;
 
     public function __construct(Environment $env)
