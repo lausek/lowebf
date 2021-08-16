@@ -4,6 +4,7 @@ namespace lowebf\Module;
 
 use lowebf\Environment;
 use lowebf\Twig\Cache;
+use lowebf\Twig\Extension\HeadersExtension;
 use lowebf\Twig\Extension\StylesheetExtension;
 use lowebf\Twig\TemplateLoader;
 
@@ -25,6 +26,7 @@ class ViewModule extends Module
         $loader = new TemplateLoader($env);
         $this->twig = new \Twig\Environment($loader, $twigOptions);
 
+        $this->twig->addExtension(new HeadersExtension($env));
         $this->twig->addExtension(new StylesheetExtension($env));
     }
 

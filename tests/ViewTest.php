@@ -70,6 +70,35 @@ final class ViewTest extends TestCase
         $env->view()->render("index.html");
     }
 
+    public function testLimitingStringsExtension()
+    {
+        $rawTemplate = "{{ data.str | limitLength(3) }}";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/template/limit.html", $rawTemplate);
+        $env->config()->set("cacheEnabled", false);
+
+        $this->assertSame("abc", $env->view()->renderToString("limit.html", ["str" => "abc"]));
+        $this->assertSame("ab…", $env->view()->renderToString("limit.html", ["str" => "abcd"]));
+    }
+
+    public function testHeadersExtension()
+    {
+        $postContent = "";
+        $rawTemplate = "<html><head>{{ linkPreviewHeaders(data) }}</head></html>";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.yaml", $postContent);
+        $env->saveFile("/ve/site/template/headers.html", $rawTemplate);
+        $env->config()->set("cacheEnabled", false);
+
+        $post = $env->posts()->load("2021-01-01-a");
+        $renderedTemplate = $env->view()->renderToString("headers.html", (array)$post);
+
+        $dom = \DOMDocument::loadHTML($renderedTemplate);
+        $this->assertNotEmpty($dom->getElementsByTagName("meta"));
+    }
+
     public function testSettingDebugMode()
     {
         $configYaml = "debugEnabled: true\n";
