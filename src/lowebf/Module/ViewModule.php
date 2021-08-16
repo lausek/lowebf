@@ -6,14 +6,20 @@ use lowebf\Environment;
 
 class ViewModule extends Module
 {
-    /** @var Twig */
+    /** @var \Twig\Environment */
 	    protected $twig;
 
     public function __construct(Environment $env)
     {
         parent::__construct($env);
 
-        $this->twig = null;
+        $twigOptions = [];
+
+        if ($env->config()->get("chachingEnabled")) {
+            $twigOptions["cache"] = null;
+        }
+
+        $this->twig = new \Twig\Environment($loader, $options);
     }
 
     public function render(string $template, array $data) {}

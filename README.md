@@ -18,5 +18,5 @@ Is a microframework for creating simple websites without much user interaction.
     - `config.yaml`: General configuration for the site
 - `site/`
     - `css/`:
-    - `html/`:
+    - `template/`:
     - `js/`:
