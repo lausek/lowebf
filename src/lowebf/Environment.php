@@ -61,10 +61,11 @@ class Environment
     {
         $left = rtrim($this->getRootPath(), "/");
         $right = ltrim($subpath, "/");
-        $path = $this->asRealpath("$left/$right");
+        $joined = "$left/$right";
+        $path = $this->asRealpath($joined);
 
         if ($path === false) {
-            throw new \Exception();
+            throw new \Exception("cannot create realpath '$joined': path does not exist.");
         }
 
         return $path;

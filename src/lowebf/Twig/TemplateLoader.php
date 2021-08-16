@@ -4,6 +4,7 @@ namespace lowebf\Twig;
 
 use lowebf\Environment;
 
+use \Twig\Error\LoaderError;
 use \Twig\Loader\LoaderInterface;
 use \Twig\Source;
 
@@ -29,7 +30,12 @@ class TemplateLoader implements LoaderInterface
      */
     public function getSourceContext(string $name) : Source
     {
-        $path = $this->getFilePath($name);
+        try {
+            $path = $this->getFilePath($name);
+        } catch (\Exception $e) {
+            throw new LoaderError($e->getMessage());
+        }
+
         $content = $this->env->loadFile($path);
         return new Source($content, $name, $path);
     }
