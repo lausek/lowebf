@@ -42,4 +42,9 @@ class ConfigModule extends Module implements IStorable
     {
         $this->contentUnit->save();
     }
+
+    public function isCacheEnabled() : bool
+    {
+        return $this->get("cacheEnabled", true) === true;
+    }
 }

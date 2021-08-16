@@ -29,17 +29,15 @@ final class DownloadTest extends TestCase
 
     public function testProvidingFile()
     {
+        $path = "/tmp/data/downloads/a.json";
         $env = new VirtualEnvironment("/tmp");
-        $env->saveFile("/tmp/data/downloads/a.json", "{}");
+        $env->saveFile($path, "{}");
 
         $runtime = $this->createMock(PhpRuntime::class);
 
         $runtime->expects($this->once())
-            ->method("setHeader")
-            ->with($this->equalTo("Content-Type"), $this->equalTo("application/json"));
-
-        $runtime->expects($this->once())
-            ->method("sendFromFile");
+            ->method("sendFromFile")
+            ->with($this->anything(), $path, true);
 
         $runtime->expects($this->once())
             ->method("exit");
