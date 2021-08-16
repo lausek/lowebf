@@ -98,13 +98,13 @@ class ContentUnit implements IStorable
         $this->save();
     }
 
-    public function get(string $name)
+    public function get(string $name, $default = null)
     {
         if (isset($this->data[$name])) {
             return $this->data[$name];
         }
 
-        return null;
+        return $default;
     }
 
     public function set(string $name, $value)

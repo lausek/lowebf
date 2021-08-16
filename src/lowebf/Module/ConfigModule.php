@@ -19,9 +19,9 @@ class ConfigModule extends Module implements IStorable
         $this->contentUnit = ContentUnit::loadFromFileOrCreate($env, $configPath);
     }
 
-    public function get(string $name)
+    public function get(string $name, $default = null)
     {
-        return $this->contentUnit->get($name);
+        return $this->contentUnit->get($name, $default);
     }
 
     public function set(string $name, $value)

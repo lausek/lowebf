@@ -35,4 +35,17 @@ final class ConfigTest extends TestCase
         $this->assertSame(false, $config->get("debug"));
         $this->assertSame("www.example.de", $config->get("homepage"));
     }
+
+    public function testGettingDefaultValue()
+    {
+        $fileContent = "debugEnabled: false\n";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/config.yaml", $fileContent);
+        $config = $env->config();
+
+        $this->assertSame(false, $config->get("debugEnabled"));
+        $this->assertSame(null, $config->get("cacheEnabled"));
+        $this->assertSame(true, $config->get("cacheEnabled", true));
+    }
 }

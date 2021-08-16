@@ -48,4 +48,17 @@ final class ContentTest extends TestCase
         $this->assertSame(15, $contentUnitYaml->get("age"));
         $this->assertSame("abc.de", $contentUnitYaml->get("html")["link"]);
     }
+
+    public function testGettingDefaultValues()
+    {
+        $contentJson = '{"team": "B", "names": ["Alfred", "Bernd"]}';
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/content/a.json", $contentJson);
+
+        $contentUnitJson = $env->content()->loadOrCreate("a.json");
+
+        $this->assertSame(null, $contentUnitJson->get("trainer"));
+        $this->assertSame("Alfred", $contentUnitJson->get("trainer", "Alfred"));
+    }
 }
