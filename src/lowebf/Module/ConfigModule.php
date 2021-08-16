@@ -47,4 +47,9 @@ class ConfigModule extends Module implements IStorable
     {
         return $this->get("cacheEnabled", true) === true;
     }
+
+    public function isDebugEnabled() : bool
+    {
+        return $this->get("debugEnabled", false) === true;
+    }
 }

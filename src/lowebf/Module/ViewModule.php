@@ -19,12 +19,18 @@ class ViewModule extends Module
         $twigOptions = [];
 
         $twigOptions["cache"] = $env->config()->isCacheEnabled() ? new Cache($env) : false;
+        $twigOptions["debug"] = $env->config()->isDebugEnabled();
 
         // Environment implements the Twig LoaderInterface
         $loader = new TemplateLoader($env);
         $this->twig = new \Twig\Environment($loader, $twigOptions);
 
         $this->twig->addExtension(new StylesheetExtension($env));
+    }
+
+    public function getTwigEnvironment() : \Twig\Environment
+    {
+        return $this->twig;
     }
 
     public function render(string $templatePath, array $data = [])

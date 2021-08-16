@@ -69,4 +69,21 @@ final class ViewTest extends TestCase
 
         $env->view()->render("index.html");
     }
+
+    public function testSettingDebugMode()
+    {
+        $configYaml = "debugEnabled: true\n";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/config.yaml", $configYaml);
+
+        $this->assertTrue($env->view()->getTwigEnvironment()->isDebug());
+    }
+
+    public function testDebugModeDisabledByDefault()
+    {
+        $env = new VirtualEnvironment("/ve");
+
+        $this->assertFalse($env->view()->getTwigEnvironment()->isDebug());
+    }
 }
