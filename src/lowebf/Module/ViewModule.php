@@ -29,9 +29,10 @@ class ViewModule extends Module
 
     public function render(string $templatePath, array $data = [])
     {
+        $templateAbsolutePath = $this->env->asAbsolutePath("site/template/$templatePath");
         $output = $this->renderToString($templatePath, $data);
 
-        $this->env->runtime()->setContentTypeFromFile($templatePath);
+        $this->env->runtime()->setContentTypeFromFile($templateAbsolutePath);
         $this->env->runtime()->writeOutput($output);
         $this->env->runtime()->exit();
     }

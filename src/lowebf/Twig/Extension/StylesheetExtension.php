@@ -28,37 +28,32 @@ final class StylesheetExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction("stylesheet", [$this, "writeStylesheetLink"])
+            new TwigFunction("stylesheet", [$this, "writeStylesheet"])
         ];
     }
 
-    public function writeStylesheetLink(string $sheet)
+    public function writeStylesheet(string $sheet)
     {
+        $fileExtension = pathinfo($sheet, PATHINFO_EXTENSION);
+        $fileExtension = strtolower($fileExtension);
+
         //$fileOutputPath = "/resources/css/compiled.css";
+
+        switch ($fileExtension) {
+            case "scss":
+                $fileInputPath = $this->env->asAbsolutePath("site/css/$sheet");
+                $fileInputContent = $this->env->loadFile($fileInputPath);
+
+                $compiledCss = $this->scssCompiler->compile($fileInputContent);
+
+                break;
+
+            default:
+                break;
+        }
+
         $href = "";
-
-        // TODO: check if cache needs rebuild
-        if (true) {
-            $fileInputPath = $this->env->asAbsolutePath("site/css/$sheet");
-            $fileInputContent = $this->env->loadFile($fileInputPath);
-
-            $compiledCss = $this->scssCompiler->compile($fileInputContent);
-        }
-
-        /*
-
-        $cssHandle = fopen($_SERVER['DOCUMENT_ROOT'] . $filePath, 'w');
-        if ($cssHandle !== NULL)
-        {
-            foreach ($sheets as $stylesheet)
-            {
-                fwrite($cssHandle, ); 
-            }
-            fclose($cssHandle);
-        }
-
-        echo "";
-         */
+        //$href = $this->env->cache();
 
         $html = "<link rel='stylesheet' type='text/css' href='$href'/>";
         $this->env->runtime()->writeOutput($html);

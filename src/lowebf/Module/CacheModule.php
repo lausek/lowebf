@@ -4,16 +4,6 @@ namespace lowebf\Module;
 
 class CacheModule extends Module
 {
-    public function get(string $key)
-    {
-        try {
-            $path = $this->env->getPath($key);
-            return $this->env->loadFile($path);
-        } catch (\Exception $e) {}
-
-        return null;
-    }
-
     public function getPath(string $subpath = null) : string
     {
         if ($subpath !== null) {
@@ -22,6 +12,16 @@ class CacheModule extends Module
         } else {
             return $this->env->asAbsolutePath("cache");
         }
+    }
+
+    public function get(string $key)
+    {
+        try {
+            $path = $this->env->getPath($key);
+            return $this->env->loadFile($path);
+        } catch (\Exception $e) {}
+
+        return null;
     }
 
     public function set(string $key, $value)

@@ -36,6 +36,7 @@ final class PostTest extends TestCase
 
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
+        $this->assertSame("2021-01-02-ab-c-d", $post->getId());
         $this->assertSame(null, $post->getAuthor());
         $this->assertTrue($env->hasFile($postFilePath));
     }
@@ -55,6 +56,7 @@ final class PostTest extends TestCase
 
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
+        $this->assertSame("2021-01-02-ab-c-d", $post->getId());
         $this->assertSame("root", $post->getAuthor());
         $this->assertSame("TestContent **big**", $post->getContent());
         $this->assertSame("<p>TestContent <strong>big</strong></p>", $post->getContentHtml());

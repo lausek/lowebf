@@ -77,6 +77,13 @@ class Post
         }
     }
 
+    public function getId() : string
+    {
+        $title = str_replace(" ", "-", $this->title);
+        $title = strtolower($title);
+        return $this->date . "-" . $title;
+    }
+
     public function getAuthor() : ?string
     {
         $this->loadContentUnit();

@@ -54,7 +54,13 @@ class Environment
 
     public function asRealpath(string $path) : string
     {
-        return realpath($path);
+        $realPath = realpath($path);
+
+        if ($realPath === false) {
+            throw new \Exception("cannot create realpath '$path': path does not exist.");
+        }
+
+        return $realPath;
     }
 
     public function asAbsolutePath(string $subpath) : string
@@ -62,13 +68,7 @@ class Environment
         $left = rtrim($this->getRootPath(), "/");
         $right = ltrim($subpath, "/");
         $joined = "$left/$right";
-        $path = $this->asRealpath($joined);
-
-        if ($path === false) {
-            throw new \Exception("cannot create realpath '$joined': path does not exist.");
-        }
-
-        return $path;
+        return $this->asRealpath($joined);
     }
 
     public function asAbsoluteDataPath(string $subpath) : string
@@ -76,13 +76,7 @@ class Environment
         $left = rtrim($this->getDataPath(), "/");
         $right = ltrim($subpath, "/");
         $joined = "$left/$right";
-        $path = $this->asRealpath($joined);
-
-        if ($path === false) {
-            throw new \Exception("cannot create realpath '$joined': path does not exist.");
-        }
-
-        return $path;
+        return $this->asRealpath($joined);
     }
 
     public function getRootPath() : string

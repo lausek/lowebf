@@ -47,7 +47,6 @@ final class ViewTest extends TestCase
     {
         $rawScss = "body {}";
         $rawTemplate = "<html><head>{{ stylesheet('main.scss') }}</head></html>";
-        $renderedTemplate = "<html><head><link /></head></html>";
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/css/main.scss", $rawScss);
