@@ -5,6 +5,7 @@ namespace lowebf\Test;
 require_once("util.php");
 
 use lowebf\Environment;
+use lowebf\VirtualEnvironment;
 use PHPUnit\Framework\TestCase;
 
 final class EnvironmentTest extends TestCase
@@ -68,5 +69,33 @@ final class EnvironmentTest extends TestCase
         $this->assertArrayHasKey("a", $filesDeep);
         $this->assertArrayHasKey("b", $filesDeep);
         $this->assertArrayHasKey("deep/c", $filesDeep);
+    }
+
+    public function testFindMatchingFile()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-09-01-a.md", "");
+        $env->saveFile("/ve/data/posts/2021-09-01-b.json", "");
+        $env->saveFile("/ve/data/posts/2021-09-15-c.yaml", "");
+
+        $this->assertSame("/ve/data/posts/2021-09-01-a.md", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-a"));
+        $this->assertSame("/ve/data/posts/2021-09-01-b.json", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-b"));
+        $this->assertSame("/ve/data/posts/2021-09-15-c.yaml", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-15-c"));
+    }
+
+    public function testFindMatchingFilePreference()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/config.yaml", "");
+        $env->saveFile("/ve/data/config.md", "");
+
+        $this->assertSame("/ve/data/config.yaml", $env->findWithoutFileExtension("/ve/data", "config"));
+    }
+
+    public function testFindMatchingFileNotFound()
+    {
+        $env = new VirtualEnvironment("/ve");
+
+        $this->assertNull($env->findWithoutFileExtension("/ve/data", "config"));
     }
 }

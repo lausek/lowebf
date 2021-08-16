@@ -117,6 +117,29 @@ class Environment
     }
 
     /**
+     * Extension Order: yaml > json > md
+     *
+     * @return string|null
+     * */
+    public function findWithoutFileExtension(string $directory, string $fileName) : ?string
+    {
+        $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
+
+        $files = $this->listDirectory($directory);
+        $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
+
+        foreach($fileExtensions as $fileExtension) {
+            $matchingFile = "$fileName.$fileExtension";
+
+            if(array_key_exists($matchingFile, $files)) {
+                return $files[$matchingFile];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return an array of files where the key is the relative and the value is the absolute path.
      * */
     public function listDirectory(string $path, bool $recursive = false) : array
