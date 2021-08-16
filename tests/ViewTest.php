@@ -70,18 +70,6 @@ final class ViewTest extends TestCase
         $env->view()->render("index.html");
     }
 
-    public function testLimitingStringsExtension()
-    {
-        $rawTemplate = "{{ data.str | limitLength(3) }}";
-
-        $env = new VirtualEnvironment("/ve");
-        $env->saveFile("/ve/site/template/limit.html", $rawTemplate);
-        $env->config()->set("cacheEnabled", false);
-
-        $this->assertSame("abc", $env->view()->renderToString("limit.html", ["str" => "abc"]));
-        $this->assertSame("ab…", $env->view()->renderToString("limit.html", ["str" => "abcd"]));
-    }
-
     public function testHeadersExtension()
     {
         $postContent = "";
@@ -97,6 +85,29 @@ final class ViewTest extends TestCase
 
         $dom = \DOMDocument::loadHTML($renderedTemplate);
         $this->assertNotEmpty($dom->getElementsByTagName("meta"));
+    }
+
+    public function testLimitingStringsExtension()
+    {
+        $rawTemplate = "{{ data.str | limitLength(3) }}";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/template/limit.html", $rawTemplate);
+        $env->config()->set("cacheEnabled", false);
+
+        $this->assertSame("abc", $env->view()->renderToString("limit.html", ["str" => "abc"]));
+        $this->assertSame("ab…", $env->view()->renderToString("limit.html", ["str" => "abcd"]));
+    }
+
+    public function testUrlExtension()
+    {
+        $rawTemplate = "{{ url('view.php', {id: 'abc'}) }}";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/template/url.html", $rawTemplate);
+        $env->config()->set("cacheEnabled", false);
+
+        $this->assertSame("/view.php?id=abc", $env->view()->renderToString("url.html"));
     }
 
     public function testSettingDebugMode()
