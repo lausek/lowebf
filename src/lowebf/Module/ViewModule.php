@@ -4,6 +4,7 @@ namespace lowebf\Module;
 
 use lowebf\Environment;
 use lowebf\Twig\Cache;
+use lowebf\Twig\Extension\StylesheetExtension;
 use lowebf\Twig\TemplateLoader;
 
 class ViewModule extends Module
@@ -17,13 +18,13 @@ class ViewModule extends Module
 
         $twigOptions = [];
 
-        if ($env->config()->isCacheEnabled()) {
-            $twigOptions["cache"] = new Cache($env);
-        }
+        $twigOptions["cache"] = $env->config()->isCacheEnabled() ? new Cache($env) : false;
 
         // Environment implements the Twig LoaderInterface
         $loader = new TemplateLoader($env);
         $this->twig = new \Twig\Environment($loader, $twigOptions);
+
+        $this->twig->addExtension(new StylesheetExtension($env));
     }
 
     public function render(string $templatePath, array $data = [])

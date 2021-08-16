@@ -19,6 +19,11 @@ class VirtualEnvironment extends Environment
         return $path;
     }
 
+    public function hasFile(string $path) : bool
+    {
+        return isset($this->fileSystem[$path]);
+    }
+
     public function loadFile(string $path) : string
     {
         if (!isset($this->fileSystem[$path])) {
@@ -51,10 +56,5 @@ class VirtualEnvironment extends Environment
         }
 
         return $filtered;
-    }
-
-    public function hasFile(string $path) : bool
-    {
-        return isset($this->fileSystem[$path]);
     }
 }

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * NOTE: Always use new template names for testing! Twig will generate a class name from the
+ *          caching key and import it into scope thus leading to state changes across tests.
+ * */
+
 namespace lowebf\Test;
 
 require_once("util.php");
@@ -20,7 +25,7 @@ final class ViewTest extends TestCase
         $data = ["name" => "World"];
 
         $env = new VirtualEnvironment("/ve");
-        $env->saveFile("/ve/site/template/abc.html", $rawTemplate);
+        $env->saveFile("/ve/site/template/main.html", $rawTemplate);
         $env->config()->set("cacheEnabled", false);
 
         $runtime = $this->createMock(PhpRuntime::class);
@@ -34,7 +39,35 @@ final class ViewTest extends TestCase
 
         $env->setRuntime($runtime);
 
-        $this->assertSame($renderedTemplate, $env->view()->renderToString("abc.html", $data));
-        $env->view()->render("abc.html", $data);
+        $this->assertSame($renderedTemplate, $env->view()->renderToString("main.html", $data));
+        $env->view()->render("main.html", $data);
+    }
+
+    public function testStylesheetExtension()
+    {
+        $rawScss = "body {}";
+        $rawTemplate = "<html><head>{{ stylesheet('main.scss') }}</head></html>";
+        $renderedTemplate = "<html><head><link /></head></html>";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/css/main.scss", $rawScss);
+        $env->saveFile("/ve/site/template/index.html", $rawTemplate);
+        $env->config()->set("cacheEnabled", false);
+
+        $runtime = $this->createMock(PhpRuntime::class);
+
+        $runtime->expects($this->exactly(2))
+            ->method("writeOutput")
+            ->withConsecutive(
+                [$this->equalTo("<link rel='stylesheet' type='text/css' href=''/>")],
+                [$this->equalTo("<html><head></head></html>")]
+            );
+
+        $runtime->expects($this->once())
+            ->method("exit");
+
+        $env->setRuntime($runtime);
+
+        $env->view()->render("index.html");
     }
 }

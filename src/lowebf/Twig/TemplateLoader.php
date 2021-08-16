@@ -32,14 +32,15 @@ class TemplateLoader implements LoaderInterface
     {
         try {
             $path = $this->getFilePath($name);
+            $content = $this->env->loadFile($path);
+
+            return new Source($content, $name, $path);
         } catch (\Exception $e) {
             throw new LoaderError($e->getMessage());
         }
-
-        $content = $this->env->loadFile($path);
-        return new Source($content, $name, $path);
     }
 
+    private static $i = 10;
     /**
      * Gets the cache key to use for the cache for a given template name.
      *
@@ -47,7 +48,19 @@ class TemplateLoader implements LoaderInterface
      */
     public function getCacheKey(string $name) : string
     {
-        return $name;
+        try {
+            $rootPath = $this->env->asAbsolutePath("");
+            $path = $this->getFilePath($name);
+
+            $len = strlen($rootPath);
+            if (0 === strncmp($rootPath, $path, $len)) {
+                return substr($path, $len);
+            }
+
+            return $path;
+        } catch (\Exception $e) {
+            return "";
+        }
     }
 
     /**
@@ -57,7 +70,12 @@ class TemplateLoader implements LoaderInterface
      */
     public function isFresh(string $name, int $time) : bool
     {
-        return true;
+        try {
+            $path = $this->getFilePath($name);
+            return filemtime($path) < $time;
+        } catch (\Exception $e) {
+            throw new LoaderError($e->getMessage());
+        }
     }
 
     /**
