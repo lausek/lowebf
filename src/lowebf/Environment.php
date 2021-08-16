@@ -128,10 +128,10 @@ class Environment
         $files = $this->listDirectory($directory);
         $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
 
-        foreach($fileExtensions as $fileExtension) {
+        foreach ($fileExtensions as $fileExtension) {
             $matchingFile = "$fileName.$fileExtension";
 
-            if(array_key_exists($matchingFile, $files)) {
+            if (array_key_exists($matchingFile, $files)) {
                 return $files[$matchingFile];
             }
         }

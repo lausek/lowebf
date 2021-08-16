@@ -4,6 +4,7 @@ namespace lowebf\Module;
 
 use lowebf\Environment;
 use lowebf\Data\Post;
+use lowebf\Error\FileNotFoundException;
 
 class PostModule extends Module
 {
@@ -38,9 +39,15 @@ class PostModule extends Module
         return count($this->loadPosts());
     }
 
-    public function getPostPath(string $postId) : string
+    public function getPostPath(string $postId, string $fileExtension = "md") : string
     {
-        return $this->env->asAbsoluteDataPath("posts/$postId.md");
+        return $this->env->asAbsoluteDataPath("posts/$postId.$fileExtension");
+    }
+
+    public function findPostPath(string $postId) : ?string
+    {
+        $postDirectory = $this->env->asAbsoluteDataPath("posts");
+        return $this->env->findWithoutFileExtension($postDirectory, $postId);
     }
 
     public function setPostsPerPage(int $postsPerPage)
@@ -80,7 +87,12 @@ class PostModule extends Module
 
     public function load(string $postId) : Post
     {
-        $path = $this->getPostPath($postId);
+        $path = $this->findPostPath($postId);
+
+        if ($path === null) {
+            throw new FileNotFoundException("$postId");
+        }
+
         return Post::loadFromFile($this->env, $path);
     }
 

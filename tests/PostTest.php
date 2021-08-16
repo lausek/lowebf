@@ -69,14 +69,10 @@ final class PostTest extends TestCase
 
         $env = $this->getMockBuilder(VirtualEnvironment::class)
             ->setConstructorArgs(["/ve"])
-            ->setMethodsExcept(["hasFile", "saveFile", "posts"])
+            ->setMethods(["loadFile"])
             ->getMock();
 
         $env->saveFile($postFilePath, "");
-
-        $env->expects($this->once())
-            ->method("asAbsoluteDataPath")
-            ->will($this->returnValue($postFilePath));
 
         $env->expects($this->never())
             ->method("loadFile")
@@ -94,14 +90,10 @@ final class PostTest extends TestCase
 
         $env = $this->getMockBuilder(VirtualEnvironment::class)
             ->setConstructorArgs(["/ve"])
-            ->setMethodsExcept(["hasFile", "saveFile", "posts"])
+            ->setMethods(["loadFile"])
             ->getMock();
 
         $env->saveFile($postFilePath, $postFileContent);
-
-        $env->expects($this->once())
-            ->method("asAbsoluteDataPath")
-            ->will($this->returnValue($postFilePath));
 
         $env->expects($this->once())
             ->method("loadFile")

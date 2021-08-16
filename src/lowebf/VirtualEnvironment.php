@@ -45,14 +45,23 @@ class VirtualEnvironment extends Environment
 
     public function listDirectory(string $path, bool $recursive = false) : array
     {
-        assert($recursive);
         $filtered = [];
 
         foreach ($this->fileSystem as $key => $value) {
-            if (str_starts_with($key, $path)) {
-                $keyWithoutParent = substr($key, strlen($path) + 1);
-                $filtered[$keyWithoutParent] = $key;
+            $keyWithoutParent = substr($key, strlen($path) + 1);
+
+            if ($recursive) {
+                if (!str_starts_with($key, $path)) {
+                    continue;
+                }
+            } else {
+                $dirName = pathinfo($keyWithoutParent, PATHINFO_DIRNAME);
+                if ($dirName === "") {
+                    continue;
+                }
             }
+
+            $filtered[$keyWithoutParent] = $key;
         }
 
         return $filtered;
