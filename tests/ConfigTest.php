@@ -48,4 +48,12 @@ final class ConfigTest extends TestCase
         $this->assertSame(null, $config->get("cacheEnabled"));
         $this->assertSame(true, $config->get("cacheEnabled", true));
     }
+
+    public function testLoadingFromJson()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/config.json", '{"debugEnabled": true}');
+
+        $this->assertSame(true, $env->config()->get("debugEnabled"));
+    }
 }

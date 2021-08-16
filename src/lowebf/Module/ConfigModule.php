@@ -15,7 +15,15 @@ class ConfigModule extends Module implements IStorable
     {
         parent::__construct($env);
 
-        $configPath = $this->env->asAbsoluteDataPath("config.yaml");
+        $configPath = $this->env->findWithoutFileExtension(
+            $this->env->asAbsoluteDataPath(""),
+            "config"
+        );
+
+        if($configPath === null) {
+            $configPath = $this->env->asAbsoluteDataPath("config.yaml");
+        }
+
         $this->contentUnit = ContentUnit::loadFromFileOrCreate($env, $configPath);
     }
 

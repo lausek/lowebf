@@ -45,6 +45,7 @@ class VirtualEnvironment extends Environment
 
     public function listDirectory(string $path, bool $recursive = false) : array
     {
+        $path = rtrim($path, "/");
         $filtered = [];
 
         foreach ($this->fileSystem as $key => $value) {
