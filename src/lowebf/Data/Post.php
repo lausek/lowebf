@@ -112,6 +112,17 @@ class Post
         return $dateTime;
     }
 
+    public function getDescription(int $maxLen = 50) : string
+    {
+        $description = $this->getContent();
+
+        if ($maxLen < strlen($description)) {
+            return substr($description, 0, $maxLen - 1) . '…';
+        }
+
+        return $description;
+    }
+
     public function getTitle() : string
     {
         return $this->title;

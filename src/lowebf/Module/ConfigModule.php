@@ -20,7 +20,7 @@ class ConfigModule extends Module implements IStorable
             "config"
         );
 
-        if($configPath === null) {
+        if ($configPath === null) {
             $configPath = $this->env->asAbsoluteDataPath("config.yaml");
         }
 

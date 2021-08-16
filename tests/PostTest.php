@@ -176,4 +176,20 @@ final class PostTest extends TestCase
 
         $env->posts()->loadPage(-1);
     }
+
+    public function testDescriptionFull()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.json", '{"content":"description not long enough"}');
+
+        $this->assertSame("description not long enough", $env->posts()->load("2021-01-01-a")->getDescription());
+    }
+
+    public function testDescriptionShort()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.json", '{"content":"description not long enough"}');
+
+        $this->assertSame("description not…", $env->posts()->load("2021-01-01-a")->getDescription(16));
+    }
 }
