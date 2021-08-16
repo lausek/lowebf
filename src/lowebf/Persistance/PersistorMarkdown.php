@@ -5,7 +5,7 @@ namespace lowebf\Persistance;
 use lowebf\Environment;
 use lowebf\Error\InvalidFileFormatException;
 
-use Spyc;
+use \Spyc;
 
 class PersistorMarkdown implements IPersistance
 {

@@ -3,6 +3,8 @@
 namespace lowebf\Module;
 
 use lowebf\Environment;
+use lowebf\Twig\Cache;
+use lowebf\Twig\TemplateLoader;
 
 class ViewModule extends Module
 {
@@ -16,23 +18,24 @@ class ViewModule extends Module
         $twigOptions = [];
 
         if ($env->config()->isCacheEnabled()) {
-            $twigOptions["cache"] = null;
+            $twigOptions["cache"] = new Cache($env);
         }
 
-        $this->twig = new \Twig\Environment($loader, $options);
+        // Environment implements the Twig LoaderInterface
+        $loader = new TemplateLoader($env);
+        $this->twig = new \Twig\Environment($loader, $twigOptions);
     }
 
-    public function render(string $templatePath, array $data)
+    public function render(string $templatePath, array $data = [])
     {
         $output = $this->renderToString($templatePath, $data);
 
-        $fileExtension = pathinfo($templatePath, PATHINFO_EXTENSION);
-
+        $this->env->runtime()->setContentTypeFromFile($templatePath);
         $this->env->runtime()->writeOutput($output);
         $this->env->runtime()->exit();
     }
 
-    public function renderToString(string $templatePath, array $data) : string
+    public function renderToString(string $templatePath, array $data = []) : string
     {
         $template = $this->twig->load($templatePath);
 
