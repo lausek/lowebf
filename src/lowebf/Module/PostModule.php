@@ -8,21 +8,75 @@ use lowebf\Data\Post;
 class PostModule extends Module
 {
     /** @var int */
+    const DEFAULT_POSTS_PER_PAGE = 15;
+
+    /** @var int */
 	    private $postsPerPage;
+
+    /** @var array|null */
+	    private $posts = null;
 
     public function __construct(Environment $env)
     {
         parent::__construct($env);
 
-        $this->postsPerPage = 15;
+        $this->setPostsPerPage(self::DEFAULT_POSTS_PER_PAGE);
     }
 
-    private function getPostPath(string $postId) : string
+    public function getMaxPage() : int
+    {
+        return (int)ceil($this->getPostCount() / (float)$this->getPostsPerPage());
+    }
+
+    public function getPostsPerPage() : int
+    {
+        return $this->postsPerPage;
+    }
+
+    public function getPostCount() : int
+    {
+        return count($this->loadPosts());
+    }
+
+    public function getPostPath(string $postId) : string
     {
         return $this->env->asAbsoluteDataPath("posts/$postId.md");
     }
 
-    public function loadPage(int $page) : array {}
+    public function setPostsPerPage(int $postsPerPage)
+    {
+        $this->postsPerPage = $postsPerPage;
+    }
+
+    public function &loadPosts() : array
+    {
+        if ($this->posts === null) {
+            $postDirectory = $this->env->asAbsoluteDataPath("posts");
+            $this->posts = [];
+
+            foreach ($this->env->listDirectory($postDirectory) as $postPath) {
+                $this->posts[] = Post::loadFromFile($this->env, $postPath);
+            }
+
+            rsort($this->posts);
+        }
+
+        return $this->posts;
+    }
+
+    public function loadPage(int $pageNumber) : array
+    {
+        if ($pageNumber <= 0) {
+            throw new \Exception("invalid page number: $pageNumber");
+        }
+
+        $posts = $this->loadPosts();
+        $postsPerPage = $this->getPostsPerPage();
+        $offset = ($pageNumber - 1) * $postsPerPage;
+        $postsOnPage = array_slice($posts, $offset, $postsPerPage);
+
+        return $postsOnPage;
+    }
 
     public function load(string $postId) : Post
     {

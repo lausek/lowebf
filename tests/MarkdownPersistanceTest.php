@@ -16,17 +16,18 @@ final class MarkdownPersistanceTest extends TestCase
     public function testInvalidLoading()
     {
         $this->expectException(InvalidFileFormatException::class);
+
         PersistorMarkdown::getInstance()->parseMarkdown("---");
     }
 
     public function testInvalidLoadingFull()
     {
+        $this->expectException(InvalidFileFormatException::class);
+
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile($postFilePath, "abc");
-
-        $this->expectException(InvalidFileFormatException::class);
 
         // validation happens when the file is accessed
         $env->posts()->load("2021-01-02-ab-c-d")->getContent();

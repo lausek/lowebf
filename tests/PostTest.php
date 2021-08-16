@@ -78,8 +78,7 @@ final class PostTest extends TestCase
 
         $env->expects($this->never())
             ->method("loadFile")
-            ->with($postFilePath)
-            ->will($this->returnValue("---\n---\n"));
+            ->with($postFilePath);
 
         $post = $env->posts()->load("2021-01-02-ab-c-d");
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
@@ -111,5 +110,76 @@ final class PostTest extends TestCase
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
         $this->assertSame("abc", $post->getContent());
+    }
+
+    private function populateFileSystem(Environment $env, $files = null)
+    {
+        if ($files === null) {
+            // save files in unsorted order
+            $files = [
+                "2021-08-01-a.md" => "",
+                "2021-08-03-a.md" => "",
+                "2021-08-01-b.md" => "",
+                "2021-08-04-a.md" => "",
+                "2020-08-01-c.md" => "",
+            ];
+        }
+
+        $this->assertEmpty($env->getFileSystem());
+
+        foreach ($files as $path => $content) {
+            $env->saveFile("/ve/data/posts/$path", $content);
+        }
+
+        $this->assertNotEmpty($env->getFileSystem());
+    }
+
+    public function testLoadingPage()
+    {
+        $postDates = [];
+        $postTitles = [];
+
+        $env = new VirtualEnvironment("/ve");
+        $this->populateFileSystem($env);
+        $posts = $env->posts()->loadPage(1);
+
+        foreach ($posts as $post) {
+            $postDates[] = $post->getDate()->format("Y-m-d");
+            $postTitles[] = $post->getTitle();
+        }
+
+        $this->assertSame(["2021-08-04", "2021-08-03", "2021-08-01", "2021-08-01", "2020-08-01"], $postDates);
+        $this->assertSame(["A", "A", "B", "A", "C"], $postTitles);
+    }
+
+    public function testPaging()
+    {
+        $getTitle = function ($post) {
+            return $post->getTitle();
+        };
+
+        $env = new VirtualEnvironment("/ve");
+        $this->populateFileSystem($env);
+
+        $env->posts()->setPostsPerPage(3);
+
+        $pageOne = $env->posts()->loadPage(1);
+        $pageTwo = $env->posts()->loadPage(2);
+        $pageThree = $env->posts()->loadPage(3);
+
+        $this->assertSame(2, $env->posts()->getMaxPage());
+        $this->assertSame(["A", "A", "B"], array_map($getTitle, $pageOne));
+        $this->assertSame(["A", "C"], array_map($getTitle, $pageTwo));
+        $this->assertEmpty($pageThree);
+    }
+
+    public function testInvalidPageAccess()
+    {
+        $this->expectException(\Exception::class);
+
+        $env = new VirtualEnvironment("/ve");
+        $this->populateFileSystem($env);
+
+        $env->posts()->loadPage(-1);
     }
 }

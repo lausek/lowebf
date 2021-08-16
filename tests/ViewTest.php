@@ -17,6 +17,7 @@ final class ViewTest extends TestCase
     {
         $rawTemplate = "<html>Hello {{ data.name }}</html>";
         $renderedTemplate = "<html>Hello World</html>";
+        $data = ["name" => "World"];
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/template/abc.html", $rawTemplate);
@@ -33,6 +34,7 @@ final class ViewTest extends TestCase
 
         $env->setRuntime($runtime);
 
-        $env->view()->render("abc.html", ["name" => "World"]);
+        $this->assertSame($renderedTemplate, $env->view()->renderToString("abc.html", $data));
+        $env->view()->render("abc.html", $data);
     }
 }
