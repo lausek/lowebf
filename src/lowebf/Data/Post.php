@@ -93,7 +93,7 @@ class Post
     public function getContent() : string
     {
         $this->loadContentUnit();
-        return $this->contentUnit->get("content");
+        return $this->contentUnit->get("content", "");
     }
 
     public function getContentHtml() : string
