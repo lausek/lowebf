@@ -60,4 +60,14 @@ class ConfigModule extends Module implements IStorable
     {
         return $this->get("debugEnabled", false) === true;
     }
+
+    public function getRouteScriptPath() : string
+    {
+        return $this->get("routeScriptPath", "/route.php");
+    }
+
+    public function setRouteScriptPath(string $path)
+    {
+        $this->set("routeScriptPath", $path);
+    }
 }

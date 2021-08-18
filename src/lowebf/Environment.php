@@ -8,6 +8,7 @@ use lowebf\Module\ConfigModule;
 use lowebf\Module\ContentModule;
 use lowebf\Module\DownloadModule;
 use lowebf\Module\PostModule;
+use lowebf\Module\RouteModule;
 use lowebf\Module\ViewModule;
 
 class Environment
@@ -29,6 +30,8 @@ class Environment
 	    protected $downloadModule = null;
     /** @var PostModule */
 	    protected $postModule = null;
+    /** @var RouteModule */
+	    protected $routeModule = null;
     /** @var ViewModule */
 	    protected $viewModule = null;
 
@@ -211,6 +214,15 @@ class Environment
         }
 
         return $this->postModule;
+    }
+
+    public function route() : RouteModule
+    {
+        if ($this->routeModule === null) {
+            $this->routeModule = new RouteModule($this);
+        }
+
+        return $this->routeModule;
     }
 
     public function runtime() : PhpRuntime
