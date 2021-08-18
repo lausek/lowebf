@@ -3,13 +3,14 @@
     "description": "backend framework for webpages",
     "type": "library",
     "require": {
-        "php": "^7.0",
-        "twig/twig": "^2.5",
+        "php": "^7.3",
+        "twig/twig": "^3.3.2",
         "michelf/php-markdown": "1.8.0",
         "mustangostang/spyc": "0.6.2",
-        "leafo/scssphp": "*"
+        "scssphp/scssphp": "^1.6.0"
     },
     "autoload": {
+        "classmap": ["src/"],
         "psr-4": {
             "lowebf\\": "src/"
         }
@@ -19,5 +20,10 @@
             "name": "lausek",
             "email": "root@lausek.eu"
         }
-    ]
+    ],
+    "require-dev": {
+        "phan/phan": "^5.1",
+        "phpunit/phpunit": "^9.5",
+        "badoo/phpcf": "1.0.0rc1"
+    }
 }
