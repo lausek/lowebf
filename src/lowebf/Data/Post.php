@@ -23,8 +23,6 @@ class Post
     /** @var ContentUnit|null */
 	    private $contentUnit = null;
 
-    // TODO: add attribute for lazy loading values like 'author' and 'content'
-
     private function __construct(Environment $env, string $path, string $title, string $date)
     {
         $this->env = $env;

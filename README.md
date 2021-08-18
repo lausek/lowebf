@@ -18,5 +18,7 @@ Is a microframework for creating simple websites without much user interaction.
     - `config.yaml`: General configuration for the site
 - `site/`
     - `css/`:
-    - `template/`:
+    - `img/`:
     - `js/`:
+    - `public/`: Accessible PHP files
+    - `template/`: Twig template directory
