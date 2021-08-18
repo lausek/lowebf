@@ -48,6 +48,7 @@ final class RouteTest extends TestCase
 
         $this->assertSame("/route.php?x=/media/img/abc.png", $env->route()->urlFor("/media/img/abc.png"));
         $this->assertSame("/route.php?x=/media/img/abc.png", $env->route()->urlFor("media/img/abc.png"));
+
         $this->assertSame("https://localhost/route.php?x=/media/img/abc.png", $env->route()->absoluteUrlFor("/media/img/abc.png"));
         $this->assertSame("https://localhost/route.php?x=/media/img/abc.png", $env->route()->absoluteUrlFor("media/img/abc.png"));
     }
@@ -59,7 +60,24 @@ final class RouteTest extends TestCase
 
         $this->assertSame("/nested/relay.php?x=/media/img/abc.png", $env->route()->urlFor("/media/img/abc.png"));
         $this->assertSame("/nested/relay.php?x=/media/img/abc.png", $env->route()->urlFor("media/img/abc.png"));
+
         $this->assertSame("https://localhost/nested/relay.php?x=/media/img/abc.png", $env->route()->absoluteUrlFor("/media/img/abc.png"));
         $this->assertSame("https://localhost/nested/relay.php?x=/media/img/abc.png", $env->route()->absoluteUrlFor("media/img/abc.png"));
+    }
+
+    public function testSiteContent()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/css/main.css", "");
+        $env->saveFile("/ve/site/img/favicon.ico", "");
+        $env->saveFile("/ve/site/js/mobile.js", "");
+
+        $this->assertSame("/ve/site/css/main.css", $env->route()->pathFor("/css/main.css"));
+        $this->assertSame("/ve/site/img/favicon.ico", $env->route()->pathFor("/img/favicon.ico"));
+        $this->assertSame("/ve/site/js/mobile.js", $env->route()->pathFor("/js/mobile.js"));
+
+        $this->assertSame("/route.php?x=/css/main.css", $env->route()->urlFor("/css/main.css"));
+        $this->assertSame("/route.php?x=/img/favicon.ico", $env->route()->urlFor("/img/favicon.ico"));
+        $this->assertSame("/route.php?x=/js/mobile.js", $env->route()->urlFor("/js/mobile.js"));
     }
 }

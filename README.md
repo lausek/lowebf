@@ -1,6 +1,12 @@
 # lowebf
 
-Is a microframework for creating simple websites without much user interaction.
+Is a microframework for creating simple websites.
+
+## Features
+
+- [X] No database connections
+- [X] No models
+- [X] No routing layer
 
 ## Directory structure
 
@@ -9,7 +15,7 @@ Is a microframework for creating simple websites without much user interaction.
     - `twig/`: Template caching for Twig
 - `data/`
     - `content/`: Miscellaneous content data
-    - `download/`: Files available to be downloaded
+    - `download/`: Files available for download
     - `media/`
         - `img/`: Images: png, jpeg, gif
         - `vid/`: Videos: mp4, avi
@@ -21,4 +27,7 @@ Is a microframework for creating simple websites without much user interaction.
     - `img/`:
     - `js/`:
     - `public/`: Accessible PHP files
+        - `route.php`: Used for providing all sorts of static files
     - `template/`: Twig template directory
+
+> **Note:** Most directories and files are not required if you do not need them.

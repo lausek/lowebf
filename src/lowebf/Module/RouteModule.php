@@ -25,6 +25,14 @@ class RouteModule extends Module
         switch ($rootDirectory) {
             case "media":
                 return $this->env->asAbsoluteDataPath($subpath);
+
+            case "css":
+                // fallthrough
+            case "img":
+                // fallthrough
+            case "js":
+                $subpath = ltrim($subpath, "/");
+                return $this->env->asAbsolutePath("site/$subpath");
         }
 
         throw new FileNotFoundException($subpath);
