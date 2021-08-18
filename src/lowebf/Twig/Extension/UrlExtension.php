@@ -22,11 +22,13 @@ final class UrlExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
-            new TwigFunction("url", [$this, "formatUrl"])
+            new TwigFunction("resourceUrl", [$this, "formatResourceUrl"]),
+            new TwigFunction("resourceAbsoluteUrl", [$this, "formatResourceAbsoluteUrl"]),
+            new TwigFunction("url", [$this, "formatUrl"]),
         ];
     }
 
-    public function formatUrl(string $path, $args = null)
+    public function formatUrl(string $path, $args = null) : string
     {
         $urlArguments = [];
         $urlArgumentString = "";
@@ -42,5 +44,15 @@ final class UrlExtension extends AbstractExtension
         }
 
         return "/$path$urlArgumentString";
+    }
+
+    public function formatResourceUrl(string $path) : string
+    {
+        return $this->env->route()->urlFor($path);
+    }
+
+    public function formatResourceAbsoluteUrl(string $path) : string
+    {
+        return $this->env->route()->absoluteUrlFor($path);
     }
 }

@@ -126,4 +126,31 @@ final class ViewTest extends TestCase
 
         $this->assertFalse($env->view()->getTwigEnvironment()->isDebug());
     }
+
+    public function testResourceUrls()
+    {
+        $cssTemplate = "{{ resourceUrl('/css/main.css') }}";
+        $imgTemplate = "{{ resourceUrl('/img/favicon.ico') }}";
+        $jsTemplate = "{{ resourceUrl('/js/mobile.js') }}";
+        $cssAbsoluteTemplate = "{{ resourceAbsoluteUrl('/css/main.css') }}";
+        $imgAbsoluteTemplate = "{{ resourceAbsoluteUrl('/img/favicon.ico') }}";
+        $jsAbsoluteTemplate = "{{ resourceAbsoluteUrl('/js/mobile.js') }}";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->config()->set("cacheEnabled", false);
+        $env->saveFile("/ve/site/template/css.html", $cssTemplate);
+        $env->saveFile("/ve/site/template/img.html", $imgTemplate);
+        $env->saveFile("/ve/site/template/js.html", $jsTemplate);
+        $env->saveFile("/ve/site/template/cssAbsolute.html", $cssAbsoluteTemplate);
+        $env->saveFile("/ve/site/template/imgAbsolute.html", $imgAbsoluteTemplate);
+        $env->saveFile("/ve/site/template/jsAbsolute.html", $jsAbsoluteTemplate);
+
+        $this->assertSame("/route.php?x=/css/main.css", $env->view()->renderToString("css.html"));
+        $this->assertSame("/route.php?x=/img/favicon.ico", $env->view()->renderToString("img.html"));
+        $this->assertSame("/route.php?x=/js/mobile.js", $env->view()->renderToString("js.html"));
+
+        $this->assertSame("https://localhost/route.php?x=/css/main.css", $env->view()->renderToString("cssAbsolute.html"));
+        $this->assertSame("https://localhost/route.php?x=/img/favicon.ico", $env->view()->renderToString("imgAbsolute.html"));
+        $this->assertSame("https://localhost/route.php?x=/js/mobile.js", $env->view()->renderToString("jsAbsolute.html"));
+    }
 }
