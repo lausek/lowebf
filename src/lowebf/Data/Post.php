@@ -75,6 +75,13 @@ class Post
         }
     }
 
+    public function __get(string $name)
+    {
+        if ($name === "content") {
+            return $this->getContent();
+        }
+    }
+
     public function getId() : string
     {
         $title = str_replace(" ", "-", $this->title);

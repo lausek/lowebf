@@ -153,4 +153,15 @@ final class ViewTest extends TestCase
         $this->assertSame("https://localhost/route.php?x=/img/favicon.ico", $env->view()->renderToString("imgAbsolute.html"));
         $this->assertSame("https://localhost/route.php?x=/js/mobile.js", $env->view()->renderToString("jsAbsolute.html"));
     }
+
+    public function testContentAccessInTemplate()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-09-01-a.md", "---\n---\nhereisasecret");
+        $env->saveFile("/ve/site/template/post-view.html", "{{ data.date|date('Y-m-d') }} with {{ data.content }}");
+        $env->config()->set("cacheEnabled", false);
+
+        $post = $env->posts()->load("2021-09-01-a");
+        $this->assertSame("2021-09-01 with hereisasecret", $env->view()->renderToString("post-view.html", $post));
+    }
 }

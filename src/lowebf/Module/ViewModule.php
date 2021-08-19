@@ -37,7 +37,7 @@ class ViewModule extends Module
         return $this->twig;
     }
 
-    public function render(string $templatePath, array $data = [])
+    public function render(string $templatePath, $data = [])
     {
         $templateAbsolutePath = $this->env->asAbsolutePath("site/template/$templatePath");
         $output = $this->renderToString($templatePath, $data);
@@ -47,7 +47,7 @@ class ViewModule extends Module
         $this->env->runtime()->exit();
     }
 
-    public function renderToString(string $templatePath, array $data = []) : string
+    public function renderToString(string $templatePath, $data = []) : string
     {
         $template = $this->twig->load($templatePath);
 
