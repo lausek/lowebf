@@ -65,6 +65,8 @@ class Environment
 
     public function asRealpath(string $path) : string
     {
+        return $path;
+        /*
         $realPath = realpath($path);
 
         if ($realPath === false) {
@@ -72,6 +74,7 @@ class Environment
         }
 
         return $realPath;
+         */
     }
 
     public function asAbsolutePath(string $subpath) : string
