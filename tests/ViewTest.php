@@ -67,6 +67,7 @@ final class ViewTest extends TestCase
             "<link rel='stylesheet' type='text/css' href='/route.php?x=/cache/css/main-0.css'/>",
             $env->view()->renderToString("scss.html")
         );
+        $this->assertTrue(isset($env->getFileSystem()["/ve/cache/css/main-0.css"]));
     }
 
     public function testHeadersExtension()

@@ -18,18 +18,14 @@ class CacheModule extends Module
 
     public function exists(string $key) : bool
     {
-        try {
-            $this->getPath($key);
-            return true;
-        } catch (FileNotFoundException $e) {
-            return false;
-        }
+        $path = $this->getPath($key);
+        return $this->env->hasFile($path);
     }
 
     public function get(string $key)
     {
         try {
-            $path = $this->env->getPath($key);
+            $path = $this->getPath($key);
             return $this->env->loadFile($path);
         } catch (FileNotFoundException $e) {}
 
@@ -38,7 +34,7 @@ class CacheModule extends Module
 
     public function set(string $key, $value)
     {
-        $path = $this->env->getPath($key);
+        $path = $this->getPath($key);
         $this->env->saveFile($path, $value);
     }
 
