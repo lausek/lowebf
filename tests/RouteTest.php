@@ -42,6 +42,13 @@ final class RouteTest extends TestCase
         $this->assertSame("/ve/data/media/img/abc.png", $env->route()->pathFor("media/img/abc.png"));
     }
 
+    public function testCacheRoutingPath()
+    {
+        $env = new VirtualEnvironment("/ve");
+
+        $this->assertSame("/ve/cache/thumbs/abc.png", $env->route()->pathFor("/cache/thumbs/abc.png"));
+    }
+
     public function testMediaRoutingUrl()
     {
         $env = new VirtualEnvironment("/ve");
@@ -53,7 +60,7 @@ final class RouteTest extends TestCase
         $this->assertSame("https://localhost/route.php?x=/media/img/abc.png", $env->route()->absoluteUrlFor("media/img/abc.png"));
     }
 
-    public function testChaningScriptPath()
+    public function testChangingScriptPath()
     {
         $env = new VirtualEnvironment("/ve");
         $env->config()->set("routeScriptPath", "/nested/relay.php");

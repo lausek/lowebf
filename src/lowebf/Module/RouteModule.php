@@ -20,19 +20,22 @@ class RouteModule extends Module
 
     public function pathFor(string $subpath) : string
     {
+        $subpath = ltrim($subpath, "/");
         $rootDirectory = $this->getRootDirectory($subpath);
 
         switch ($rootDirectory) {
-            case "media":
-                return $this->env->asAbsoluteDataPath($subpath);
-
             case "css":
                 // fallthrough
             case "img":
                 // fallthrough
             case "js":
-                $subpath = ltrim($subpath, "/");
                 return $this->env->asAbsolutePath("site/$subpath");
+
+            case "cache":
+                return $this->env->asAbsolutePath("$subpath");
+
+            case "media":
+                return $this->env->asAbsoluteDataPath($subpath);
         }
 
         throw new FileNotFoundException($subpath);

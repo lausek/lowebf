@@ -43,31 +43,30 @@ final class ViewTest extends TestCase
         $env->view()->render("main.html", $data);
     }
 
-    public function testStylesheetExtension()
+    public function testCacheAccess()
     {
-        $rawScss = "body {}";
-        $rawTemplate = "<html><head>{{ stylesheet('main.scss') }}</head></html>";
-
         $env = new VirtualEnvironment("/ve");
-        $env->saveFile("/ve/site/css/main.scss", $rawScss);
-        $env->saveFile("/ve/site/template/index.html", $rawTemplate);
+        $env->saveFile("/ve/site/css/main.css", "");
+        $env->saveFile("/ve/site/template/render-main.html", "{{ stylesheet('main.css') }}");
         $env->config()->set("cacheEnabled", false);
 
-        $runtime = $this->createMock(PhpRuntime::class);
+        $this->assertSame(
+            "<link rel='stylesheet' type='text/css' href='/route.php?x=/css/main.css'/>",
+            $env->view()->renderToString("render-main.html")
+        );
+    }
 
-        $runtime->expects($this->exactly(2))
-            ->method("writeOutput")
-            ->withConsecutive(
-                [$this->equalTo("<link rel='stylesheet' type='text/css' href=''/>")],
-                [$this->equalTo("<html><head></head></html>")]
-            );
+    public function testCacheCompileAccess()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/css/main.scss", "");
+        $env->saveFile("/ve/site/template/scss.html", "{{ stylesheet('main.scss') }}");
+        $env->config()->set("cacheEnabled", false);
 
-        $runtime->expects($this->once())
-            ->method("exit");
-
-        $env->setRuntime($runtime);
-
-        $env->view()->render("index.html");
+        $this->assertSame(
+            "<link rel='stylesheet' type='text/css' href='/route.php?x=/cache/css/main-0.css'/>",
+            $env->view()->renderToString("scss.html")
+        );
     }
 
     public function testHeadersExtension()

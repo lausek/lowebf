@@ -19,6 +19,11 @@ class VirtualEnvironment extends Environment
         return $path;
     }
 
+    public function getLastModified(string $path) : int
+    {
+        return 0;
+    }
+
     public function hasFile(string $path) : bool
     {
         return isset($this->fileSystem[$path]);

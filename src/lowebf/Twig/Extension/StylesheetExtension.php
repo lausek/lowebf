@@ -34,27 +34,33 @@ final class StylesheetExtension extends AbstractExtension
 
     public function writeStylesheet(string $sheet)
     {
-        $fileExtension = pathinfo($sheet, PATHINFO_EXTENSION);
+        $fileInputPath = $this->env->asAbsolutePath("site/css/$sheet");
+        $fileExtension = pathinfo($fileInputPath, PATHINFO_EXTENSION);
         $fileExtension = strtolower($fileExtension);
-
-        //$fileOutputPath = "/resources/css/compiled.css";
 
         switch ($fileExtension) {
             case "scss":
-                $fileInputPath = $this->env->asAbsolutePath("site/css/$sheet");
-                $fileInputContent = $this->env->loadFile($fileInputPath);
+                $fileName = pathinfo($fileInputPath, PATHINFO_FILENAME);
+                $lastModified = $this->env->getLastModified($fileInputPath);
+                $compiledCssPath = "css/$fileName-$lastModified.css";
 
-                $compiledCss = $this->scssCompiler->compile($fileInputContent);
+                if (!$this->env->cache()->exists($compiledCssPath)) {
+                    $fileInputContent = $this->env->loadFile($fileInputPath);
 
+                    $compiledCss = $this->scssCompiler->compile($fileInputContent);
+
+                    $this->env->cache()->set($compiledCssPath, $compiledCss);
+                }
+
+                $cssRelativePath = "/cache/$compiledCssPath";
                 break;
 
             default:
+                $cssRelativePath = "/css/$sheet";
                 break;
         }
 
-        $href = "";
-        //$href = $this->env->cache();
-
+        $href = $this->env->route()->urlFor($cssRelativePath);
         $html = "<link rel='stylesheet' type='text/css' href='$href'/>";
         $this->env->runtime()->writeOutput($html);
     }

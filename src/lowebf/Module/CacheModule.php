@@ -2,6 +2,8 @@
 
 namespace lowebf\Module;
 
+use lowebf\Error\FileNotFoundException;
+
 class CacheModule extends Module
 {
     public function getPath(string $subpath = null) : string
@@ -14,12 +16,22 @@ class CacheModule extends Module
         }
     }
 
+    public function exists(string $key) : bool
+    {
+        try {
+            $this->getPath($key);
+            return true;
+        } catch (FileNotFoundException $e) {
+            return false;
+        }
+    }
+
     public function get(string $key)
     {
         try {
             $path = $this->env->getPath($key);
             return $this->env->loadFile($path);
-        } catch (\Exception $e) {}
+        } catch (FileNotFoundException $e) {}
 
         return null;
     }

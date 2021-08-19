@@ -100,6 +100,11 @@ class Environment
         return $this->dataPath;
     }
 
+    public function getLastModified(string $path) : int
+    {
+        return filemtime($path);
+    }
+
     public function hasFile(string $path) : bool
     {
         return file_exists($path);
