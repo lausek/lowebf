@@ -41,6 +41,8 @@ class Environment
 
         if ($rootDirectory === false) {
             $rootDirectory = $_SERVER["DOCUMENT_ROOT"];
+            $rootDirectory = rtrim($rootDirectory, "/");
+            $rootDirectory = rtrim($rootDirectory, "/site/public");
         }
 
         return new Environment($rootDirectory);
