@@ -68,7 +68,7 @@ class PhpRuntime
             $this->setContentTypeFromFile($path);
         }
 
-        $this->env->sendFile($path);
+        $env->sendFile($path);
     }
 
     public function writeOutput(string $output)
