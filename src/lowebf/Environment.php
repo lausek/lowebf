@@ -37,7 +37,13 @@ class Environment
 
     public static function getInstance() : Environment
     {
-        return new Environment($_SERVER["DOCUMENT_ROOT"]);
+        $rootDirectory = ini_get("lowebf_root");
+
+        if ($rootDirectory === false) {
+            $rootDirectory = $_SERVER["DOCUMENT_ROOT"];
+        }
+
+        return new Environment($rootDirectory);
     }
 
     public function __construct(string $rootPath, string $dataPath = null)
