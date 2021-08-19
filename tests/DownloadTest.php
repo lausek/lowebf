@@ -40,6 +40,10 @@ final class DownloadTest extends TestCase
             ->with($this->anything(), $path, true);
 
         $runtime->expects($this->once())
+            ->method("setHeader")
+            ->with($this->equalTo("Content-Disposition"), $this->equalTo("attachment; filename=\"a.json\""));
+
+        $runtime->expects($this->once())
             ->method("exit");
 
         $env->setRuntime($runtime);

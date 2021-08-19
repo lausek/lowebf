@@ -88,7 +88,6 @@ class ContentUnit implements IStorable
         }
 
         $contentUnit = new ContentUnit($env, $path, $data, $persistance);
-        //$contentUnit->save();
 
         return $contentUnit;
     }
