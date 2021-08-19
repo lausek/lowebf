@@ -69,7 +69,6 @@ class RouteModule extends Module
         $path = $this->pathFor($subpath);
 
         $this->env->runtime()->setContentTypeFromFile($path);
-
         $this->env->runtime()->sendFromFile($this->env, $path);
         $this->env->runtime()->exit();
     }

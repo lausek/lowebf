@@ -36,6 +36,12 @@ class PhpRuntime
         $fileExtension = strtolower($fileExtension);
 
         switch ($fileExtension) {
+            case "css":
+                return "text/css";
+
+            case "js":
+                return "text/javascript";
+
             case "json":
                 return "application/json";
 
