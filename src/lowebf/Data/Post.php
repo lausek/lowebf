@@ -62,7 +62,7 @@ class Post
     public static function loadFromFileOrCreate(Environment $env, string $path) : Post
     {
         if (!$env->hasFile($path)) {
-            ContentUnit::loadFromFileOrCreate($env, $path);
+            ContentUnit::loadFromFileOrCreate($env, $path)->save();
         }
 
         return self::loadFromFile($env, $path);
@@ -161,6 +161,7 @@ class Post
 
     public function save()
     {
+        $this->loadContentUnit();
         $this->contentUnit->save();
     }
 }

@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 final class PostTest extends TestCase
 {
-    public function testSavingPost()
+    public function testSavingPostOnCreation()
     {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
@@ -24,13 +24,23 @@ final class PostTest extends TestCase
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
-    public function testSetAttributesFromPath()
+    public function testSavingPostExplicit()
     {
         $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
 
         $env = new VirtualEnvironment("/ve");
 
-        $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
+        $env->posts()->loadOrCreate("2021-01-02-ab-c-d")->save();
+
+        $this->assertTrue($env->hasFile($postFilePath));
+    }
+
+    public function testSetAttributesFromPath()
+    {
+        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile($postFilePath, "---\n---\n");
 
         $post = $env->posts()->loadOrCreate("2021-01-02-ab-c-d");
 
@@ -47,7 +57,8 @@ final class PostTest extends TestCase
 
         $env = new VirtualEnvironment("/ve");
 
-        $env->posts()->loadOrCreate("2021-01-02-ab-c-d")
+        $env->posts()
+            ->loadOrCreate("2021-01-02-ab-c-d")
             ->setAuthor("root")
             ->setContent("TestContent **big**")
             ->save();

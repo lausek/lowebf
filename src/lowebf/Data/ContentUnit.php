@@ -87,14 +87,7 @@ class ContentUnit implements IStorable
             $data = [];
         }
 
-        $contentUnit = new ContentUnit($env, $path, $data, $persistance);
-
-        return $contentUnit;
-    }
-
-    public function __destruct()
-    {
-        $this->save();
+        return new ContentUnit($env, $path, $data, $persistance);
     }
 
     public function get(string $name, $default = null)

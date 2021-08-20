@@ -24,8 +24,18 @@ final class UrlExtension extends AbstractExtension
         return [
             new TwigFunction("resourceUrl", [$this, "formatResourceUrl"]),
             new TwigFunction("resourceAbsoluteUrl", [$this, "formatResourceAbsoluteUrl"]),
+            new TwigFunction("absoluteUrl", [$this, "formatAbsoluteUrl"]),
             new TwigFunction("url", [$this, "formatUrl"]),
         ];
+    }
+
+    public function formatAbsoluteUrl(string $path, $args = null) : string
+    {
+        $protocol = isset($_SERVER["PROTOCOL"]) ? $_SERVER["PROTOCOL"] : "https";
+        $host = isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "localhost";
+        $path = $this->formatUrl($path, $args);
+
+        return "$protocol://$host$path";
     }
 
     public function formatUrl(string $path, $args = null) : string
