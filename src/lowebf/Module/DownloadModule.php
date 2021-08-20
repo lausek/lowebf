@@ -8,7 +8,7 @@ class DownloadModule extends Module
     {
         $path = $this->env->asAbsoluteDataPath("downloads");
 
-        if(!$this->env->hasFile($path)) {
+        if (!$this->env->hasFile($path)) {
             return [];
         }
 
