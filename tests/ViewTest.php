@@ -175,4 +175,14 @@ final class ViewTest extends TestCase
         $content = $env->content()->load("info.yaml");
         $this->assertSame("55", $env->view()->renderToString("content-view.html", $content));
     }
+
+    public function testConfigAccessInTemplate()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/config.yaml", "title: My Homepage\n");
+        $env->saveFile("/ve/site/template/config-view.html", "{{ config.title }}");
+        $env->config()->set("cacheEnabled", false);
+
+        $this->assertSame("My Homepage", $env->view()->renderToString("config-view.html"));
+    }
 }
