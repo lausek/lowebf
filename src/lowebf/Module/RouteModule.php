@@ -12,7 +12,7 @@ class RouteModule extends Module
         $firstSeparatorIndex = strpos($subpath, "/");
 
         if ($firstSeparatorIndex === false) {
-            return $subPath;
+            return $subpath;
         }
 
         return substr($subpath, 0, $firstSeparatorIndex);
