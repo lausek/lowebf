@@ -26,7 +26,12 @@ class VirtualEnvironment extends Environment
 
     public function hasFile(string $path) : bool
     {
-        return isset($this->fileSystem[$path]);
+        foreach($this->fileSystem as $fullPath => $_) {
+            if(0 === strpos($fullPath, $path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function loadFile(string $path) : string

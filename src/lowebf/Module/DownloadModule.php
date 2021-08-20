@@ -7,6 +7,11 @@ class DownloadModule extends Module
     public function getFiles() : array
     {
         $path = $this->env->asAbsoluteDataPath("downloads");
+
+        if(!$this->env->hasFile($path)) {
+            return [];
+        }
+
         return $this->env->listDirectory($path, true);
     }
 
