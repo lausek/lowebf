@@ -90,6 +90,16 @@ class ContentUnit implements IStorable
         return new ContentUnit($env, $path, $data, $persistance);
     }
 
+    public function __get(string $name)
+    {
+        return $this->get($name);
+    }
+
+    public function __isset(string $name) : bool
+    {
+        return $this->exists($name);
+    }
+
     public function get(string $name, $default = null)
     {
         if (isset($this->data[$name])) {

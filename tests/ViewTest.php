@@ -154,7 +154,7 @@ final class ViewTest extends TestCase
         $this->assertSame("https://localhost/route.php?x=/js/mobile.js", $env->view()->renderToString("jsAbsolute.html"));
     }
 
-    public function testContentAccessInTemplate()
+    public function testPostAccessInTemplate()
     {
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-09-01-a.md", "---\n---\nhereisasecret");
@@ -163,5 +163,16 @@ final class ViewTest extends TestCase
 
         $post = $env->posts()->load("2021-09-01-a");
         $this->assertSame("2021-09-01 with <p>hereisasecret</p>", $env->view()->renderToString("post-view.html", $post));
+    }
+
+    public function testContentAccessInTemplate()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/content/info.yaml", "age: 55\n");
+        $env->saveFile("/ve/site/template/content-view.html", "{{ data.age }}");
+        $env->config()->set("cacheEnabled", false);
+
+        $content = $env->content()->load("info.yaml");
+        $this->assertSame("55", $env->view()->renderToString("content-view.html", $content));
     }
 }
