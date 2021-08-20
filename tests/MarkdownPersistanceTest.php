@@ -4,32 +4,32 @@ namespace lowebf\Test;
 
 require_once("util.php");
 
-use lowebf\Environment;
-use lowebf\VirtualEnvironment;
 use lowebf\Data\Post;
-use lowebf\Error\InvalidFileFormatException;
+use lowebf\Environment;
 use lowebf\Persistance\PersistorMarkdown;
+use lowebf\VirtualEnvironment;
 use PHPUnit\Framework\TestCase;
 
 final class MarkdownPersistanceTest extends TestCase
 {
-    public function testInvalidLoading()
+    public function testMetaInformation()
     {
-        $this->expectException(InvalidFileFormatException::class);
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "---\nauthor: gustav\n---\nnews goes here");
 
-        PersistorMarkdown::getInstance()->parseMarkdown("---");
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame("gustav", $post->getAuthor());
+        $this->assertSame("<p>news goes here</p>", $post->getContent());
     }
 
-    public function testInvalidLoadingFull()
+    public function testJustContent()
     {
-        $this->expectException(InvalidFileFormatException::class);
-
-        $postFilePath = "/ve/data/posts/2021-01-02-ab-c-d.md";
-
         $env = new VirtualEnvironment("/ve");
-        $env->saveFile($postFilePath, "abc");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "news goes here");
 
-        // validation happens when the file is accessed
-        $env->posts()->load("2021-01-02-ab-c-d")->getContent();
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame("news goes here", $post->getContentRaw());
     }
 }

@@ -95,15 +95,15 @@ class Post
         return $this->contentUnit->get("author");
     }
 
-    public function getContent() : string
+    public function getContentRaw() : string
     {
         $this->loadContentUnit();
         return $this->contentUnit->get("content", "");
     }
 
-    public function getContentHtml() : string
+    public function getContent() : string
     {
-        return rtrim(Markdown::defaultTransform($this->getContent()), "\n ");
+        return rtrim(Markdown::defaultTransform($this->getContentRaw()), "\n ");
     }
 
     public function getDate() : \DateTime
@@ -120,6 +120,7 @@ class Post
     public function getDescription(int $maxLen = 50) : string
     {
         $description = $this->getContent();
+        $description = strip_tags($description);
 
         if ($maxLen < strlen($description)) {
             return substr($description, 0, $maxLen - 1) . '…';

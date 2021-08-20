@@ -5,7 +5,8 @@ namespace lowebf\Persistance;
 use lowebf\Environment;
 use lowebf\Error\InvalidFileFormatException;
 
-use \Spyc;
+use Michelf\Markdown;
+use Spyc;
 
 class PersistorMarkdown implements IPersistance
 {
@@ -21,12 +22,9 @@ class PersistorMarkdown implements IPersistance
         return self::$instance;
     }
 
-    public function parseMarkdown(string $rawContent)
+    public function extractMetaInformation(string $rawContent)
     {
-        if (!preg_match('/---\s([\s\S]*)---\s?([\s\S]*)/m', $rawContent, $matches)) {
-            throw new InvalidFileFormatException("invalid markdown file format.");
-        }
-
+        preg_match('/---\s([\s\S]*)---\s?([\s\S]*)/m', $rawContent, $matches);
         return $matches;
     }
 
@@ -34,10 +32,14 @@ class PersistorMarkdown implements IPersistance
     {
         $rawContent = $env->loadFile($path);
 
-        $matches = $this->parseMarkdown($rawContent);
+        $matches = $this->extractMetaInformation($rawContent);
 
-        $parsed = Spyc::YAMLLoadString($matches[1]);
-        $parsed["content"] = ltrim($matches[2], "\n ");
+        if ($matches) {
+            $parsed = Spyc::YAMLLoadString($matches[1]);
+            $parsed["content"] = ltrim($matches[2], "\n ");
+        } else {
+            $parsed["content"] = $rawContent;
+        }
 
         return $parsed;
     }

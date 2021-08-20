@@ -69,8 +69,8 @@ final class PostTest extends TestCase
         $this->assertSame("Ab C D", $post->getTitle());
         $this->assertSame("2021-01-02-ab-c-d", $post->getId());
         $this->assertSame("root", $post->getAuthor());
-        $this->assertSame("TestContent **big**", $post->getContent());
-        $this->assertSame("<p>TestContent <strong>big</strong></p>", $post->getContentHtml());
+        $this->assertSame("TestContent **big**", $post->getContentRaw());
+        $this->assertSame("<p>TestContent <strong>big</strong></p>", $post->getContent());
         $this->assertTrue($env->hasFile($postFilePath));
     }
 
@@ -114,7 +114,7 @@ final class PostTest extends TestCase
         $post = $env->posts()->load("2021-01-02-ab-c-d");
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
-        $this->assertSame("abc", $post->getContent());
+        $this->assertSame("abc", $post->getContentRaw());
     }
 
     private function populateFileSystem(Environment $env, $files = null)

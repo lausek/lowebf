@@ -32,7 +32,7 @@ final class ContentTest extends TestCase
     public function testLoading()
     {
         $contentJson = '{"team": "B", "names": ["Alfred", "Bernd"]}';
-        $contentYaml = "section: Imprint\nage: 15\nhtml:\n\tlink: abc.de";
+        $contentYaml = "section: Imprint\nage: 15\nhtml:\n    link: abc.de";
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/content/a.json", $contentJson);
