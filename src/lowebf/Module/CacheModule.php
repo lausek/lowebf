@@ -4,7 +4,6 @@ namespace lowebf\Module;
 
 use lowebf\Error\FileNotFoundException;
 
-// TODO: create cache directory if it does not exist yet
 class CacheModule extends Module
 {
     public function getPath(string $subpath = null) : string
@@ -36,6 +35,7 @@ class CacheModule extends Module
     public function set(string $key, $value)
     {
         $path = $this->getPath($key);
+        $this->env->makeAllDirectories($path);
         $this->env->saveFile($path, $value);
     }
 

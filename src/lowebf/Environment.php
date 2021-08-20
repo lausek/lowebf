@@ -128,6 +128,16 @@ class Environment
     {
         // TODO: check return code
         $returnCode = file_put_contents($path, $content);
+
+        if ($returnCode === false) {
+            throw new \Exception("writing failed: $path");
+        }
+    }
+
+    public function makeAllDirectories(string $path)
+    {
+        $directoryName = pathinfo($path, PATHINFO_DIRNAME);
+        @mkdir($directoryName, 0755, true);
     }
 
     public function sendFile(string $path)
