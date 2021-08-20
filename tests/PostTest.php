@@ -203,4 +203,33 @@ final class PostTest extends TestCase
 
         $this->assertSame("description not…", $env->posts()->load("2021-01-01-a")->getDescription(16));
     }
+
+    public function testUrlMarkdownFilter()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/css/main.css", "");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "[link to main.css](/css/main.css)");
+
+        $post = $env->posts()->load("2021-01-01-a");
+        $this->assertSame("<p><a href=\"/route.php?x=/css/main.css\">link to main.css</a></p>", $post->getContent());
+    }
+
+    public function testImageUrlMarkdownFilter()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/media/img/entry.png", "");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "![alternative text](/media/img/entry.png)");
+
+        $post = $env->posts()->load("2021-01-01-a");
+        $this->assertSame("<p><img src=\"/route.php?x=/media/img/entry.png\" alt=\"alternative text\" /></p>", $post->getContent());
+    }
+
+    public function testUrlMarkdownFilterAvoidForeignDomain()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "[link to author](https://lausek.eu)");
+
+        $post = $env->posts()->load("2021-01-01-a");
+        $this->assertSame("<p><a href=\"https://lausek.eu\">link to author</a></p>", $post->getContent());
+    }
 }
