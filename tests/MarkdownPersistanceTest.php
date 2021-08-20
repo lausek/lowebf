@@ -32,4 +32,25 @@ final class MarkdownPersistanceTest extends TestCase
 
         $this->assertSame("news goes here", $post->getContentRaw());
     }
+
+    public function testHorizontalLine()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "---\n---\n# Title\n---\n");
+
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame("<h1>Title</h1>\n\n<hr />", $post->getContent());
+    }
+
+    public function testHorizontalLineWithMetaInformationen()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "---\nauthor: bernd\n---\n---\n");
+
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame("bernd", $post->getAuthor());
+        $this->assertSame("<hr />", $post->getContent());
+    }
 }

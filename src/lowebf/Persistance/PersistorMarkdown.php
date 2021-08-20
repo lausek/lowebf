@@ -22,9 +22,18 @@ class PersistorMarkdown implements IPersistance
         return self::$instance;
     }
 
-    public function extractMetaInformation(string $rawContent)
+    public function extractMetaInformation(string $rawContent) : ?array
     {
-        preg_match('/---\s([\s\S]*)---\s?([\s\S]*)/m', $rawContent, $matches);
+        $matches = [];
+        $parts = explode("---\n", $rawContent);
+
+        if (count($parts) < 3) {
+            return null;
+        }
+
+        $matches[] = implode("\n", array_slice($parts, 0, 2));
+        $matches[] = implode("\n---\n", array_slice($parts, 2));
+
         return $matches;
     }
 
@@ -34,9 +43,9 @@ class PersistorMarkdown implements IPersistance
 
         $matches = $this->extractMetaInformation($rawContent);
 
-        if ($matches) {
-            $parsed = Spyc::YAMLLoadString($matches[1]);
-            $parsed["content"] = ltrim($matches[2], "\n ");
+        if ($matches !== null) {
+            $parsed = Spyc::YAMLLoadString($matches[0]);
+            $parsed["content"] = ltrim($matches[1], "\n ");
         } else {
             $parsed["content"] = $rawContent;
         }
