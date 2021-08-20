@@ -39,6 +39,9 @@ class PhpRuntime
             case "css":
                 return "text/css";
 
+            case "html":
+                return "text/html";
+
             case "js":
                 return "text/javascript";
 
