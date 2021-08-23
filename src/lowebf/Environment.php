@@ -155,6 +155,11 @@ class Environment
         $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
 
         $files = $this->listDirectory($directory);
+
+        if ($files === null) {
+            return null;
+        }
+
         $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
 
         foreach ($fileExtensions as $fileExtension) {
@@ -171,9 +176,13 @@ class Environment
     /**
      * @return an array of files where the key is the relative and the value is the absolute path.
      * */
-    public function listDirectory(string $path, bool $recursive = false) : array
+    public function listDirectory(string $path, bool $recursive = false) : ?array
     {
         $files = [];
+
+        if (!$this->hasFile($path)) {
+            return null;
+        }
 
         foreach (scandir($path) as $childPath) {
             if ($childPath === "." || $childPath === "..") {

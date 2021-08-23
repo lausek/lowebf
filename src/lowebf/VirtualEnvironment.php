@@ -31,6 +31,7 @@ class VirtualEnvironment extends Environment
                 return true;
             }
         }
+
         return false;
     }
 
@@ -53,10 +54,14 @@ class VirtualEnvironment extends Environment
         return $this->fileSystem;
     }
 
-    public function listDirectory(string $path, bool $recursive = false) : array
+    public function listDirectory(string $path, bool $recursive = false) : ?array
     {
         $path = rtrim($path, "/");
         $filtered = [];
+
+        if (!$this->hasFile($path)) {
+            return null;
+        }
 
         foreach ($this->fileSystem as $key => $value) {
             $keyWithoutParent = substr($key, strlen($path) + 1);

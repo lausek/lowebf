@@ -27,6 +27,12 @@ final class DownloadTest extends TestCase
         $this->assertArrayHasKey("deep/c.json", $downloadFiles);
     }
 
+    public function testListingFilesWithoutDataDirectory()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $this->assertSame([], $env->download()->getFiles());
+    }
+
     public function testProvidingFile()
     {
         $path = "/tmp/data/downloads/a.json";

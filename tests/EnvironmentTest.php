@@ -6,6 +6,7 @@ require_once("util.php");
 
 use lowebf\Environment;
 use lowebf\VirtualEnvironment;
+use lowebf\Error\FileNotFoundException;
 use PHPUnit\Framework\TestCase;
 
 final class EnvironmentTest extends TestCase
@@ -97,5 +98,12 @@ final class EnvironmentTest extends TestCase
         $env = new VirtualEnvironment("/ve");
 
         $this->assertNull($env->findWithoutFileExtension("/ve/data", "config"));
+    }
+
+    public function testRaiseExceptionOnPathListing()
+    {
+        $env = new VirtualEnvironment("/ve");
+
+        $this->assertNull($env->listDirectory("/ve/data"));
     }
 }

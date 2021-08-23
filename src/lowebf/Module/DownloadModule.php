@@ -12,7 +12,13 @@ class DownloadModule extends Module
             return [];
         }
 
-        return $this->env->listDirectory($path, true);
+        $files = $this->env->listDirectory($path, true);
+
+        if ($files === null) {
+            return [];
+        }
+
+        return $files;
     }
 
     public function provideAndExit(string $downloadId)
