@@ -115,7 +115,7 @@ class Environment
 
     public function loadFile(string $path) : string
     {
-        $content = file_get_contents($path);
+        $content = @file_get_contents($path);
 
         if ($content === false) {
             throw new FileNotFoundException($path);
@@ -126,8 +126,7 @@ class Environment
 
     public function saveFile(string $path, $content)
     {
-        // TODO: check return code
-        $returnCode = file_put_contents($path, $content);
+        $returnCode = @file_put_contents($path, $content);
 
         if ($returnCode === false) {
             throw new \Exception("writing failed: $path");
