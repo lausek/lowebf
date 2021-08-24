@@ -87,4 +87,21 @@ final class RouteTest extends TestCase
         $this->assertSame("/route.php?x=/img/favicon.ico", $env->route()->urlFor("/img/favicon.ico"));
         $this->assertSame("/route.php?x=/js/mobile.js", $env->route()->urlFor("/js/mobile.js"));
     }
+
+    public function testProvideFileNotFound()
+    {
+        $env = new VirtualEnvironment("/ve");
+
+        $runtime = $this->getMockBuilder(PhpRuntime::class)
+            ->setMethods(["setResponseCode"])
+            ->getMock();
+
+        $runtime->expects($this->once())
+            ->method("setResponseCode")
+            ->with(404);
+
+        $env->setRuntime($runtime);
+
+        $env->route()->provideAndExit("/css/main.css");
+    }
 }
