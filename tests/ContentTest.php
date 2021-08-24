@@ -61,4 +61,20 @@ final class ContentTest extends TestCase
         $this->assertSame(null, $contentUnitJson->get("trainer"));
         $this->assertSame("Alfred", $contentUnitJson->get("trainer", "Alfred"));
     }
+
+    public function testAsArray()
+    {
+        $contentJson = '{"team": "B"}';
+
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/content/a.json", $contentJson);
+
+        $contentUnitJson = $env->content()->loadOrCreate("a.json");
+        $contentUnitJson->asArray()["team"] = "A";
+        $contentUnitJson->save();
+
+        $contentUnitJson = $env->content()->loadOrCreate("a.json");
+
+        $this->assertSame("A", $contentUnitJson->get("team"));
+    }
 }

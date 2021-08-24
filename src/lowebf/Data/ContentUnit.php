@@ -100,6 +100,11 @@ class ContentUnit implements IStorable
         return $this->exists($name);
     }
 
+    public function &asArray() : array
+    {
+        return $this->data;
+    }
+
     public function get(string $name, $default = null)
     {
         if (isset($this->data[$name])) {
