@@ -3,15 +3,15 @@
 namespace lowebf;
 
 use lowebf\Error\FileNotFoundException;
+use lowebf\Filesystem\VirtualFilesystem;
 
 class VirtualEnvironment extends Environment
 {
-    /** @var array */
-    private $fileSystem = [];
-
     public function __construct(string $dir)
     {
         parent::__construct($dir);
+
+        $this->filesystem = new VirtualFilesystem();
     }
 
     public function asRealpath(string $path) : string
@@ -21,65 +21,31 @@ class VirtualEnvironment extends Environment
 
     public function getLastModified(string $path) : int
     {
-        return 0;
+        return $this->filesystem->lastModified($path);
     }
 
     public function hasFile(string $path) : bool
     {
-        foreach ($this->fileSystem as $fullPath => $_) {
-            if (0 === strpos($fullPath, $path)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->filesystem->exists($path);
     }
 
     public function loadFile(string $path) : string
     {
-        if (!isset($this->fileSystem[$path])) {
-            throw new FileNotFoundException($path);
-        }
-
-        return $this->fileSystem[$path];
+        return $this->filesystem->loadFile($path);
     }
 
     public function saveFile(string $path, $content)
     {
-        $this->fileSystem[$path] = $content;
+        $this->filesystem->saveFile($path, $content);
     }
 
     public function &getFileSystem() : array
     {
-        return $this->fileSystem;
+        return $this->filesystem->asArray();
     }
 
     public function listDirectory(string $path, bool $recursive = false) : ?array
     {
-        $path = rtrim($path, "/");
-        $filtered = [];
-
-        if (!$this->hasFile($path)) {
-            return null;
-        }
-
-        foreach ($this->fileSystem as $key => $value) {
-            $keyWithoutParent = substr($key, strlen($path) + 1);
-
-            if ($recursive) {
-                if (!str_starts_with($key, $path)) {
-                    continue;
-                }
-            } else {
-                $dirName = pathinfo($keyWithoutParent, PATHINFO_DIRNAME);
-                if ($dirName === "") {
-                    continue;
-                }
-            }
-
-            $filtered[$keyWithoutParent] = $key;
-        }
-
-        return $filtered;
+        return $this->filesystem->listDirectory($path, $recursive);
     }
 }
