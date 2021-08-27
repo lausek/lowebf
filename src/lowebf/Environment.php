@@ -64,7 +64,7 @@ class Environment
         $this->rootPath = $rootPath;
         $this->dataPath = $dataPath;
 
-        $this->filesystem = new Filesystem();
+        $this->filesystem = new Filesystem($this);
         $this->phpRuntime = new PhpRuntime($this);
     }
 
@@ -111,149 +111,151 @@ class Environment
     // TODO: deprecated
     public function getLastModified(string $path) : int
     {
-        return filemtime($path);
+        return $this->filesystem()->lastModified($path);
     }
 
     // TODO: deprecated
     public function hasFile(string $path) : bool
-    return $this->filesystem()->exists($path);
-}
+    {
+        return $this->filesystem()->exists($path);
+    }
 
     // TODO: deprecated
-public function loadFile(string $path) : string
-{
-    return $this->filesystem()->loadFile($path);
-}
+    public function loadFile(string $path) : string
+    {
+        return $this->filesystem()->loadFile($path);
+    }
 
     // TODO: deprecated
-public function saveFile(string $path, $content)
-{
-    $this->filesystem()->saveFile($path, $content);
-}
+    public function saveFile(string $path, $content)
+    {
+        $this->filesystem()->saveFile($path, $content);
+    }
 
     // TODO: deprecated
-public function makeAllDirectories(string $path)
-{
-    $this->filesystem()->mkdir($path);
-}
+    public function makeAllDirectories(string $path)
+    {
+        $this->filesystem()->mkdir($path);
+    }
 
     // TODO: deprecated
-public function sendFile(string $path)
-{
-    $this->filesystem()->sendFile($path);
-}
+    public function sendFile(string $path)
+    {
+        $this->filesystem()->sendFile($path);
+    }
 
-/**
+    /**
      * Extension Order: yaml > json > md
      *
      * @return string|null
      * */
-public function findWithoutFileExtension(string $directory, string $fileName) : ?string
-{
-    $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
+    public function findWithoutFileExtension(string $directory, string $fileName) : ?string
+    {
+        $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
 
-    $files = $this->filesystem()->listDirectory($directory);
+        $files = $this->filesystem()->listDirectory($directory);
 
-    if ($files === null) {
+        if ($files === null) {
+            return null;
+        }
+
+        $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
+
+        foreach ($fileExtensions as $fileExtension) {
+            $matchingFile = "$fileName.$fileExtension";
+
+            if (array_key_exists($matchingFile, $files)) {
+                return $files[$matchingFile];
+            }
+        }
+
         return null;
     }
 
-    $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
-
-    foreach ($fileExtensions as $fileExtension) {
-        $matchingFile = "$fileName.$fileExtension";
-
-        if (array_key_exists($matchingFile, $files)) {
-            return $files[$matchingFile];
-        }
-    }
-
-    return null;
-}
-
-/**
+    // TODO: deprecated
+    /**
      * @return an array of files where the key is the relative and the value is the absolute path.
      * */
-public function listDirectory(string $path, bool $recursive = false) : ?array
-{
-    return $this->filesystem()->listDirectory($path, $recursive);
-}
-
-public function cache() : CacheModule
-{
-    if ($this->cacheModule === null) {
-        $this->cacheModule = new CacheModule($this);
+    public function listDirectory(string $path, bool $recursive = false) : ?array
+    {
+        return $this->filesystem()->listDirectory($path, $recursive);
     }
 
-    return $this->cacheModule;
-}
+    public function cache() : CacheModule
+    {
+        if ($this->cacheModule === null) {
+            $this->cacheModule = new CacheModule($this);
+        }
 
-public function config() : ConfigModule
-{
-    if ($this->configModule === null) {
-        $this->configModule = new ConfigModule($this);
+        return $this->cacheModule;
     }
 
-    return $this->configModule;
-}
+    public function config() : ConfigModule
+    {
+        if ($this->configModule === null) {
+            $this->configModule = new ConfigModule($this);
+        }
 
-public function content() : ContentModule
-{
-    if ($this->contentModule === null) {
-        $this->contentModule = new ContentModule($this);
+        return $this->configModule;
     }
 
-    return $this->contentModule;
-}
+    public function content() : ContentModule
+    {
+        if ($this->contentModule === null) {
+            $this->contentModule = new ContentModule($this);
+        }
 
-public function download() : DownloadModule
-{
-    if ($this->downloadModule === null) {
-        $this->downloadModule = new DownloadModule($this);
+        return $this->contentModule;
     }
 
-    return $this->downloadModule;
-}
+    public function download() : DownloadModule
+    {
+        if ($this->downloadModule === null) {
+            $this->downloadModule = new DownloadModule($this);
+        }
 
-public function filesystem() : IFilesystem
-{
-    return $this->filesystem;
-}
-
-public function posts() : PostModule
-{
-    if ($this->postModule === null) {
-        $this->postModule = new PostModule($this);
+        return $this->downloadModule;
     }
 
-    return $this->postModule;
-}
-
-public function route() : RouteModule
-{
-    if ($this->routeModule === null) {
-        $this->routeModule = new RouteModule($this);
+    public function filesystem() : IFilesystem
+    {
+        return $this->filesystem;
     }
 
-    return $this->routeModule;
-}
+    public function posts() : PostModule
+    {
+        if ($this->postModule === null) {
+            $this->postModule = new PostModule($this);
+        }
 
-public function runtime() : PhpRuntime
-{
-    return $this->phpRuntime;
-}
-
-public function view() : ViewModule
-{
-    if ($this->viewModule === null) {
-        $this->viewModule = new ViewModule($this);
+        return $this->postModule;
     }
 
-    return $this->viewModule;
-}
+    public function route() : RouteModule
+    {
+        if ($this->routeModule === null) {
+            $this->routeModule = new RouteModule($this);
+        }
 
-public function setRuntime($phpRuntime)
-{
-    $this->phpRuntime = $phpRuntime;
-}
+        return $this->routeModule;
+    }
+
+    public function runtime() : PhpRuntime
+    {
+        return $this->phpRuntime;
+    }
+
+    public function view() : ViewModule
+    {
+        if ($this->viewModule === null) {
+            $this->viewModule = new ViewModule($this);
+        }
+
+        return $this->viewModule;
+    }
+
+    public function setRuntime($phpRuntime)
+    {
+        $this->phpRuntime = $phpRuntime;
+    }
 }

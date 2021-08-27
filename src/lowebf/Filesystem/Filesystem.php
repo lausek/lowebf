@@ -2,16 +2,18 @@
 
 namespace lowebf\Filesystem;
 
+use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 
-class Filesystem implements IFilesystem
+class Filesystem extends CoreFilesystem
 {
     /** @var Filesystem */
     protected $filesystem;
 
-    public function __construct()
+    public function __construct(Environment $env)
     {
+        parent::__construct($env);
         $this->filesystem = new SymfonyFilesystem();
     }
 

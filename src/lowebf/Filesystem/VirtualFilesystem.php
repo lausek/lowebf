@@ -2,7 +2,7 @@
 
 namespace lowebf\Filesystem;
 
-class VirtualFilesystem implements IFilesystem
+class VirtualFilesystem extends CoreFilesystem
 {
     /** @var array */
     protected $filesystem = [];

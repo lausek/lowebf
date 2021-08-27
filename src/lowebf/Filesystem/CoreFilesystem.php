@@ -2,17 +2,27 @@
 
 namespace lowebf\Filesystem;
 
-interface IFilesystem
+use lowebf\Environment;
+
+abstract class CoreFilesystem
 {
+    /** @var Environment */
+    protected $env;
+
+    public function __construct(Environment $env)
+    {
+        $this->env = $env;
+    }
+
     //public function copy(string $originFile, string $targetFile, bool $overwriteNewerFiles = false);
 
-    public function mkdir($dirs, int $mode = 0755);
+    public abstract function mkdir($dirs, int $mode = 0755);
 
-    public function exists($files) : bool;
+    public abstract function exists($files) : bool;
 
     //public function touch($files, int $time = null, int $atime = null);
 
-    public function remove($files);
+    public abstract function remove($files);
 
     //public function chown($files, $user, bool $recursive = false);
 
@@ -34,15 +44,15 @@ interface IFilesystem
 
     //public function tempnam(string $dir, string $prefix/*, string $suffix = ''*/);
 
-    public function lastModified(string $filename) : int;
+    public abstract function lastModified(string $filename) : int;
 
-    public function listDirectory(string $filename) : ?array;
+    public abstract function listDirectory(string $filename) : ?array;
 
-    public function loadFile(string $filename) : string;
+    public abstract function loadFile(string $filename) : string;
 
-    public function saveFile(string $filename, $content);
+    public abstract function saveFile(string $filename, $content);
 
-    public function sendFile(string $filename);
+    public abstract function sendFile(string $filename);
 
     //public function appendToFile(string $filename, $content);
 }
