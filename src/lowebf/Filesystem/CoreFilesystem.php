@@ -46,7 +46,10 @@ abstract class CoreFilesystem
 
     public abstract function lastModified(string $filename) : int;
 
-    public abstract function listDirectory(string $filename) : ?array;
+    /** @return An array where the key is the relative path to the file/directory and the value is either a string containing the absolute path or an array if the path is a directory */
+    public abstract function listDirectory(string $filename) : array;
+
+    public abstract function listDirectoryRecursive(string $filename) : array;
 
     public abstract function loadFile(string $filename) : string;
 

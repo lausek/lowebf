@@ -2,8 +2,8 @@
 
 namespace lowebf;
 
+use lowebf\Filesystem\CoreFilesystem;
 use lowebf\Filesystem\Filesystem;
-use lowebf\Filesystem\IFilesystem;
 use lowebf\Error\FileNotFoundException;
 use lowebf\Module\CacheModule;
 use lowebf\Module\ConfigModule;
@@ -21,7 +21,7 @@ class Environment
 	    protected $rootPath;
     /** @var string */
 	    protected $dataPath;
-    /** @var IFilesystem */
+    /** @var CoreFilesystem */
     protected $filesystem;
 
     /** @var CacheModule */
@@ -217,7 +217,7 @@ class Environment
         return $this->downloadModule;
     }
 
-    public function filesystem() : IFilesystem
+    public function filesystem() : CoreFilesystem
     {
         return $this->filesystem;
     }

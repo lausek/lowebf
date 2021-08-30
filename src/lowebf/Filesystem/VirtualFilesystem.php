@@ -2,6 +2,8 @@
 
 namespace lowebf\Filesystem;
 
+use lowebf\Error\FileNotFoundException;
+
 class VirtualFilesystem extends CoreFilesystem
 {
     /** @var array */
@@ -12,7 +14,21 @@ class VirtualFilesystem extends CoreFilesystem
         return $this->filesystem;
     }
 
-    public function mkdir($dirs, int $mode = 0755) {}
+    public function mkdir($dirs, int $mode = 0755)
+    {
+        $completePath = "";
+
+        // TODO: allow backslash too
+        foreach (explode("/", $dirs) as $part) {
+            $completePath .= $part;
+
+            if (!empty($completePath)) {
+                $this->filesystem[$completePath] = [];
+            }
+
+            $completePath .= "/";
+        }
+    }
 
     public function exists($files) : bool
     {
@@ -32,16 +48,51 @@ class VirtualFilesystem extends CoreFilesystem
         return 0;
     }
 
-    public function listDirectory(string $filename) : ?array
+    public function listDirectory(string $filename) : array
     {
         $path = rtrim($filename, "/");
         $filtered = [];
 
         if (!$this->exists($path)) {
-            return null;
+            throw new FileNotFoundException($path);
         }
 
-        foreach ($this->fileSystem as $key => $value) {
+        foreach ($this->filesystem as $key => $value) {
+            $keyWithoutParent = substr($key, strlen($path) + 1);
+
+            if ($keyWithoutParent === false || empty($keyWithoutParent)) {
+                continue;
+            }
+
+            //$dirName = pathinfo($keyWithoutParent, PATHINFO_DIRNAME);
+            if (is_array($value)) {
+                // as directories are accessible with trailing slash, check
+                // if it was already added to the list
+                $normalizedDirectoryName = rtrim($keyWithoutParent, "/");
+                if (isset($filtered["$normalizedDirectoryName/"])) {
+                    continue;
+                }
+
+                // always add directory with trailing slash
+                $filtered["$normalizedDirectoryName/"] = [];
+            } else {
+                $filtered[$keyWithoutParent] = $key;
+            }
+        }
+
+        return $filtered;
+    }
+
+    public function listDirectoryRecursive(string $filename) : array
+    {
+        $path = rtrim($filename, "/");
+        $filtered = [];
+
+        if (!$this->exists($path)) {
+            throw new FileNotFoundException($path);
+        }
+
+        foreach ($this->filesystem as $key => $value) {
             $keyWithoutParent = substr($key, strlen($path) + 1);
 
             if ($recursive) {

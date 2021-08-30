@@ -4,6 +4,7 @@ namespace lowebf\Module;
 
 class DownloadModule extends Module
 {
+    // TODO: rename /downloads to /download
     public function getFiles() : array
     {
         $path = $this->env->asAbsoluteDataPath("downloads");

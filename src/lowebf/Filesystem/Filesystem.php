@@ -39,30 +39,39 @@ class Filesystem extends CoreFilesystem
         return filemtime($filename);
     }
 
-    public function listDirectory(string $filename) : ?array
+    public function listDirectory(string $filename) : array
     {
         $files = [];
 
-        if (!$this->exists($path)) {
-            return null;
+        if (!$this->exists($filename)) {
+            throw new FileNotFoundException($filename);
         }
 
-        foreach (scandir($filename) as $childPath) {
-            if ($childPath === "." || $childPath === "..") {
-                continue;
-            }
-
-            $childPathAbsolute = "$path/$childPath";
-
+        foreach (scandir($filename) as $relativePath) {
             if (is_dir($childPathAbsolute)) {
-                if ($recursive) {
-                    foreach ($this->listDirectory($childPathAbsolute, true) as $dirChildRelative => $dirChildAbsolute) {
-                        $relativePath = "$childPath/$dirChildRelative";
-                        $files[$relativePath] = "$childPathAbsolute/$dirChildAbsolute";
-                    }
+                $files[$relativePath] = [];
+            } else {
+                $files[$relativePath] = $this->env->asAbsolutePath($relativePath);
+            }
+        }
+
+        return $files;
+    }
+
+    public function listDirectoryRecursive(string $filename) : array
+    {
+        $files = $this->listDirectory($filename);
+
+        foreach ($files as $relativePath => $value) {
+            $childPathAbsolute = "$path/$relativePath";
+
+            if (is_array($value)) {
+                foreach ($this->listDirectory($childPathAbsolute) as $dirChildRelative => $dirChildAbsolute) {
+                    $relativePath = "$childPath/$dirChildRelative";
+                    $files[$relativePath] = "$childPathAbsolute/$dirChildAbsolute";
                 }
             } else {
-                $files[$childPath] = $childPathAbsolute;
+                $files[$relativePath] = $childPathAbsolute;
             }
         }
 
