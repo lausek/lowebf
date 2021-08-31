@@ -4,8 +4,7 @@ namespace lowebf\Data;
 
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
-
-use Michelf\Markdown;
+use lowebf\Parser\Markdown;
 
 class Post
 {
@@ -104,15 +103,7 @@ class Post
 
     public function getContent() : string
     {
-        $env = $this->env;
-        $markdown = new Markdown();
-        $markdown->url_filter_func = function($url) use ($env) {
-            try {
-                return $this->env->route()->urlFor($url);
-            } catch (FileNotFoundException $e) {
-                return $url;
-            }
-        };
+        $markdown = new Markdown($this->env);
 
         return rtrim($markdown->transform($this->getContentRaw()), "\n ");
     }
