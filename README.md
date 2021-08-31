@@ -16,7 +16,9 @@ The `lowebf\Environment` class offers modules each solving a specific use case:
 
 ## Features
 
-- [X] Embed videos in markdown
+- [X] Define site content and configuration in your preferred format (JSON, YAML, Markdown)
+- [X] Markdown extensions for embedding videos by url
+- [X] SCSS compiler
 - [X] No database connections
 - [X] No models
 - [X] No routing layer
