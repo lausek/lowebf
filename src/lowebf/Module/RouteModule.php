@@ -41,6 +41,8 @@ class RouteModule extends Module
         throw new FileNotFoundException($subpath);
     }
 
+    /**
+        * @throws FileNotFoundException */
     public function urlFor(string $subpath) : string
     {
         $scriptPath = $this->env->config()->getRouteScriptPath();

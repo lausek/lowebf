@@ -21,9 +21,10 @@ class Cache implements CacheInterface
     public function __construct(Environment $env)
     {
         $this->env = $env;
-        $this->path = $env->asAbsolutePath("cache");
+        $this->path = $env->asAbsolutePath("cache/twig");
         $this->twigCache = new FilesystemCache($this->path);
     }
+
     /**
      * Generates a cache key for the given template class name.
      */

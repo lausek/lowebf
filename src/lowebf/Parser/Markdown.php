@@ -3,6 +3,7 @@
 namespace lowebf\Parser;
 
 use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
 
 class Markdown extends \Michelf\Markdown
 {
