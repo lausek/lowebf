@@ -5,6 +5,7 @@ namespace lowebf\Module;
 use lowebf\Environment;
 use lowebf\Twig\Cache;
 use lowebf\Twig\Extension\HeadersExtension;
+use lowebf\Twig\Extension\HelperExtension;
 use lowebf\Twig\Extension\StylesheetExtension;
 use lowebf\Twig\Extension\UrlExtension;
 use lowebf\Twig\TemplateLoader;
@@ -28,6 +29,7 @@ class ViewModule extends Module
         $this->twig = new \Twig\Environment($loader, $twigOptions);
 
         $this->twig->addExtension(new HeadersExtension($env));
+        $this->twig->addExtension(new HelperExtension($env));
         $this->twig->addExtension(new StylesheetExtension($env));
         $this->twig->addExtension(new UrlExtension($env));
         $this->twig->addFilter(new \Twig\TwigFilter("hash", function ($data) { return hash("sha256", $data); }));

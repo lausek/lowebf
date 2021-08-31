@@ -185,4 +185,14 @@ final class ViewTest extends TestCase
 
         $this->assertSame("My Homepage", $env->view()->renderToString("config-view.html"));
     }
+
+    public function testIsArrayCheck()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/site/template/is-array.html", "{% if data is array %}yes{% else %}no{% endif %}");
+        $env->config()->set("cacheEnabled", false);
+
+        $this->assertSame("no", $env->view()->renderToString("is-array.html", 1));
+        $this->assertSame("yes", $env->view()->renderToString("is-array.html", [1, 2]));
+    }
 }
