@@ -53,4 +53,29 @@ final class MarkdownPersistanceTest extends TestCase
         $this->assertSame("bernd", $post->getAuthor());
         $this->assertSame("<hr />", $post->getContent());
     }
+
+    public function testVideoEmbedding()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/media/vid/greet.mp4", "");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "---\n---\n![Greet Video](/media/vid/greet.mp4)");
+
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame(
+            "<p><center><video controls><source src=\"/route.php?x=/media/vid/greet.mp4\" type=\"video/mp4\">Your browser does not support the video tag.</video></center></p>",
+            $post->getContent()
+        );
+    }
+
+    public function testImageEmbedding()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $env->saveFile("/ve/data/media/img/a.png", "");
+        $env->saveFile("/ve/data/posts/2021-01-01-a.md", "---\n---\n![A Picture](/media/img/a.png)");
+
+        $post = $env->posts()->load("2021-01-01-a");
+
+        $this->assertSame("<p><img src=\"/route.php?x=/media/img/a.png\" alt=\"A Picture\" /></p>", $post->getContent());
+    }
 }
