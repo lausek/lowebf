@@ -17,6 +17,11 @@ class Filesystem extends CoreFilesystem
         $this->filesystem = new SymfonyFilesystem();
     }
 
+    public function &asArray() : array
+    {
+        throw new \Exception("not implemented");
+    }
+
     public function mkdir($dirs, int $mode = 0755)
     {
         //$directoryName = pathinfo($path, PATHINFO_DIRNAME);
@@ -41,6 +46,7 @@ class Filesystem extends CoreFilesystem
 
     public function listDirectory(string $filename) : array
     {
+        $path = rtrim($filename, "/");
         $files = [];
 
         if (!$this->exists($filename)) {
@@ -48,10 +54,16 @@ class Filesystem extends CoreFilesystem
         }
 
         foreach (scandir($filename) as $relativePath) {
-            if (is_dir($childPathAbsolute)) {
+            if ($relativePath === "." || $relativePath === "..") {
+                continue;
+            }
+
+            $absolutePath = "$path/$relativePath";
+
+            if (is_dir($absolutePath)) {
                 $files[$relativePath] = [];
             } else {
-                $files[$relativePath] = $this->env->asAbsolutePath($relativePath);
+                $files[$relativePath] = $absolutePath;
             }
         }
 
@@ -63,13 +75,10 @@ class Filesystem extends CoreFilesystem
         $files = $this->listDirectory($filename);
 
         foreach ($files as $relativePath => $value) {
-            $childPathAbsolute = "$path/$relativePath";
+            $childPathAbsolute = "$filename/$relativePath";
 
             if (is_array($value)) {
-                foreach ($this->listDirectory($childPathAbsolute) as $dirChildRelative => $dirChildAbsolute) {
-                    $relativePath = "$childPath/$dirChildRelative";
-                    $files[$relativePath] = "$childPathAbsolute/$dirChildAbsolute";
-                }
+                $files[$relativePath] = $this->listDirectoryRecursive($childPathAbsolute);
             } else {
                 $files[$relativePath] = $childPathAbsolute;
             }

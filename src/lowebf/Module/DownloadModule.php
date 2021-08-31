@@ -2,6 +2,8 @@
 
 namespace lowebf\Module;
 
+use lowebf\Error\FileNotFoundException;
+
 class DownloadModule extends Module
 {
     // TODO: rename /downloads to /download
@@ -9,17 +11,11 @@ class DownloadModule extends Module
     {
         $path = $this->env->asAbsoluteDataPath("downloads");
 
-        if (!$this->env->hasFile($path)) {
+        try {
+            return $this->env->listDirectory($path, true);
+        } catch (FileNotFoundException $e) {
             return [];
         }
-
-        $files = $this->env->listDirectory($path, true);
-
-        if ($files === null) {
-            return [];
-        }
-
-        return $files;
     }
 
     public function provideAndExit(string $downloadId)

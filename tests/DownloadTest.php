@@ -24,7 +24,8 @@ final class DownloadTest extends TestCase
 
         $this->assertArrayHasKey("a.pdf", $downloadFiles);
         $this->assertArrayHasKey("b.html", $downloadFiles);
-        $this->assertArrayHasKey("deep/c.json", $downloadFiles);
+        $this->assertArrayHasKey("c.json", $downloadFiles["deep"]);
+        $this->assertSame(3, count($downloadFiles));
     }
 
     public function testListingFilesWithoutDataDirectory()

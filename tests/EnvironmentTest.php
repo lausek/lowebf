@@ -69,7 +69,7 @@ final class EnvironmentTest extends TestCase
         $this->assertArrayHasKey("b", $files);
         $this->assertArrayHasKey("a", $filesDeep);
         $this->assertArrayHasKey("b", $filesDeep);
-        $this->assertArrayHasKey("deep/c", $filesDeep);
+        $this->assertArrayHasKey("c", $filesDeep["deep"]);
     }
 
     public function testFindMatchingFile()
@@ -102,8 +102,9 @@ final class EnvironmentTest extends TestCase
 
     public function testRaiseExceptionOnPathListing()
     {
+        $this->expectException(FileNotFoundException::class);
         $env = new VirtualEnvironment("/ve");
 
-        $this->assertNull($env->listDirectory("/ve/data"));
+        $env->listDirectory("/ve/data");
     }
 }

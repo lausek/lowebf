@@ -130,13 +130,13 @@ final class PostTest extends TestCase
             ];
         }
 
-        $this->assertEmpty($env->getFileSystem());
+        $this->assertEmpty($env->filesystem()->asArray());
 
         foreach ($files as $path => $content) {
             $env->saveFile("/ve/data/posts/$path", $content);
         }
 
-        $this->assertNotEmpty($env->getFileSystem());
+        $this->assertNotEmpty($env->filesystem()->asArray());
     }
 
     public function testLoadingPage()

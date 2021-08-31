@@ -31,7 +31,7 @@ final class FilesystemTest extends TestCase
 
         $files = $env->filesystem()->listDirectory("/ve/cache");
         $this->assertSame(3, count($files));
-        $this->assertSame([], $files["thumbs/"]);
+        $this->assertSame([], $files["thumbs"]);
     }
 
     public function testListingUnknownPath()
@@ -59,7 +59,6 @@ final class FilesystemTest extends TestCase
         $env->saveFile("/ve/cache/rest/b.png", "");
 
         $files = $env->filesystem()->listDirectoryRecursive("/ve/cache");
-        var_dump($files);
-        $this->assertTrue(isset($files["rest/"]["b.png"]));
+        $this->assertTrue(isset($files["rest"]["b.png"]));
     }
 }

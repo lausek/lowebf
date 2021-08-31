@@ -153,13 +153,19 @@ class Environment
     {
         $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
 
-        $files = $this->filesystem()->listDirectory($directory);
-
-        if ($files === null) {
+        try {
+            $files = $this->filesystem()->listDirectory($directory);
+        } catch (FileNotFoundException $e) {
             return null;
         }
 
-        $files = array_filter($files, function($filePath) use ($fileName) { return pathinfo($filePath, PATHINFO_FILENAME) === $fileName; });
+        $files = array_filter(
+            $files,
+            function($value, $filePath) use ($fileName) {
+                return !is_array($value) && pathinfo($filePath, PATHINFO_FILENAME) === $fileName;
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
 
         foreach ($fileExtensions as $fileExtension) {
             $matchingFile = "$fileName.$fileExtension";
@@ -175,10 +181,15 @@ class Environment
     // TODO: deprecated
     /**
      * @return an array of files where the key is the relative and the value is the absolute path.
+     * @throws FileNotFoundException
      * */
-    public function listDirectory(string $path, bool $recursive = false) : ?array
+    public function listDirectory(string $path, bool $recursive = false) : array
     {
-        return $this->filesystem()->listDirectory($path, $recursive);
+        if ($recursive) {
+            return $this->filesystem()->listDirectoryRecursive($path);
+        }
+
+        return $this->filesystem()->listDirectory($path);
     }
 
     public function cache() : CacheModule

@@ -2,9 +2,9 @@
 
 namespace lowebf\Module;
 
-use lowebf\Environment;
 use lowebf\Data\ContentUnit;
 use lowebf\Data\IStorable;
+use lowebf\Environment;
 
 class ConfigModule extends Module implements IStorable
 {
@@ -15,12 +15,18 @@ class ConfigModule extends Module implements IStorable
     {
         parent::__construct($env);
 
+        $dataPath = $this->env->asAbsoluteDataPath("");
         $configPath = $this->env->findWithoutFileExtension(
-            $this->env->asAbsoluteDataPath(""),
+            $dataPath,
             "config"
         );
 
         if ($configPath === null) {
+            // create data directory if it does not exist
+            if (!$this->env->hasFile($dataPath)) {
+                $this->env->filesystem()->mkdir($dataPath);
+            }
+
             $configPath = $this->env->asAbsoluteDataPath("config.yaml");
         }
 

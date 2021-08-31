@@ -69,12 +69,12 @@ class VirtualFilesystem extends CoreFilesystem
                 // as directories are accessible with trailing slash, check
                 // if it was already added to the list
                 $normalizedDirectoryName = rtrim($keyWithoutParent, "/");
-                if (isset($filtered["$normalizedDirectoryName/"])) {
+                if (isset($filtered[$normalizedDirectoryName])) {
                     continue;
                 }
 
                 // always add directory with trailing slash
-                $filtered["$normalizedDirectoryName/"] = [];
+                $filtered[$normalizedDirectoryName] = [];
             } else {
                 $filtered[$keyWithoutParent] = $key;
             }
@@ -93,20 +93,30 @@ class VirtualFilesystem extends CoreFilesystem
         }
 
         foreach ($this->filesystem as $key => $value) {
-            $keyWithoutParent = substr($key, strlen($path) + 1);
-
-            if ($recursive) {
-                if (!str_starts_with($key, $path)) {
-                    continue;
-                }
-            } else {
-                $dirName = pathinfo($keyWithoutParent, PATHINFO_DIRNAME);
-                if ($dirName === "") {
-                    continue;
-                }
+            if (strpos($key, $path) !== 0) {
+                continue;
             }
 
-            $filtered[$keyWithoutParent] = $key;
+            $keyWithoutParent = substr($key, strlen($path) + 1);
+            $keyWithoutParent = rtrim($keyWithoutParent, "/");
+
+            if ($keyWithoutParent === false || empty($keyWithoutParent)) {
+                continue;
+            }
+
+            // check if $key has an upper directory. if it does have one
+            // it is nested, so we won't check it here.
+            if (dirname($keyWithoutParent) !== ".") {
+                continue;
+            }
+
+            // if $key is a directory -> add nested files and directories
+            if (is_array($value)) {
+                $directoryPath = "$path/$keyWithoutParent";
+                $filtered[$keyWithoutParent] = $this->listDirectoryRecursive($directoryPath);
+            } else {
+                $filtered[$keyWithoutParent] = "$path/$keyWithoutParent";
+            }
         }
 
         return $filtered;
@@ -114,15 +124,21 @@ class VirtualFilesystem extends CoreFilesystem
 
     public function loadFile(string $filename) : string
     {
-        if (!isset($this->filesystem[$path])) {
-            throw new FileNotFoundException($path);
+        if (!isset($this->filesystem[$filename])) {
+            throw new FileNotFoundException($filename);
         }
 
-        return $this->filesystem[$path];
+        return $this->filesystem[$filename];
     }
 
     public function saveFile(string $filename, $content)
     {
+        $directoryPath = dirname($filename);
+
+        if ($directoryPath !== "") {
+            $this->mkdir($directoryPath);
+        }
+
         $this->filesystem[$filename] = $content;
     }
 
