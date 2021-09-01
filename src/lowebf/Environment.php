@@ -11,32 +11,35 @@ use lowebf\Module\ContentModule;
 use lowebf\Module\DownloadModule;
 use lowebf\Module\PostModule;
 use lowebf\Module\RouteModule;
+use lowebf\Module\ThumbnailModule;
 use lowebf\Module\ViewModule;
 
 class Environment
 {
     /** @var PhpRuntime */
-	    protected $phpRuntime = null;
+	    protected $phpRuntime;
     /** @var string */
 	    protected $rootPath;
     /** @var string */
 	    protected $dataPath;
     /** @var CoreFilesystem */
-    protected $filesystem;
+        protected $filesystem;
 
-    /** @var CacheModule */
+    /** @var CacheModule|null */
 	    protected $cacheModule = null;
-    /** @var ConfigModule */
+    /** @var ConfigModule|null */
 	    protected $configModule = null;
-    /** @var ContentModule */
+    /** @var ContentModule|null */
 	    protected $contentModule = null;
-    /** @var DownloadModule */
+    /** @var DownloadModule|null */
 	    protected $downloadModule = null;
-    /** @var PostModule */
+    /** @var PostModule|null */
 	    protected $postModule = null;
-    /** @var RouteModule */
+    /** @var RouteModule|null */
 	    protected $routeModule = null;
-    /** @var ViewModule */
+    /** @var ThumbnailModule|null */
+	    protected $thumbnailModule = null;
+    /** @var ViewModule|null */
 	    protected $viewModule = null;
 
     public static function getInstance() : Environment
@@ -255,6 +258,15 @@ class Environment
     public function runtime() : PhpRuntime
     {
         return $this->phpRuntime;
+    }
+
+    public function thumbnail() : ThumbnailModule
+    {
+        if ($this->thumbnailModule === null) {
+            $this->thumbnailModule = new ThumbnailModule($this);
+        }
+
+        return $this->thumbnailModule;
     }
 
     public function view() : ViewModule

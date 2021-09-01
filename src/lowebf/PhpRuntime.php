@@ -4,30 +4,31 @@ namespace lowebf;
 
 class PhpRuntime
 {
+    protected function exitRuntime() {
+        exit;
+    }
+
     public function exit(?int $statusCode = null) {
         if ($statusCode !== null) {
             $this->setResponseCode($statusCode);
         }
 
-        exit;
+        $this->exitRuntime();
     }
 
     public function raiseFileNotFoundAndExit()
     {
-        $this->setResponseCode(404);
-        $this->exit();
+        $this->exit(404);
     }
 
     public function raiseForbiddenErrorAndExit()
     {
-        $this->setResponseCode(403);
-        $this->exit();
+        $this->exit(403);
     }
 
     public function raiseInternalErrorAndExit()
     {
-        $this->setResponseCode(500);
-        $this->exit();
+        $this->exit(500);
     }
 
     public function getContentType(string $path)

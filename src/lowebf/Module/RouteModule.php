@@ -72,6 +72,9 @@ class RouteModule extends Module
 
         if (!$this->env->hasFile($path)) {
             $this->env->runtime()->exit(404);
+
+            // needed for testing
+            return;
         }
 
         $this->env->runtime()->setContentTypeFromFile($path);

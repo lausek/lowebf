@@ -91,8 +91,9 @@ final class RouteTest extends TestCase
     public function testProvideFileNotFound()
     {
         $env = new VirtualEnvironment("/ve");
+        $phpRuntime = $env->runtime();
 
-        $runtime = $this->getMockBuilder(PhpRuntime::class)
+        $runtime = $this->getMockBuilder(get_class($phpRuntime))
             ->setMethods(["setResponseCode"])
             ->getMock();
 
