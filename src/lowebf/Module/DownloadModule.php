@@ -12,7 +12,7 @@ class DownloadModule extends Module
         $path = $this->env->asAbsoluteDataPath("downloads");
 
         try {
-            return $this->env->listDirectory($path, true);
+            return $this->env->listDirectoryRecursive($path);
         } catch (FileNotFoundException $e) {
             return [];
         }

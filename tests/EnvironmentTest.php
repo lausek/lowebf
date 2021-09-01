@@ -63,7 +63,7 @@ final class EnvironmentTest extends TestCase
 
         $env = new Environment("/tmp/");
         $files = $env->listDirectory("/tmp/lsCache");
-        $filesDeep = $env->listDirectory("/tmp/lsCache", true);
+        $filesDeep = $env->listDirectoryRecursive("/tmp/lsCache");
 
         $this->assertArrayHasKey("a", $files);
         $this->assertArrayHasKey("b", $files);

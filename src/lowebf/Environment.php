@@ -183,13 +183,14 @@ class Environment
      * @return an array of files where the key is the relative and the value is the absolute path.
      * @throws FileNotFoundException
      * */
-    public function listDirectory(string $path, bool $recursive = false) : array
+    public function listDirectory(string $path) : array
     {
-        if ($recursive) {
-            return $this->filesystem()->listDirectoryRecursive($path);
-        }
-
         return $this->filesystem()->listDirectory($path);
+    }
+
+    public function listDirectoryRecursive(string $path, int $depth = PHP_INT_MAX) : array
+    {
+        return $this->filesystem()->listDirectoryRecursive($path, $depth);
     }
 
     public function cache() : CacheModule
