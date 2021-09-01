@@ -6,7 +6,8 @@ use lowebf\Error\FileNotFoundException;
 use lowebf\Filesystem\VirtualFilesystem;
 use lowebf\PhpRuntime;
 
-class VirtualPhpRuntime extends PhpRuntime {
+class VirtualPhpRuntime extends PhpRuntime
+{
     public function exitRuntime() {
         // avoid exit being called while testing
     }
@@ -14,7 +15,7 @@ class VirtualPhpRuntime extends PhpRuntime {
 
 class VirtualEnvironment extends Environment
 {
-    public function __construct(string $dir)
+    public function __construct(string $dir = "/ve")
     {
         parent::__construct($dir);
 

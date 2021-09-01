@@ -23,7 +23,7 @@ class Environment
     /** @var string */
 	    protected $dataPath;
     /** @var CoreFilesystem */
-        protected $filesystem;
+    protected $filesystem;
 
     /** @var CacheModule|null */
 	    protected $cacheModule = null;
@@ -83,6 +83,25 @@ class Environment
 
         return $realPath;
          */
+    }
+
+    public function isAbsolutePath(string $path) : bool
+    {
+        // check if path starts with root
+        return strpos($this->getRootPath(), $path) === 0;
+    }
+
+    public function asRelativePath(string $path) : string
+    {
+        $rootPath = $this->env->getRootPath();
+        $rootPathLen = strlen($rootPath);
+
+        // path is already relative
+        if (!$this->isAbsolutePath($path) || strlen($path) < $rootPathLen) {
+            return $path;
+        }
+
+        return substr($path, $rootPathLen);
     }
 
     public function asAbsolutePath(string $subpath) : string
@@ -281,5 +300,10 @@ class Environment
     public function setRuntime($phpRuntime)
     {
         $this->phpRuntime = $phpRuntime;
+    }
+
+    public function setFilesystem($filesystem)
+    {
+        $this->filesystem = $filesystem;
     }
 }

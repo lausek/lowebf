@@ -4,7 +4,8 @@ namespace lowebf;
 
 class PhpRuntime
 {
-    protected function exitRuntime() {
+    protected function exitRuntime()
+    {
         exit;
     }
 
