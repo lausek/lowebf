@@ -61,4 +61,19 @@ final class FilesystemTest extends TestCase
         $files = $env->filesystem()->listDirectoryRecursive("/ve/cache");
         $this->assertTrue(isset($files["rest"]["b.png"]));
     }
+
+    public function testListDirectoryRecursiveDepth()
+    {
+        $env = new VirtualEnvironment("/ve/");
+        $env->saveFile("/ve/lsRecCache/a", "");
+        $env->saveFile("/ve/lsRecCache/b/c", "");
+        $env->saveFile("/ve/lsRecCache/d/e/f", "");
+        $files = $env->filesystem()->listDirectoryRecursive("/ve/lsRecCache", 2);
+
+        $this->assertArrayHasKey("a", $files);
+        $this->assertArrayHasKey("b", $files);
+        $this->assertArrayHasKey("c", $files["b"]);
+        $this->assertArrayHasKey("e", $files["d"]);
+        $this->assertSame(1, count($files["d"]));
+    }
 }

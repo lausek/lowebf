@@ -70,21 +70,34 @@ class Filesystem extends CoreFilesystem
         return $files;
     }
 
-    public function listDirectoryRecursive(string $filename) : array
+    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : array
     {
+        $currentDepth += 1;
+
+        if ($maxDepth < $currentDepth) {
+            return [];
+        }
+
         $files = $this->listDirectory($filename);
 
         foreach ($files as $relativePath => $value) {
             $childPathAbsolute = "$filename/$relativePath";
 
             if (is_array($value)) {
-                $files[$relativePath] = $this->listDirectoryRecursive($childPathAbsolute);
+                $files[$relativePath] = $this->listDirectoryRecursiveInner($childPathAbsolute, $maxDepth, $currentDepth);
             } else {
                 $files[$relativePath] = $childPathAbsolute;
             }
         }
 
+        $currentDepth -= 1;
+
         return $files;
+    }
+
+    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : array
+    {
+        return $this->listDirectoryRecursiveInner($filename, $depth, 0);
     }
 
     public function loadFile(string $filename) : string

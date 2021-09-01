@@ -83,8 +83,14 @@ class VirtualFilesystem extends CoreFilesystem
         return $filtered;
     }
 
-    public function listDirectoryRecursive(string $filename) : array
+    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : array
     {
+        $currentDepth += 1;
+
+        if ($maxDepth < $currentDepth) {
+            return [];
+        }
+
         $path = rtrim($filename, "/");
         $filtered = [];
 
@@ -113,13 +119,20 @@ class VirtualFilesystem extends CoreFilesystem
             // if $key is a directory -> add nested files and directories
             if (is_array($value)) {
                 $directoryPath = "$path/$keyWithoutParent";
-                $filtered[$keyWithoutParent] = $this->listDirectoryRecursive($directoryPath);
+                $filtered[$keyWithoutParent] = $this->listDirectoryRecursiveInner($directoryPath, $maxDepth, $currentDepth);
             } else {
                 $filtered[$keyWithoutParent] = "$path/$keyWithoutParent";
             }
         }
 
+        $currentDepth -= 1;
+
         return $filtered;
+    }
+
+    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : array
+    {
+        return $this->listDirectoryRecursiveInner($filename, $depth, 0);
     }
 
     public function loadFile(string $filename) : string

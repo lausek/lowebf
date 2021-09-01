@@ -72,6 +72,22 @@ final class EnvironmentTest extends TestCase
         $this->assertArrayHasKey("c", $filesDeep["deep"]);
     }
 
+    public function testListingDirectoryRecursiveDepth()
+    {
+        dummy("/tmp/lsRecCache/a");
+        dummy("/tmp/lsRecCache/b/c");
+        dummy("/tmp/lsRecCache/d/e/f");
+
+        $env = new Environment("/tmp/");
+        $files = $env->filesystem()->listDirectoryRecursive("/tmp/lsRecCache", 2);
+
+        $this->assertArrayHasKey("a", $files);
+        $this->assertArrayHasKey("b", $files);
+        $this->assertArrayHasKey("c", $files["b"]);
+        $this->assertArrayHasKey("e", $files["d"]);
+        $this->assertSame(1, count($files["d"]));
+    }
+
     public function testFindMatchingFile()
     {
         $env = new VirtualEnvironment("/ve");
