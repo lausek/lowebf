@@ -35,7 +35,7 @@ class CacheModule extends Module
     public function set(string $key, $value)
     {
         $path = $this->getPath($key);
-        $this->env->makeAllDirectories($path);
+        $this->env->makeAllDirectories(dirname($path));
         $this->env->saveFile($path, $value);
     }
 

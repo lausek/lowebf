@@ -36,24 +36,11 @@ final class ThumbnailTest extends TestCase
     public function testAvoidGenerationIfCached()
     {
         $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/media/img/a.jpeg", getTestFileContent());
 
-        $filesystem = $this->getMockBuilder(VirtualFilesystem::class)
-            ->setConstructorArgs([$env])
-            ->setMethods(["loadFile", "saveFile"])
-            ->getMock();
-
-        $filesystem->expects($this->once())
-            ->method("saveFile")
-            ->with("/ve/cache/thumb/media/img/a.jpeg");
-
-        $filesystem->expects($this->once())
-            ->method("loadFile")
-            ->with("/ve/data/media/img/a.jpeg")
-            ->will($this->returnValue(getTestFileContent()));
-
-        $env->setFilesystem($filesystem);
-
+        $this->assertFalse($env->cache()->exists("thumb/media/img/a.jpeg"));
         $this->assertSame("/ve/cache/thumb/media/img/a.jpeg", $env->thumbnail()->pathFor("/media/img/a.jpeg"));
+        $this->assertTrue($env->cache()->exists("thumb/media/img/a.jpeg"));
         $this->assertSame("/ve/cache/thumb/media/img/a.jpeg", $env->thumbnail()->pathFor("/media/img/a.jpeg"));
     }
 }
