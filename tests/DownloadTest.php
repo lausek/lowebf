@@ -16,9 +16,9 @@ final class DownloadTest extends TestCase
     public function testSaving()
     {
         $env = new VirtualEnvironment("/ve");
-        $env->saveFile("/ve/data/downloads/a.pdf", "");
-        $env->saveFile("/ve/data/downloads/b.html", "");
-        $env->saveFile("/ve/data/downloads/deep/c.json", "");
+        $env->saveFile("/ve/data/download/a.pdf", "");
+        $env->saveFile("/ve/data/download/b.html", "");
+        $env->saveFile("/ve/data/download/deep/c.json", "");
 
         $downloadFiles = $env->download()->getFiles();
 
@@ -36,7 +36,7 @@ final class DownloadTest extends TestCase
 
     public function testProvidingFile()
     {
-        $path = "/tmp/data/downloads/a.json";
+        $path = "/tmp/data/download/a.json";
         $env = new VirtualEnvironment("/tmp");
         $env->saveFile($path, "{}");
 

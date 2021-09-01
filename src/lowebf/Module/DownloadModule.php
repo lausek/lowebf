@@ -6,10 +6,9 @@ use lowebf\Error\FileNotFoundException;
 
 class DownloadModule extends Module
 {
-    // TODO: rename /downloads to /download
     public function getFiles() : array
     {
-        $path = $this->env->asAbsoluteDataPath("downloads");
+        $path = $this->env->asAbsoluteDataPath("download");
 
         try {
             return $this->env->listDirectoryRecursive($path);
@@ -20,7 +19,7 @@ class DownloadModule extends Module
 
     public function provideAndExit(string $downloadId)
     {
-        $path = $this->env->asAbsoluteDataPath("downloads/$downloadId");
+        $path = $this->env->asAbsoluteDataPath("download/$downloadId");
         $filename = pathinfo($path, PATHINFO_BASENAME);
 
         $this->env->runtime()->setContentTypeFromFile($path);
