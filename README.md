@@ -12,6 +12,7 @@ The `lowebf\Environment` class offers modules each solving a specific use case:
 | Download | Send a downloadable file |
 | Post | Read a news entry from file |
 | Route | Generate url for static files |
+| Thumbnail | Generate thumbnails for images |
 | View | Render a page template |
 
 ## Features
