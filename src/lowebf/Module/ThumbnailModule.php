@@ -21,12 +21,8 @@ class ThumbnailModule extends Module
         return $this->env->hasFile($cachePath);
     }
 
-    public function generateThumbnailFor(string $subpath) : string
+    private function generateThumbnailImagick(string $subpath) : string
     {
-        if (!extension_loaded("imagick")) {
-            throw new \Exception("imagick extension is not installed");
-        }
-
         $originalPath = $this->env->route()->pathFor($subpath);
         $height = 128;
         $width = 128;
@@ -40,9 +36,83 @@ class ThumbnailModule extends Module
         // scale to thumbnail size with $bestfit option enabled
         $image->thumbnailImage($width, $height, true);
 
-        $this->env->cache()->set($this->cacheKey($subpath), $image->getImageBlob());
+        $blob = $image->getImageBlob();
 
         $image->destroy();
+
+        return $blob;
+    }
+
+    private function generateThumbnailGd(string $subpath) : string
+    {
+        $originalPath = $this->env->route()->pathFor($subpath);
+        $content = $this->env->filesystem()->loadFile($originalPath);
+        $oldImage = imagecreatefromstring($content);
+        $extension = pathinfo($subpath, PATHINFO_EXTENSION);
+        $extension = strtolower($extension);
+
+        $toHeight = 128;
+        $toWidth = 128;
+        $fromHeight = (int)imagesy($oldImage);
+        $fromWidth = (int)imagesx($oldImage);
+
+        $newImage = imagecreatetruecolor($toWidth, $toHeight);
+        $transparentColor = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
+        imagefill($newImage, 0, 0, $transparentColor);
+        imagecopyresampled(
+            $newImage,
+            $oldImage,
+            0,
+            0,
+            0,
+            0,
+            $toWidth,
+            $toHeight,
+            $fromWidth,
+            $fromHeight,
+        );
+
+        $buffer = "";
+
+        try {
+            ob_start();
+
+            switch ($extension) {
+                case "gif":
+                    imagegif($newImage);
+                    break;
+
+                case "png":
+                    imagepng($newImage);
+                    break;
+
+                case "jpeg":
+                // fallthrough
+                case "jpg":
+                    imagejpeg($newImage);
+                    break;
+
+                default:
+                    throw new \Exception("unknown file extension: $extension");
+            }
+
+            $buffer = ob_get_contents();
+        } finally {
+            ob_end_clean();
+        }
+
+        return $buffer;
+    }
+
+    public function generateThumbnailFor(string $subpath) : string
+    {
+        if (extension_loaded("imagick")) {
+            $content = $this->generateThumbnailImagick($subpath);
+        } else {
+            $content = $this->generateThumbnailGd($subpath);
+        }
+
+        $this->env->cache()->set($this->cacheKey($subpath), $content);
 
         return $this->cachePathFor($subpath);
     }
