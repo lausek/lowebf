@@ -5,6 +5,7 @@ namespace lowebf\Module;
 use lowebf\Environment;
 use lowebf\Data\Post;
 use lowebf\Error\FileNotFoundException;
+use lowebf\Error\NotPersistableException;
 
 class PostModule extends Module
 {
@@ -62,7 +63,11 @@ class PostModule extends Module
             $this->posts = [];
 
             foreach ($this->env->listDirectory($postDirectory) as $postPath) {
-                $this->posts[] = Post::loadFromFile($this->env, $postPath);
+                try {
+                    $this->posts[] = Post::loadFromFile($this->env, $postPath);
+                } catch (NotPersistableException $e) {
+                    // file has an unsupported extension and cannot be parsed. skipping.
+                }
             }
 
             rsort($this->posts);

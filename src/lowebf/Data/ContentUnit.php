@@ -4,6 +4,7 @@ namespace lowebf\Data;
 
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
+use lowebf\Error\NotPersistableException;
 use lowebf\Persistance\IPersistance;
 use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
@@ -20,6 +21,9 @@ class ContentUnit implements IStorable
     /** @var IPersistance */
 	    private $persistance = null;
 
+    /**
+     * @throws NotPersistableException
+     * */
     function __construct(Environment $env, string $path, array $data, IPersistance $persistance = null)
     {
         $this->env = $env;
@@ -32,9 +36,10 @@ class ContentUnit implements IStorable
         }
     }
 
-    private static function getPersistorFromPath(string $path) : IPersistance
+    public static function getPersistorFromPath(string $path) : IPersistance
     {
         $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $extension = strtolower($extension);
 
         switch ($extension) {
             case "yml":
@@ -48,16 +53,17 @@ class ContentUnit implements IStorable
                 return PersistorMarkdown::getInstance();
 
             case "json":
-            // fallthrough
-            default:
                 return PersistorJson::getInstance();
         }
+
+        throw new NotPersistableException($extension);
     }
 
     /*
      * @param string $path
      * @param IPersistance $persistance
      * @return ContentUnit
+     * @throws NotPersistableException
      */
     public static function loadFromFile(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
     {
@@ -73,6 +79,7 @@ class ContentUnit implements IStorable
      * @param string $path
      * @param IPersistance $persistance
      * @return ContentUnit
+     * @throws NotPersistableException
      */
     public static function loadFromFileOrCreate(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
     {

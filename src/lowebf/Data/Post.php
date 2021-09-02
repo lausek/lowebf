@@ -4,6 +4,7 @@ namespace lowebf\Data;
 
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
+use lowebf\Error\NotPersistableException;
 use lowebf\Parser\Markdown;
 
 class Post
@@ -41,20 +42,28 @@ class Post
         $title = ucwords($title);
 
         return [
-            "title" => $title,
             "date" => $date,
+            "title" => $title,
         ];
     }
 
+    /**
+     * @throws FileNotFoundException
+     * @throws NotPersistableException
+     * */
     public static function loadFromFile(Environment $env, string $path) : Post
     {
         if (!$env->hasFile($path)) {
-            throw new \Exception("file does not exist: $path");
+            throw new FileNotFoundException($path);
         }
 
         $attributes = self::extractAttributesFromPath($path);
         $title = $attributes["title"];
         $date = $attributes["date"];
+
+        // check if the file extension is supported.
+        // this throws an exception if not.
+        ContentUnit::getPersistorFromPath($path);
 
         return new Post($env, $path, $title, $date);
     }

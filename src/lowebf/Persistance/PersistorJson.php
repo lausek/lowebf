@@ -25,7 +25,8 @@ class PersistorJson implements IPersistance
         $content = json_decode($rawContent, true);
 
         if ($content === null) {
-            throw new InvalidFileFormatException(json_last_error_msg());
+            $jsonError = json_last_error_msg();
+            throw new InvalidFileFormatException("$path: $jsonError");
         }
 
         return $content;

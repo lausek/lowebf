@@ -242,4 +242,13 @@ final class PostTest extends TestCase
 
         $this->assertSame("<link>", $post->preview);
     }
+
+    public function testSkipUnsupportedPostFiles()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "");
+        $env->saveFile("/ve/data/posts/.gitkeep", "");
+
+        $this->assertSame(1, count($env->posts()->loadPosts()));
+    }
 }
