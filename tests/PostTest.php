@@ -232,4 +232,14 @@ final class PostTest extends TestCase
         $post = $env->posts()->load("2021-01-01-a");
         $this->assertSame("<p><a href=\"https://lausek.eu\">link to author</a></p>", $post->getContent());
     }
+
+    public function testLazyLoadingOtherAttributes()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "---\npreview: <link>\n---\n");
+
+        $post = $env->posts()->load("2021-08-31-lazy-loading");
+
+        $this->assertSame("<link>", $post->preview);
+    }
 }

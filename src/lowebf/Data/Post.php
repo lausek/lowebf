@@ -80,6 +80,10 @@ class Post
         if ($name === "content") {
             return $this->getContent();
         }
+
+        // if the attribute is something else -> load content from file
+        $this->loadContentUnit();
+        return $this->contentUnit->get($name);
     }
 
     public function getId() : string
