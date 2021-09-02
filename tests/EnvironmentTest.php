@@ -123,4 +123,10 @@ final class EnvironmentTest extends TestCase
 
         $env->listDirectory("/ve/data");
     }
+
+    public function testModificationOfRootPath()
+    {
+        $this->assertSame("/ve", (new Environment("/ve/site/public"))->getRootPath());
+        $this->assertSame("/ve/site/public", (new Environment("/ve/site/public/site/public"))->getRootPath());
+    }
 }

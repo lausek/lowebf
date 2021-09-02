@@ -48,8 +48,6 @@ class Environment
 
         if ($rootDirectory === false) {
             $rootDirectory = $_SERVER["DOCUMENT_ROOT"];
-            $rootDirectory = rtrim($rootDirectory, "/");
-            $rootDirectory = rtrim($rootDirectory, "/site/public");
         }
 
         return new Environment($rootDirectory);
@@ -59,6 +57,12 @@ class Environment
     {
         // TODO: also trim backslash '\'
         $rootPath = rtrim($rootPath, "/");
+
+        // find last occurrence index of /site/public
+        $sitePathOffset = strrpos($rootPath, "/site/public");
+        if ($sitePathOffset !== false) {
+            $rootPath = substr($rootPath, 0, $sitePathOffset);
+        }
 
         if ($dataPath === null) {
             $dataPath = "$rootPath/data";
