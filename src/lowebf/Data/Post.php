@@ -75,6 +75,17 @@ class Post
         }
     }
 
+    public function __isset(string $name) : bool
+    {
+        if ($name === "content") {
+            return true;
+        }
+
+        // if the attribute is something else -> load content from file
+        $this->loadContentUnit();
+        return $this->contentUnit->exists($name);
+    }
+
     public function __get(string $name)
     {
         if ($name === "content") {
