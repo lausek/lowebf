@@ -86,4 +86,9 @@ class PhpRuntime
     {
         echo $output;
     }
+
+    public function clearOutputBuffer()
+    {
+        ob_clean();
+    }
 }
