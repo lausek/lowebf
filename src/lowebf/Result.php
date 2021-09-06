@@ -24,7 +24,7 @@ class Result
         return new Result(self::OK_STATE, $value);
     }
 
-    public static function error(Exception $e) : Result
+    public static function error($e) : Result
     {
         return new Result(self::ERROR_STATE, $e);
     }
@@ -53,6 +53,16 @@ class Result
         return $this->argument;
     }
 
+    // unwrap the result or use default
+    public function unwrapOr($default)
+    {
+        if ($this->isError()) {
+            return $default;
+        }
+
+        return $this->unwrap();
+    }
+
     // clear output buffer and set status code
     public function unwrapOrExit(Environment $env, $statusCode = null)
     {
@@ -72,6 +82,12 @@ class Result
     // returns itself otherwise.
     public function mapOk(callable $mapper) : Result
     {
+        if ($this->isOk()) {
+            $result = $this->unwrap();
+            $result = $mapper($result);
+            return Result::ok($result);
+        }
+
         return $this;
     }
 
