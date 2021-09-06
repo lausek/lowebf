@@ -2,6 +2,8 @@
 
 namespace lowebf;
 
+use lowebf\Error\ConversionException;
+
 class Result
 {
     /** @var int */
@@ -86,6 +88,41 @@ class Result
             $result = $this->unwrap();
             $result = $mapper($result);
             return Result::ok($result);
+        }
+
+        return $this;
+    }
+
+    public function mapToBool() : Result
+    {
+        if ($this->isOk()) {
+            $result = $this->unwrap();
+            return Result::ok((bool)$result);
+        }
+
+        return $this;
+    }
+
+    public function mapToInteger() : Result
+    {
+        if ($this->isOk()) {
+            $result = $this->unwrap();
+
+            if (is_numeric($result)) {
+                return Result::ok(intval($result));
+            } else {
+                return Result::error(new ConversionException(gettype($result), "integer", $result));
+            }
+        }
+
+        return $this;
+    }
+
+    public function mapToString() : Result
+    {
+        if ($this->isOk()) {
+            $value = $this->unwrap();
+            return Result::ok("$value");
         }
 
         return $this;

@@ -2,6 +2,7 @@
 
 namespace lowebf\Test;
 
+use lowebf\Error\ConversionException;
 use lowebf\Error\InvalidFileFormatException;
 use lowebf\PhpRuntime;
 use lowebf\Result;
@@ -97,5 +98,28 @@ final class ResultTest extends TestCase
         $increment = function ($i) { return $i + 1; };
         $result = Result::ok(1)->mapOk($increment)->mapOk($increment);
         $this->assertSame(3, $result->unwrap());
+    }
+
+    public function testMappingToBool()
+    {
+        $this->assertSame(true, Result::ok("1")->mapToBool()->unwrap());
+        $this->assertSame(false, Result::ok("0")->mapToBool()->unwrap());
+    }
+
+    public function testMappingToInteger()
+    {
+        $this->assertSame(1, Result::ok("1")->mapToInteger()->unwrap());
+        $this->assertSame(500, Result::ok("true")->mapToInteger()->unwrapOr(500));
+    }
+
+    public function testMappingError()
+    {
+        $this->expectException(ConversionException::class);
+        $this->assertSame(500, Result::ok("true")->mapToInteger()->unwrap());
+    }
+
+    public function testMappingToString()
+    {
+        $this->assertSame("1.2", Result::ok(1.2)->mapToString()->unwrap());
     }
 }
