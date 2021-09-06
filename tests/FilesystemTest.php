@@ -18,7 +18,7 @@ final class FilesystemTest extends TestCase
         $env->makeAllDirectories("/ve/cache/");
         $env->saveFile("/ve/cache/thumb.png", "");
 
-        $files = $env->filesystem()->listDirectory("/ve/cache");
+        $files = $env->filesystem()->listDirectory("/ve/cache")->unwrap();
         $this->assertSame(1, count($files));
     }
 
@@ -29,7 +29,7 @@ final class FilesystemTest extends TestCase
         $env->saveFile("/ve/cache/thumbs/a.png", "");
         $env->saveFile("/ve/cache/thumbs/b.png", "");
 
-        $files = $env->filesystem()->listDirectory("/ve/cache");
+        $files = $env->filesystem()->listDirectory("/ve/cache")->unwrap();
         $this->assertSame(3, count($files));
         $this->assertSame([], $files["thumbs"]);
     }
@@ -39,7 +39,7 @@ final class FilesystemTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $env = new VirtualEnvironment("/ve");
 
-        $files = $env->filesystem()->listDirectory("/ve/what");
+        $env->filesystem()->listDirectory("/ve/what")->unwrap();
     }
 
     public function testVirtualMakeDirectory()
@@ -58,7 +58,7 @@ final class FilesystemTest extends TestCase
         $env->saveFile("/ve/cache/a.png", "");
         $env->saveFile("/ve/cache/rest/b.png", "");
 
-        $files = $env->filesystem()->listDirectoryRecursive("/ve/cache");
+        $files = $env->filesystem()->listDirectoryRecursive("/ve/cache")->unwrap();
         $this->assertTrue(isset($files["rest"]["b.png"]));
     }
 
@@ -68,7 +68,7 @@ final class FilesystemTest extends TestCase
         $env->saveFile("/ve/lsRecCache/a", "");
         $env->saveFile("/ve/lsRecCache/b/c", "");
         $env->saveFile("/ve/lsRecCache/d/e/f", "");
-        $files = $env->filesystem()->listDirectoryRecursive("/ve/lsRecCache", 2);
+        $files = $env->filesystem()->listDirectoryRecursive("/ve/lsRecCache", 2)->unwrap();
 
         $this->assertArrayHasKey("a", $files);
         $this->assertArrayHasKey("b", $files);

@@ -4,6 +4,7 @@ namespace lowebf\Filesystem;
 
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
+use lowebf\Result;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 
 class Filesystem extends CoreFilesystem
@@ -44,13 +45,16 @@ class Filesystem extends CoreFilesystem
         return filemtime($filename);
     }
 
-    public function listDirectory(string $filename) : array
+    /**
+     * @return Result<array>
+     * */
+    public function listDirectory(string $filename) : Result
     {
         $path = rtrim($filename, "/");
         $files = [];
 
         if (!$this->exists($filename)) {
-            throw new FileNotFoundException($filename);
+            return Result::error(new FileNotFoundException($filename));
         }
 
         foreach (scandir($filename) as $relativePath) {
@@ -67,24 +71,37 @@ class Filesystem extends CoreFilesystem
             }
         }
 
-        return $files;
+        return Result::ok($files);
     }
 
-    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : array
+    /**
+     * @return Result<array>
+     * */
+    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : Result
     {
         $currentDepth += 1;
 
         if ($maxDepth < $currentDepth) {
-            return [];
+            return Result::ok([]);
         }
 
-        $files = $this->listDirectory($filename);
+        $result = $this->listDirectory($filename);
+        if ($result->isError()) {
+            return $result;
+        }
+        $files = $result->unwrap();
 
         foreach ($files as $relativePath => $value) {
             $childPathAbsolute = "$filename/$relativePath";
 
             if (is_array($value)) {
-                $files[$relativePath] = $this->listDirectoryRecursiveInner($childPathAbsolute, $maxDepth, $currentDepth);
+                $recursiveListingResult = $this->listDirectoryRecursiveInner($childPathAbsolute, $maxDepth, $currentDepth);
+
+                if ($recursiveListingResult->isError()) {
+                    return $recursiveListingResult;
+                }
+
+                $files[$relativePath] = $recursiveListingResult->unwrap();
             } else {
                 $files[$relativePath] = $childPathAbsolute;
             }
@@ -92,23 +109,29 @@ class Filesystem extends CoreFilesystem
 
         $currentDepth -= 1;
 
-        return $files;
+        return Result::ok($files);
     }
 
-    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : array
+    /**
+     * @return Result<array>
+     * */
+    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : Result
     {
         return $this->listDirectoryRecursiveInner($filename, $depth, 0);
     }
 
-    public function loadFile(string $filename) : string
+    /**
+     * @return Result<string>
+     * */
+    public function loadFile(string $filename) : Result
     {
         $content = @file_get_contents($filename);
 
         if ($content === false) {
-            throw new FileNotFoundException($filename);
+            return Result::error(new FileNotFoundException($filename));
         }
 
-        return $content;
+        return Result::ok($content);
     }
 
     public function saveFile(string $filename, $content)

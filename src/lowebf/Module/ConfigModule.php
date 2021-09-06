@@ -19,7 +19,7 @@ class ConfigModule extends Module implements IStorable
         $configPath = $this->env->findWithoutFileExtension(
             $dataPath,
             "config"
-        );
+        )->unwrapOr(null);
 
         if ($configPath === null) {
             // create data directory if it does not exist

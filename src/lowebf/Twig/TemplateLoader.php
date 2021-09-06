@@ -32,7 +32,7 @@ class TemplateLoader implements LoaderInterface
     {
         try {
             $path = $this->getFilePath($name);
-            $content = $this->env->loadFile($path);
+            $content = $this->env->loadFile($path)->unwrap();
 
             return new Source($content, $name, $path);
         } catch (\Exception $e) {

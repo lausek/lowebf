@@ -9,6 +9,7 @@ use lowebf\VirtualEnvironment;
 use lowebf\Data\Post;
 use lowebf\Error\InvalidFileFormatException;
 use lowebf\Persistance\IPersistance;
+use lowebf\Result;
 use PHPUnit\Framework\TestCase;
 
 final class PostTest extends TestCase
@@ -89,7 +90,7 @@ final class PostTest extends TestCase
             ->method("loadFile")
             ->with($postFilePath);
 
-        $post = $env->posts()->load("2021-01-02-ab-c-d");
+        $post = $env->posts()->load("2021-01-02-ab-c-d")->unwrap();
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
     }
@@ -109,9 +110,9 @@ final class PostTest extends TestCase
         $env->expects($this->once())
             ->method("loadFile")
             ->with($postFilePath)
-            ->will($this->returnValue($postFileContent));
+            ->will($this->returnValue(Result::ok($postFileContent)));
 
-        $post = $env->posts()->load("2021-01-02-ab-c-d");
+        $post = $env->posts()->load("2021-01-02-ab-c-d")->unwrap();
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
         $this->assertSame("Ab C D", $post->getTitle());
         $this->assertSame("abc", $post->getContentRaw());
@@ -146,7 +147,7 @@ final class PostTest extends TestCase
 
         $env = new VirtualEnvironment("/ve");
         $this->populateFileSystem($env);
-        $posts = $env->posts()->loadPage(1);
+        $posts = $env->posts()->loadPage(1)->unwrap();
 
         foreach ($posts as $post) {
             $postDates[] = $post->getDate()->format("Y-m-d");
@@ -168,9 +169,9 @@ final class PostTest extends TestCase
 
         $env->posts()->setPostsPerPage(3);
 
-        $pageOne = $env->posts()->loadPage(1);
-        $pageTwo = $env->posts()->loadPage(2);
-        $pageThree = $env->posts()->loadPage(3);
+        $pageOne = $env->posts()->loadPage(1)->unwrap();
+        $pageTwo = $env->posts()->loadPage(2)->unwrap();
+        $pageThree = $env->posts()->loadPage(3)->unwrap();
 
         $this->assertSame(2, $env->posts()->getMaxPage());
         $this->assertSame(["A", "A", "B"], array_map($getTitle, $pageOne));
@@ -185,7 +186,7 @@ final class PostTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $this->populateFileSystem($env);
 
-        $env->posts()->loadPage(-1);
+        $env->posts()->loadPage(-1)->unwrap();
     }
 
     public function testDescriptionFull()
@@ -193,7 +194,7 @@ final class PostTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-01-01-a.json", '{"content":"description not long enough"}');
 
-        $this->assertSame("description not long enough", $env->posts()->load("2021-01-01-a")->getDescription());
+        $this->assertSame("description not long enough", $env->posts()->load("2021-01-01-a")->unwrap()->getDescription());
     }
 
     public function testDescriptionShort()
@@ -201,7 +202,7 @@ final class PostTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-01-01-a.json", '{"content":"description not long enough"}');
 
-        $this->assertSame("description not…", $env->posts()->load("2021-01-01-a")->getDescription(16));
+        $this->assertSame("description not…", $env->posts()->load("2021-01-01-a")->unwrap()->getDescription(16));
     }
 
     public function testUrlMarkdownFilter()
@@ -249,6 +250,6 @@ final class PostTest extends TestCase
         $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "");
         $env->saveFile("/ve/data/posts/.gitkeep", "");
 
-        $this->assertSame(1, count($env->posts()->loadPosts()));
+        $this->assertSame(1, count($env->posts()->loadPosts()->unwrap()));
     }
 }

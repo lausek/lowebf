@@ -6,6 +6,7 @@ use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
 use lowebf\Error\NotPersistableException;
 use lowebf\Parser\Markdown;
+use lowebf\Result;
 
 class Post
 {
@@ -48,13 +49,12 @@ class Post
     }
 
     /**
-     * @throws FileNotFoundException
-     * @throws NotPersistableException
+     * @return Result<Post>
      * */
-    public static function loadFromFile(Environment $env, string $path) : Post
+    public static function loadFromFile(Environment $env, string $path) : Result
     {
         if (!$env->hasFile($path)) {
-            throw new FileNotFoundException($path);
+            return Result::error(new FileNotFoundException($path));
         }
 
         $attributes = self::extractAttributesFromPath($path);
@@ -63,24 +63,30 @@ class Post
 
         // check if the file extension is supported.
         // this throws an exception if not.
-        ContentUnit::getPersistorFromPath($path);
+        try {
+            ContentUnit::getPersistorFromPath($path);
+        } catch (\Exception $e) {
+            return Result::error($e);
+        }
 
-        return new Post($env, $path, $title, $date);
+        $post = new Post($env, $path, $title, $date);
+        return Result::ok($post);
     }
 
     public static function loadFromFileOrCreate(Environment $env, string $path) : Post
     {
-        if (!$env->hasFile($path)) {
+        // TODO: loading the file twice is inefficient
+        if (self::loadFromFile($env, $path)->isError()) {
             ContentUnit::loadFromFileOrCreate($env, $path)->save();
         }
 
-        return self::loadFromFile($env, $path);
+        return self::loadFromFile($env, $path)->unwrap();
     }
 
     public function loadContentUnit()
     {
         if ($this->contentUnit === null) {
-            $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path);
+            $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path)->unwrap();
         }
     }
 

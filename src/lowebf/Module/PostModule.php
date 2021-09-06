@@ -6,6 +6,7 @@ use lowebf\Environment;
 use lowebf\Data\Post;
 use lowebf\Error\FileNotFoundException;
 use lowebf\Error\NotPersistableException;
+use lowebf\Result;
 
 class PostModule extends Module
 {
@@ -45,7 +46,10 @@ class PostModule extends Module
         return $this->env->asAbsoluteDataPath("posts/$postId.$fileExtension");
     }
 
-    public function findPostPath(string $postId) : ?string
+    /**
+     * @return Result<string>
+     * */
+    public function findPostPath(string $postId) : Result
     {
         $postDirectory = $this->env->asAbsoluteDataPath("posts");
         return $this->env->findWithoutFileExtension($postDirectory, $postId);
@@ -60,9 +64,10 @@ class PostModule extends Module
     {
         if ($this->posts === null) {
             $postDirectory = $this->env->asAbsoluteDataPath("posts");
+            $posts = $this->env->listDirectory($postDirectory)->unwrapOr([]);
             $this->posts = [];
 
-            foreach ($this->env->listDirectory($postDirectory) as $postPath) {
+            foreach ($posts as $postPath) {
                 try {
                     $this->posts[] = Post::loadFromFile($this->env, $postPath);
                 } catch (NotPersistableException $e) {
@@ -76,10 +81,13 @@ class PostModule extends Module
         return $this->posts;
     }
 
-    public function loadPage(int $pageNumber) : array
+    /**
+     * @return Result<array<Post>>
+     * */
+    public function loadPage(int $pageNumber) : Result
     {
         if ($pageNumber <= 0) {
-            throw new \Exception("invalid page number: $pageNumber");
+            return Result::error(new \Exception("invalid page number: $pageNumber"));
         }
 
         $posts = $this->loadPosts();
@@ -87,18 +95,20 @@ class PostModule extends Module
         $offset = ($pageNumber - 1) * $postsPerPage;
         $postsOnPage = array_slice($posts, $offset, $postsPerPage);
 
-        return $postsOnPage;
+        return Result::ok($postsOnPage);
     }
 
-    public function load(string $postId) : Post
+    /**
+     * @return Result<Post>
+     * */
+    public function load(string $postId) : Result
     {
-        $path = $this->findPostPath($postId);
-
-        if ($path === null) {
-            throw new FileNotFoundException("$postId");
+        try {
+            $path = $this->findPostPath($postId)->unwrap();
+            return Post::loadFromFile($this->env, $path);
+        } catch (\Exception $e) {
+            return Result::error($e);
         }
-
-        return Post::loadFromFile($this->env, $path);
     }
 
     public function loadOrCreate(string $postId) : Post

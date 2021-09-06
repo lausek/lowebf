@@ -3,6 +3,7 @@
 namespace lowebf\Module;
 
 use lowebf\Data\ContentUnit;
+use lowebf\Result;
 
 class ContentModule extends Module
 {
@@ -11,7 +12,10 @@ class ContentModule extends Module
         return $this->env->asAbsoluteDataPath("content/$contentUnitId");
     }
 
-    public function load(string $contentUnitId) : ContentUnit
+    /**
+     * @return Result<ContentUnit>
+     * */
+    public function load(string $contentUnitId) : Result
     {
         $path = $this->getContentUnitPath($contentUnitId);
         return ContentUnit::loadFromFile($this->env, $path);

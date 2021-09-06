@@ -14,6 +14,7 @@ use lowebf\Module\PostModule;
 use lowebf\Module\RouteModule;
 use lowebf\Module\ThumbnailModule;
 use lowebf\Module\ViewModule;
+use lowebf\Result;
 
 class Environment
 {
@@ -150,7 +151,10 @@ class Environment
     }
 
     // TODO: deprecated
-    public function loadFile(string $path) : string
+    /**
+     * @return Result<string>
+     * */
+    public function loadFile(string $path) : Result
     {
         return $this->filesystem()->loadFile($path);
     }
@@ -176,20 +180,19 @@ class Environment
     /**
      * Extension Order: yaml > json > md
      *
-     * @return string|null
+     * @return Result<string>
      * */
-    public function findWithoutFileExtension(string $directory, string $fileName) : ?string
+    public function findWithoutFileExtension(string $directory, string $fileName) : Result
     {
         $fileExtensions = ["yaml", "yml", "json", "md", "markdown"];
 
-        try {
-            $files = $this->filesystem()->listDirectory($directory);
-        } catch (FileNotFoundException $e) {
-            return null;
+        $result = $this->filesystem()->listDirectory($directory);
+        if ($result->isError()) {
+            return $result;
         }
 
         $files = array_filter(
-            $files,
+            $result->unwrap(),
             function($value, $filePath) use ($fileName) {
                 return !is_array($value) && pathinfo($filePath, PATHINFO_FILENAME) === $fileName;
             },
@@ -200,24 +203,27 @@ class Environment
             $matchingFile = "$fileName.$fileExtension";
 
             if (array_key_exists($matchingFile, $files)) {
-                return $files[$matchingFile];
+                return Result::ok($files[$matchingFile]);
             }
         }
 
-        return null;
+        return Result::error(new FileNotFoundException("$fileName in $directory"));
     }
 
     // TODO: deprecated
     /**
-     * @return an array of files where the key is the relative and the value is the absolute path.
+     * @return Result<array> an array of files where the key is the relative and the value is the absolute path.
      * @throws FileNotFoundException
      * */
-    public function listDirectory(string $path) : array
+    public function listDirectory(string $path) : Result
     {
         return $this->filesystem()->listDirectory($path);
     }
 
-    public function listDirectoryRecursive(string $path, int $depth = PHP_INT_MAX) : array
+    /**
+     * @return Result<array>
+     * */
+    public function listDirectoryRecursive(string $path, int $depth = PHP_INT_MAX) : Result
     {
         return $this->filesystem()->listDirectoryRecursive($path, $depth);
     }

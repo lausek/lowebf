@@ -62,8 +62,8 @@ final class EnvironmentTest extends TestCase
         dummy("/tmp/lsCache/deep/c");
 
         $env = new Environment("/tmp/");
-        $files = $env->listDirectory("/tmp/lsCache");
-        $filesDeep = $env->listDirectoryRecursive("/tmp/lsCache");
+        $files = $env->listDirectory("/tmp/lsCache")->unwrap();
+        $filesDeep = $env->listDirectoryRecursive("/tmp/lsCache")->unwrap();
 
         $this->assertArrayHasKey("a", $files);
         $this->assertArrayHasKey("b", $files);
@@ -79,7 +79,7 @@ final class EnvironmentTest extends TestCase
         dummy("/tmp/lsRecCache/d/e/f");
 
         $env = new Environment("/tmp/");
-        $files = $env->filesystem()->listDirectoryRecursive("/tmp/lsRecCache", 2);
+        $files = $env->filesystem()->listDirectoryRecursive("/tmp/lsRecCache", 2)->unwrap();
 
         $this->assertArrayHasKey("a", $files);
         $this->assertArrayHasKey("b", $files);
@@ -95,9 +95,9 @@ final class EnvironmentTest extends TestCase
         $env->saveFile("/ve/data/posts/2021-09-01-b.json", "");
         $env->saveFile("/ve/data/posts/2021-09-15-c.yaml", "");
 
-        $this->assertSame("/ve/data/posts/2021-09-01-a.md", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-a"));
-        $this->assertSame("/ve/data/posts/2021-09-01-b.json", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-b"));
-        $this->assertSame("/ve/data/posts/2021-09-15-c.yaml", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-15-c"));
+        $this->assertSame("/ve/data/posts/2021-09-01-a.md", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-a")->unwrap());
+        $this->assertSame("/ve/data/posts/2021-09-01-b.json", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-01-b")->unwrap());
+        $this->assertSame("/ve/data/posts/2021-09-15-c.yaml", $env->findWithoutFileExtension("/ve/data/posts", "2021-09-15-c")->unwrap());
     }
 
     public function testFindMatchingFilePreference()
@@ -106,14 +106,14 @@ final class EnvironmentTest extends TestCase
         $env->saveFile("/ve/data/config.yaml", "");
         $env->saveFile("/ve/data/config.md", "");
 
-        $this->assertSame("/ve/data/config.yaml", $env->findWithoutFileExtension("/ve/data", "config"));
+        $this->assertSame("/ve/data/config.yaml", $env->findWithoutFileExtension("/ve/data", "config")->unwrap());
     }
 
     public function testFindMatchingFileNotFound()
     {
         $env = new VirtualEnvironment("/ve");
 
-        $this->assertNull($env->findWithoutFileExtension("/ve/data", "config"));
+        $this->assertNull($env->findWithoutFileExtension("/ve/data", "config")->unwrapOr(null));
     }
 
     public function testRaiseExceptionOnPathListing()
@@ -121,7 +121,7 @@ final class EnvironmentTest extends TestCase
         $this->expectException(FileNotFoundException::class);
         $env = new VirtualEnvironment("/ve");
 
-        $env->listDirectory("/ve/data");
+        $env->listDirectory("/ve/data")->unwrap();
     }
 
     public function testModificationOfRootPath()

@@ -4,6 +4,7 @@ namespace lowebf\Persistance;
 
 use lowebf\Environment;
 use lowebf\Error\InvalidFileFormatException;
+use lowebf\Result;
 
 use Michelf\Markdown;
 use Spyc;
@@ -37,9 +38,16 @@ class PersistorMarkdown implements IPersistance
         return $matches;
     }
 
-    public function load(Environment $env, string $path) : array
+    /**
+     * @return Result<string>
+     * */
+    public function load(Environment $env, string $path) : Result
     {
-        $rawContent = $env->loadFile($path);
+        $result = $env->loadFile($path);
+        if ($result->isError()) {
+            return $result;
+        }
+        $rawContent = $result->unwrap();
 
         $matches = $this->extractMetaInformation($rawContent);
 
@@ -50,7 +58,7 @@ class PersistorMarkdown implements IPersistance
             $parsed["content"] = $rawContent;
         }
 
-        return $parsed;
+        return Result::ok($parsed);
     }
 
     public function save(Environment $env, string $path, array $data)

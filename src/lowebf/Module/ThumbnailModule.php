@@ -2,6 +2,8 @@
 
 namespace lowebf\Module;
 
+use lowebf\Result;
+
 class ThumbnailModule extends Module
 {
     public function cacheKey(string $subpath) : string
@@ -21,16 +23,23 @@ class ThumbnailModule extends Module
         return $this->env->hasFile($cachePath);
     }
 
-    private function generateThumbnailImagick(string $subpath) : string
+    /**
+     * @return Result<string>
+     * */
+    private function generateThumbnailImagick(string $subpath) : Result
     {
         $originalPath = $this->env->route()->pathFor($subpath);
         $height = 128;
         $width = 128;
 
         $image = new \Imagick();
+        $result = $this->env->filesystem()->loadFile($originalPath);
+        if ($result->isError()) {
+            return $result;
+        }
 
         // load image from filesystem
-        $image->readImageBlob($this->env->filesystem()->loadFile($originalPath));
+        $image->readImageBlob($result->unwrap());
         // remove metadata
         $image->stripImage();
         // scale to thumbnail size with $bestfit option enabled
@@ -40,13 +49,22 @@ class ThumbnailModule extends Module
 
         $image->destroy();
 
-        return $blob;
+        return Result::ok($blob);
     }
 
-    private function generateThumbnailGd(string $subpath) : string
+    /**
+     * @return Result<string>
+     * */
+    private function generateThumbnailGd(string $subpath) : Result
     {
         $originalPath = $this->env->route()->pathFor($subpath);
-        $content = $this->env->filesystem()->loadFile($originalPath);
+        $result = $this->env->filesystem()->loadFile($originalPath);
+        if ($result->isError()) {
+            return $result;
+        }
+
+        $content = $result->unwrap();
+
         $oldImage = imagecreatefromstring($content);
         $extension = pathinfo($subpath, PATHINFO_EXTENSION);
         $extension = strtolower($extension);
@@ -101,16 +119,18 @@ class ThumbnailModule extends Module
             ob_end_clean();
         }
 
-        return $buffer;
+        return Result::ok($buffer);
     }
 
     public function generateThumbnailFor(string $subpath) : string
     {
         if (extension_loaded("imagick")) {
-            $content = $this->generateThumbnailImagick($subpath);
+            $result = $this->generateThumbnailImagick($subpath);
         } else {
-            $content = $this->generateThumbnailGd($subpath);
+            $result = $this->generateThumbnailGd($subpath);
         }
+
+        $content = $result->unwrap();
 
         $this->env->cache()->set($this->cacheKey($subpath), $content);
 

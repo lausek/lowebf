@@ -4,6 +4,9 @@ namespace lowebf;
 
 use lowebf\Error\ConversionException;
 
+/**
+ * @template T
+ * */
 class Result
 {
     /** @var int */
@@ -13,8 +16,10 @@ class Result
 
     /** @var int */
     private $state;
+    /** @var T|\Throwable */
     private $argument;
 
+    /** @param T|\Throwable $argument */
     private function __construct(int $state, $argument)
     {
         $this->state = $state;
@@ -26,7 +31,7 @@ class Result
         return new Result(self::OK_STATE, $value);
     }
 
-    public static function error($e) : Result
+    public static function error(\Throwable $e) : Result
     {
         return new Result(self::ERROR_STATE, $e);
     }

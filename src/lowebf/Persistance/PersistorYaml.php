@@ -3,6 +3,7 @@
 namespace lowebf\Persistance;
 
 use lowebf\Environment;
+use lowebf\Result;
 
 use Spyc;
 
@@ -20,10 +21,18 @@ class PersistorYaml implements IPersistance
         return self::$instance;
     }
 
-    public function load(Environment $env, string $path) : array
+    /**
+     * @return Result<string>
+     * */
+    public function load(Environment $env, string $path) : Result
     {
-        $rawContent = $env->loadFile($path);
-        return Spyc::YAMLLoadString($rawContent);
+        $result = $env->loadFile($path);
+        if ($result->isError()) {
+            return $result;
+        }
+
+        $content = Spyc::YAMLLoadString($result->unwrap());
+        return Result::ok($content);
     }
 
     public function save(Environment $env, string $path, array $data)

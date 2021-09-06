@@ -3,6 +3,7 @@
 namespace lowebf\Filesystem;
 
 use lowebf\Error\FileNotFoundException;
+use lowebf\Result;
 
 class VirtualFilesystem extends CoreFilesystem
 {
@@ -48,13 +49,16 @@ class VirtualFilesystem extends CoreFilesystem
         return 0;
     }
 
-    public function listDirectory(string $filename) : array
+    /**
+     * @return Result<array>
+     * */
+    public function listDirectory(string $filename) : Result
     {
         $path = rtrim($filename, "/");
         $filtered = [];
 
         if (!$this->exists($path)) {
-            throw new FileNotFoundException($path);
+            return Result::error(new FileNotFoundException($path));
         }
 
         foreach ($this->filesystem as $key => $value) {
@@ -80,22 +84,25 @@ class VirtualFilesystem extends CoreFilesystem
             }
         }
 
-        return $filtered;
+        return Result::ok($filtered);
     }
 
-    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : array
+    /**
+     * @return Result<array>
+     * */
+    private function listDirectoryRecursiveInner(string $filename, int $maxDepth, int $currentDepth) : Result
     {
         $currentDepth += 1;
 
         if ($maxDepth < $currentDepth) {
-            return [];
+            return Result::ok([]);
         }
 
         $path = rtrim($filename, "/");
         $filtered = [];
 
         if (!$this->exists($path)) {
-            throw new FileNotFoundException($path);
+            return Result::error(new FileNotFoundException($path));
         }
 
         foreach ($this->filesystem as $key => $value) {
@@ -119,7 +126,12 @@ class VirtualFilesystem extends CoreFilesystem
             // if $key is a directory -> add nested files and directories
             if (is_array($value)) {
                 $directoryPath = "$path/$keyWithoutParent";
-                $filtered[$keyWithoutParent] = $this->listDirectoryRecursiveInner($directoryPath, $maxDepth, $currentDepth);
+                $recursiveListingResult = $this->listDirectoryRecursiveInner($directoryPath, $maxDepth, $currentDepth);
+                if ($recursiveListingResult->isError()) {
+                    return $recursiveListingResult;
+                }
+
+                $filtered[$keyWithoutParent] = $recursiveListingResult->unwrap();
             } else {
                 $filtered[$keyWithoutParent] = "$path/$keyWithoutParent";
             }
@@ -127,21 +139,27 @@ class VirtualFilesystem extends CoreFilesystem
 
         $currentDepth -= 1;
 
-        return $filtered;
+        return Result::ok($filtered);
     }
 
-    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : array
+    /**
+     * @return Result<array>
+     * */
+    public function listDirectoryRecursive(string $filename, int $depth = PHP_INT_MAX) : Result
     {
         return $this->listDirectoryRecursiveInner($filename, $depth, 0);
     }
 
-    public function loadFile(string $filename) : string
+    /**
+     * @return Result<string>
+     * */
+    public function loadFile(string $filename) : Result
     {
         if (!isset($this->filesystem[$filename])) {
-            throw new FileNotFoundException($filename);
+            return Result::error(new FileNotFoundException($filename));
         }
 
-        return $this->filesystem[$filename];
+        return Result::ok($this->filesystem[$filename]);
     }
 
     public function saveFile(string $filename, $content)

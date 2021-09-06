@@ -9,6 +9,7 @@ use lowebf\Persistance\IPersistance;
 use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
 use lowebf\Persistance\PersistorYaml;
+use lowebf\Result;
 
 class ContentUnit implements IStorable
 {
@@ -62,17 +63,22 @@ class ContentUnit implements IStorable
     /*
      * @param string $path
      * @param IPersistance $persistance
-     * @return ContentUnit
-     * @throws NotPersistableException
+     * @return Result<ContentUnit>
      */
-    public static function loadFromFile(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
+    public static function loadFromFile(Environment $env, string $path, IPersistance $persistance = null) : Result
     {
-        if ($persistance === null) {
-            $persistance = self::getPersistorFromPath($path);
+        try {
+            if ($persistance === null) {
+                $persistance = self::getPersistorFromPath($path);
+            }
+
+            $data = $persistance->load($env, $path)->unwrap();
+        } catch (\Exception $e) {
+            return Result::error($e);
         }
 
-        $data = $persistance->load($env, $path);
-        return new ContentUnit($env, $path, $data, $persistance);
+        $contentUnit = new ContentUnit($env, $path, $data, $persistance);
+        return Result::ok($contentUnit);
     }
 
     /*
@@ -83,12 +89,14 @@ class ContentUnit implements IStorable
      */
     public static function loadFromFileOrCreate(Environment $env, string $path, IPersistance $persistance = null) : ContentUnit
     {
-        if ($persistance === null) {
-            $persistance = self::getPersistorFromPath($path);
+        $loadFileResult = self::loadFromFile($env, $path, $persistance);
+        if ($loadFileResult->isOk()) {
+            return $loadFileResult->unwrap();
         }
 
         try {
-            $data = $persistance->load($env, $path);
+            $persistance = self::getPersistorFromPath($path);
+            $data = $persistance->load($env, $path)->unwrap();
         } catch (FileNotFoundException $e) {
             // ignore exception if loading fails
             $data = [];

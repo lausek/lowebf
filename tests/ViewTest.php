@@ -161,7 +161,7 @@ final class ViewTest extends TestCase
         $env->saveFile("/ve/site/template/post-view.html", "{{ data.date|date('Y-m-d') }} with {{ data.content|raw }}");
         $env->config()->set("cacheEnabled", false);
 
-        $post = $env->posts()->load("2021-09-01-a");
+        $post = $env->posts()->load("2021-09-01-a")->unwrap();
         $this->assertSame("2021-09-01 with <p>hereisasecret</p>", $env->view()->renderToString("post-view.html", $post));
     }
 
