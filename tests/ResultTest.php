@@ -62,4 +62,40 @@ final class ResultTest extends TestCase
 
         $result->unwrapOrExit($env, $exitWithCode);
     }
+
+    public function testUnwrapOr()
+    {
+        $this->assertSame(33, Result::ok(33)->unwrapOr(44));
+        $this->assertSame(44, Result::error(new \Exception())->unwrapOr(44));
+    }
+
+    public function testMapOk()
+    {
+        $this->assertSame(
+            44,
+            Result::ok(33)->mapOk(
+                function ($i) {
+                    return $i + 11;
+                }
+            )
+                ->unwrap()
+        );
+
+        $this->assertSame(
+            44,
+            Result::error(new \Exception())->mapOk(
+                function ($_) {
+                    return 0;
+                }
+            )
+                ->unwrapOr(44)
+        );
+    }
+
+    public function testMapOkTwice()
+    {
+        $increment = function ($i) { return $i + 1; };
+        $result = Result::ok(1)->mapOk($increment)->mapOk($increment);
+        $this->assertSame(3, $result->unwrap());
+    }
 }
