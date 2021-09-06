@@ -1,0 +1,8 @@
+src/**/*
+tests/**/*
+composer.phar
+vendor/**/*
+var/**/*
+.ignore/*
+.phpdoc/*
+.phan/*
