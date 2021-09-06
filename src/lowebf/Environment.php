@@ -9,6 +9,7 @@ use lowebf\Module\CacheModule;
 use lowebf\Module\ConfigModule;
 use lowebf\Module\ContentModule;
 use lowebf\Module\DownloadModule;
+use lowebf\Module\GlobalsModule;
 use lowebf\Module\PostModule;
 use lowebf\Module\RouteModule;
 use lowebf\Module\ThumbnailModule;
@@ -33,6 +34,8 @@ class Environment
 	    protected $contentModule = null;
     /** @var DownloadModule|null */
 	    protected $downloadModule = null;
+    /** @var GlobalsModule|null */
+	    protected $globalsModule = null;
     /** @var PostModule|null */
 	    protected $postModule = null;
     /** @var RouteModule|null */
@@ -253,6 +256,15 @@ class Environment
         }
 
         return $this->downloadModule;
+    }
+
+    public function globals() : GlobalsModule
+    {
+        if ($this->globalsModule === null) {
+            $this->globalsModule = new GlobalsModule($this);
+        }
+
+        return $this->globalsModule;
     }
 
     public function filesystem() : CoreFilesystem
