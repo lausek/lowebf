@@ -63,7 +63,8 @@ final class RouteTest extends TestCase
     public function testChangingScriptPath()
     {
         $env = new VirtualEnvironment("/ve");
-        $env->config()->set("routeScriptPath", "/nested/relay.php");
+        $env->config()->lowebf()->setRoutePath("/nested/relay.php");
+        $env->config()->save();
 
         $this->assertSame("/nested/relay.php?x=/media/img/abc.png", $env->route()->urlFor("/media/img/abc.png"));
         $this->assertSame("/nested/relay.php?x=/media/img/abc.png", $env->route()->urlFor("media/img/abc.png"));

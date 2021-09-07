@@ -74,14 +74,4 @@ class ConfigModule extends Module implements IStorable
 
         return new FrameworkConfig($data);
     }
-
-    public function getRouteScriptPath() : string
-    {
-        return $this->get("routeScriptPath", "/route.php");
-    }
-
-    public function setRouteScriptPath(string $path)
-    {
-        $this->set("routeScriptPath", $path);
-    }
 }

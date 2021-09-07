@@ -45,7 +45,7 @@ class RouteModule extends Module
         * @throws FileNotFoundException */
     public function urlFor(string $subpath) : string
     {
-        $scriptPath = $this->env->config()->getRouteScriptPath();
+        $scriptPath = $this->env->config()->lowebf()->getRoutePath();
         $scriptPath = ltrim($scriptPath, "/");
         $subpath = ltrim($subpath, "/");
 

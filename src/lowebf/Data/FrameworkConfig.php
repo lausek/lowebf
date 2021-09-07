@@ -6,6 +6,7 @@ class FrameworkConfig
 {
     const CACHE_OPTION = "cacheEnabled";
     const DEBUG_OPTION = "debugEnabled";
+    const ROUTE_PATH_OPTION = "routePath";
 
     /** @var array */
     private $data;
@@ -41,5 +42,19 @@ class FrameworkConfig
     public function setDebugEnabled(bool $state)
     {
         $this->data[self::DEBUG_OPTION] = $state;
+    }
+
+    public function getRoutePath() : string
+    {
+        if (isset($this->data[self::ROUTE_PATH_OPTION])) {
+            return $this->data[self::ROUTE_PATH_OPTION];
+        }
+
+        return "/route.php";
+    }
+
+    public function setRoutePath(string $path)
+    {
+        $this->data[self::ROUTE_PATH_OPTION] = $path;
     }
 }
