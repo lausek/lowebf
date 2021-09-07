@@ -55,7 +55,7 @@ $env = lowebf\Environment::getInstance();
 //
 //     $pageNumber = $_GET["p"] ?? 1;
 //
-// but it allowes you to terminate the program 
+// but it allows you to terminate the program 
 // using `unwrapOrExit($env)` if the variable is not present.
 $pageNumber = $env->globals()->get("p")->unwrapOr(1);
 
