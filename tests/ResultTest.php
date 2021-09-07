@@ -122,4 +122,50 @@ final class ResultTest extends TestCase
     {
         $this->assertSame("1.2", Result::ok(1.2)->mapToString()->unwrap());
     }
+
+    public function testUnwrapErrorValue()
+    {
+        $e = new \Exception("example exception");
+        $result = Result::error($e);
+
+        $this->assertTrue($result->isError());
+        $this->assertSame($e, $result->unwrapError());
+    }
+
+    public function testUnwrapErrorValueWhenOk()
+    {
+        $this->expectException(\Exception::class);
+        $result = Result::error(new \Exception("example exception"));
+        $result->unwrap();
+    }
+
+    public function testUnwrapAndExitWhileDebugging()
+    {
+        $runtime = $this->createMock(PhpRuntime::class);
+        $env = new VirtualEnvironment();
+        $env->config()->lowebf()->setDebugEnabled(true);
+
+        $runtime->expects($this->once())
+            ->method("writeOutput")
+            ->with($this->anything());
+
+        $env->setRuntime($runtime);
+
+        Result::error(new \Exception("an error occurred"))->unwrapOrExit($env);
+    }
+
+    public function testUnwrapAndExitNoMessage()
+    {
+        $runtime = $this->createMock(PhpRuntime::class);
+        $env = new VirtualEnvironment();
+        $env->config()->lowebf()->setDebugEnabled(false);
+
+        $runtime->expects($this->never())
+            ->method("writeOutput")
+            ->with($this->anything());
+
+        $env->setRuntime($runtime);
+
+        Result::error(new \Exception("an error occurred"))->unwrapOrExit($env);
+    }
 }

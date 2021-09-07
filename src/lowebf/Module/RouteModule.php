@@ -58,6 +58,7 @@ class RouteModule extends Module
 
     public function absoluteUrlFor(string $subpath) : string
     {
+        // TODO: access superglobals through lowebf
         $protocol = isset($_SERVER["PROTOCOL"]) ? $_SERVER["PROTOCOL"] : "https";
         $host = isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "localhost";
 

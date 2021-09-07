@@ -60,6 +60,21 @@ class Result
         return $this->argument;
     }
 
+    /**
+     * try to return operations result.throws exception if result is not successful.
+     *
+     * @return \Throwable
+     * @throws \Exception
+     * */
+    public function unwrapError() : \Throwable
+    {
+        if ($this->isOk()) {
+            throw new \Exception("called unwrapError on OK value.");
+        }
+
+        return $this->argument;
+    }
+
     // unwrap the result or use default
     public function unwrapOr($default)
     {
@@ -77,6 +92,12 @@ class Result
             $statusCode = $statusCode ?? $this->getStatusCodeFromException($this->argument);
 
             $env->runtime()->clearOutputBuffer();
+
+            if ($env->config()->lowebf()->isDebugEnabled()) {
+                $stacktrace = $this->unwrapError();
+                $env->runtime()->writeOutput("<pre>$stacktrace</pre>");
+            }
+
             $env->runtime()->exit($statusCode);
 
             return;
