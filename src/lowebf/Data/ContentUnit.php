@@ -129,6 +129,15 @@ class ContentUnit implements IStorable
         return $default;
     }
 
+    public function &getReferenceOrInsert(string $name, $default = null)
+    {
+        if (!isset($this->data[$name])) {
+            $this->data[$name] = $default;
+        }
+
+        return $this->data[$name];
+    }
+
     public function set(string $name, $value)
     {
         $this->data[$name] = $value;

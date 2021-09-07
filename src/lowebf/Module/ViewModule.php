@@ -21,8 +21,8 @@ class ViewModule extends Module
 
         $twigOptions = [];
 
-        $twigOptions["cache"] = $env->config()->isCacheEnabled() ? new Cache($env) : false;
-        $twigOptions["debug"] = $env->config()->isDebugEnabled();
+        $twigOptions["cache"] = $env->config()->lowebf()->isCacheEnabled() ? new Cache($env) : false;
+        $twigOptions["debug"] = $env->config()->lowebf()->isDebugEnabled();
 
         // Environment implements the Twig LoaderInterface
         $loader = new TemplateLoader($env);

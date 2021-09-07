@@ -44,7 +44,8 @@ final class ConfigTest extends TestCase
         $env->saveFile("/ve/data/config.yaml", $fileContent);
         $config = $env->config();
 
-        $this->assertSame(false, $config->get("debugEnabled"));
+        $this->assertSame(false, $config->lowebf()->isDebugEnabled());
+        $this->assertSame(true, $config->lowebf()->isCacheEnabled());
         $this->assertSame(null, $config->get("cacheEnabled"));
         $this->assertSame(true, $config->get("cacheEnabled", true));
     }

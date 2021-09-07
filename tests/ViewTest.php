@@ -26,7 +26,7 @@ final class ViewTest extends TestCase
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/template/main.html", $rawTemplate);
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $runtime = $this->createMock(PhpRuntime::class);
 
@@ -48,7 +48,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/css/main.css", "");
         $env->saveFile("/ve/site/template/render-main.html", "{{ stylesheet('main.css') }}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame(
             "<link rel='stylesheet' type='text/css' href='/route.php?x=/css/main.css'/>",
@@ -61,7 +61,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/css/main.scss", "");
         $env->saveFile("/ve/site/template/scss.html", "{{ stylesheet('main.scss') }}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame(
             "<link rel='stylesheet' type='text/css' href='/route.php?x=/cache/css/main-0.css'/>",
@@ -78,7 +78,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-01-01-a.yaml", $postContent);
         $env->saveFile("/ve/site/template/headers.html", $rawTemplate);
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $post = $env->posts()->load("2021-01-01-a");
         $renderedTemplate = $env->view()->renderToString("headers.html", (array)$post);
@@ -93,7 +93,7 @@ final class ViewTest extends TestCase
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/template/limit.html", $rawTemplate);
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame("abc", $env->view()->renderToString("limit.html", ["str" => "abc"]));
         $this->assertSame("ab…", $env->view()->renderToString("limit.html", ["str" => "abcd"]));
@@ -105,14 +105,14 @@ final class ViewTest extends TestCase
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/template/url.html", $rawTemplate);
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame("/view.php?id=abc", $env->view()->renderToString("url.html"));
     }
 
     public function testSettingDebugMode()
     {
-        $configYaml = "debugEnabled: true\n";
+        $configYaml = "lowebf:\n\tdebugEnabled: true\n";
 
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/config.yaml", $configYaml);
@@ -137,7 +137,7 @@ final class ViewTest extends TestCase
         $jsAbsoluteTemplate = "{{ resourceAbsoluteUrl('/js/mobile.js') }}";
 
         $env = new VirtualEnvironment("/ve");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
         $env->saveFile("/ve/site/template/css.html", $cssTemplate);
         $env->saveFile("/ve/site/template/img.html", $imgTemplate);
         $env->saveFile("/ve/site/template/js.html", $jsTemplate);
@@ -159,7 +159,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-09-01-a.md", "---\n---\nhereisasecret");
         $env->saveFile("/ve/site/template/post-view.html", "{{ data.date|date('Y-m-d') }} with {{ data.content|raw }}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $post = $env->posts()->load("2021-09-01-a")->unwrap();
         $this->assertSame("2021-09-01 with <p>hereisasecret</p>", $env->view()->renderToString("post-view.html", $post));
@@ -170,7 +170,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/content/info.yaml", "age: 55\n");
         $env->saveFile("/ve/site/template/content-view.html", "{{ data.age }}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $content = $env->content()->load("info.yaml")->unwrap();
         $this->assertSame("55", $env->view()->renderToString("content-view.html", $content));
@@ -181,7 +181,7 @@ final class ViewTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/config.yaml", "title: My Homepage\n");
         $env->saveFile("/ve/site/template/config-view.html", "{{ config.title }}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame("My Homepage", $env->view()->renderToString("config-view.html"));
     }
@@ -190,7 +190,7 @@ final class ViewTest extends TestCase
     {
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/site/template/is-array.html", "{% if data is array %}yes{% else %}no{% endif %}");
-        $env->config()->set("cacheEnabled", false);
+        $env->config()->lowebf()->setCacheEnabled(false);
 
         $this->assertSame("no", $env->view()->renderToString("is-array.html", 1));
         $this->assertSame("yes", $env->view()->renderToString("is-array.html", [1, 2]));

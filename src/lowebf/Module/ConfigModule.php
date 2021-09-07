@@ -3,6 +3,7 @@
 namespace lowebf\Module;
 
 use lowebf\Data\ContentUnit;
+use lowebf\Data\FrameworkConfig;
 use lowebf\Data\IStorable;
 use lowebf\Environment;
 
@@ -67,14 +68,11 @@ class ConfigModule extends Module implements IStorable
         $this->contentUnit->save();
     }
 
-    public function isCacheEnabled() : bool
+    public function lowebf() : FrameworkConfig
     {
-        return $this->get("cacheEnabled", true) === true;
-    }
+        $data = &$this->contentUnit->getReferenceOrInsert("lowebf", []);
 
-    public function isDebugEnabled() : bool
-    {
-        return $this->get("debugEnabled", false) === true;
+        return new FrameworkConfig($data);
     }
 
     public function getRouteScriptPath() : string
