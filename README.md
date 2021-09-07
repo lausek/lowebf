@@ -10,6 +10,7 @@ The `lowebf\Environment` class offers modules each solving a specific use case:
 | Config | Access configuration values |
 | Content | Read a JSON, YAML, or Markdown file |
 | Download | Send a downloadable file |
+| Globals | Access php [superglobals](https://www.php.net/manual/en/language.variables.superglobals) in a safe manner |
 | Post | Read a news entry from file |
 | Route | Generate url for static files |
 | Thumbnail | Generate thumbnails for images |
@@ -18,8 +19,12 @@ The `lowebf\Environment` class offers modules each solving a specific use case:
 ## Features
 
 - [X] Define site content and configuration in your preferred format (JSON, YAML, Markdown)
-- [X] Markdown extensions for embedding videos by url
 - [X] SCSS compiler
+- [X] Result type for handling operation outcome
+- [X] Markdown extensions for embedding videos by url
+
+### Non-Features
+
 - [X] No database connections
 - [X] No models
 - [X] No routing layer
@@ -45,10 +50,20 @@ require "autoload.php";
 // create the default instance of our environment
 $env = lowebf\Environment::getInstance();
 
+// read a value from the php superglobals
+// passed to your current script. this is equal to:
+//
+//     $pageNumber = $_GET["p"] ?? 1;
+//
+// but it allowes you to terminate the program 
+// using `unwrapOrExit($env)` if the variable is not present.
+$pageNumber = $env->globals()->get("p")->unwrapOr(1);
+
 // load a specific post page from your `data/posts` directory.
 // by default, 15 posts are displayed in one page.
-$pageNumber = $_GET["p"] ?? 1;
-$page = $env->posts()->loadPage($pageNumber);
+// if the page loading fails -> terminate the script and return
+// a "404 - not found" error.
+$page = $env->posts()->loadPage($pageNumber)->unwrapOrExit($env, 404);
 $maxPage = $env->posts()->getMaxPage();
 
 // render the overview with the selected page
