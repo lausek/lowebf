@@ -68,8 +68,9 @@ class PostModule extends Module
             $this->posts = [];
 
             foreach ($posts as $postPath) {
+                // TODO: how to handle other exceptions?
                 try {
-                    $this->posts[] = Post::loadFromFile($this->env, $postPath);
+                    $this->posts[] = Post::loadFromFile($this->env, $postPath)->unwrap();
                 } catch (NotPersistableException $e) {
                     // file has an unsupported extension and cannot be parsed. skipping.
                 }

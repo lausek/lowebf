@@ -211,7 +211,7 @@ final class PostTest extends TestCase
         $env->saveFile("/ve/site/css/main.css", "");
         $env->saveFile("/ve/data/posts/2021-01-01-a.md", "[link to main.css](/css/main.css)");
 
-        $post = $env->posts()->load("2021-01-01-a");
+        $post = $env->posts()->load("2021-01-01-a")->unwrap();
         $this->assertSame("<p><a href=\"/route.php?x=/css/main.css\">link to main.css</a></p>", $post->getContent());
     }
 
@@ -221,7 +221,7 @@ final class PostTest extends TestCase
         $env->saveFile("/ve/data/media/img/entry.png", "");
         $env->saveFile("/ve/data/posts/2021-01-01-a.md", "![alternative text](/media/img/entry.png)");
 
-        $post = $env->posts()->load("2021-01-01-a");
+        $post = $env->posts()->load("2021-01-01-a")->unwrap();
         $this->assertSame("<p><img src=\"/route.php?x=/media/img/entry.png\" alt=\"alternative text\" /></p>", $post->getContent());
     }
 
@@ -230,7 +230,7 @@ final class PostTest extends TestCase
         $env = new VirtualEnvironment("/ve");
         $env->saveFile("/ve/data/posts/2021-01-01-a.md", "[link to author](https://lausek.eu)");
 
-        $post = $env->posts()->load("2021-01-01-a");
+        $post = $env->posts()->load("2021-01-01-a")->unwrap();
         $this->assertSame("<p><a href=\"https://lausek.eu\">link to author</a></p>", $post->getContent());
     }
 
@@ -239,7 +239,7 @@ final class PostTest extends TestCase
         $env = new VirtualEnvironment();
         $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "---\npreview: <link>\n---\n");
 
-        $post = $env->posts()->load("2021-08-31-lazy-loading");
+        $post = $env->posts()->load("2021-08-31-lazy-loading")->unwrap();
 
         $this->assertSame("<link>", $post->preview);
     }
@@ -250,6 +250,6 @@ final class PostTest extends TestCase
         $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "");
         $env->saveFile("/ve/data/posts/.gitkeep", "");
 
-        $this->assertSame(1, count($env->posts()->loadPosts()->unwrap()));
+        $this->assertSame(1, count($env->posts()->loadPosts()));
     }
 }

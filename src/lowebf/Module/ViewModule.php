@@ -37,6 +37,11 @@ class ViewModule extends Module
         $this->twig->addFunction(new \Twig\TwigFunction("dump", function ($data) { var_dump($data); }));
     }
 
+    public function __debugInfo() : array
+    {
+        return [];
+    }
+
     public function getTwigEnvironment() : \Twig\Environment
     {
         return $this->twig;

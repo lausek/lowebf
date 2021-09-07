@@ -45,7 +45,7 @@ final class StylesheetExtension extends AbstractExtension
                 $compiledCssPath = "css/$fileName-$lastModified.css";
 
                 if (!$this->env->cache()->exists($compiledCssPath)) {
-                    $fileInputContent = $this->env->loadFile($fileInputPath);
+                    $fileInputContent = $this->env->loadFile($fileInputPath)->unwrap();
 
                     $compiledCss = $this->scssCompiler->compile($fileInputContent);
 

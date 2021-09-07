@@ -172,7 +172,7 @@ final class ViewTest extends TestCase
         $env->saveFile("/ve/site/template/content-view.html", "{{ data.age }}");
         $env->config()->set("cacheEnabled", false);
 
-        $content = $env->content()->load("info.yaml");
+        $content = $env->content()->load("info.yaml")->unwrap();
         $this->assertSame("55", $env->view()->renderToString("content-view.html", $content));
     }
 
