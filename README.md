@@ -2,19 +2,7 @@
 
 `lowebf` is a microframework for creating simple websites.
 It provides clean interfaces to separate your site's logic and content.
-The `lowebf\Environment` class offers modules each solving a specific use case:
-
-| Name | Description |
-|---|----|
-| Cache | Write files to the site's caching directory |
-| Config | Access configuration values |
-| Content | Read a JSON, YAML, or Markdown file |
-| Download | Send a downloadable file |
-| Globals | Access php [superglobals](https://www.php.net/manual/en/language.variables.superglobals) in a safe manner |
-| Post | Read a news entry from file |
-| Route | Generate url for static files |
-| Thumbnail | Generate thumbnails for images |
-| View | Render a page template |
+The `lowebf\Environment` class offers modules each solving a specific use case.
 
 ## Features
 
@@ -28,6 +16,20 @@ The `lowebf\Environment` class offers modules each solving a specific use case:
 - [X] No database connections
 - [X] No models
 - [X] No routing layer
+
+### Modules
+
+| Name | Description |
+|---|----|
+| Cache | Write files to the site's caching directory |
+| Config | Access configuration values |
+| Content | Read a JSON, YAML, or Markdown file |
+| Download | Send a downloadable file |
+| Globals | Access php [superglobals](https://www.php.net/manual/en/language.variables.superglobals) in a safe manner |
+| Post | Read a news entry from file |
+| Route | Generate url for static files |
+| Thumbnail | Generate thumbnails for images |
+| View | Render a page template |
 
 ## Example
 
