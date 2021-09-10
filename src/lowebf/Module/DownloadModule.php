@@ -18,6 +18,12 @@ class DownloadModule extends Module
         $path = $this->env->asAbsoluteDataPath("download/$downloadId");
         $filename = pathinfo($path, PATHINFO_BASENAME);
 
+        if (!$this->env->hasFile($path)) {
+            $this->env->runtime()->raiseFileNotFoundAndExit();
+
+            return;
+        }
+
         $this->env->runtime()->setContentTypeFromFile($path);
         $this->env->runtime()->setHeader("Content-Disposition", "attachment; filename=\"$filename\"");
         $this->env->runtime()->sendFromFile($this->env, $path);

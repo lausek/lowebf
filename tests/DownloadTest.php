@@ -56,4 +56,21 @@ final class DownloadTest extends TestCase
         $env->setRuntime($runtime);
         $env->download()->provideAndExit("a.json");
     }
+
+    public function testProvidingFileNotFound()
+    {
+        $env = new VirtualEnvironment();
+
+        $runtime = $this->getMockBuilder(PhpRuntime::class)
+            ->setMethods(["setResponseCode", "exitRuntime"])
+            ->getMock();
+
+        $runtime->expects($this->once())
+            ->method("setResponseCode")
+            ->with(404);
+
+        $env->setRuntime($runtime);
+
+        $env->download()->provideAndExit("a.json");
+    }
 }

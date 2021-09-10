@@ -72,7 +72,7 @@ class RouteModule extends Module
         $path = $this->pathFor($subpath);
 
         if (!$this->env->hasFile($path)) {
-            $this->env->runtime()->exit(404);
+            $this->env->runtime()->raiseFileNotFoundAndExit();
 
             // needed for testing
             return;
