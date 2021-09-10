@@ -78,11 +78,6 @@ class ThumbnailModule extends Module
         $toWidth = $this->getThumbnailSize();
         $fromHeight = (int)imagesy($oldImage);
         $fromWidth = (int)imagesx($oldImage);
-        // take thumbnail from center of image
-        $fromX = intdiv($fromWidth, 2) - intdiv($toWidth, 2);
-        $fromY = intdiv($fromHeight, 2) - intdiv($toHeight, 2);
-
-        // TODO: check coordinate bounds
 
         $newImage = imagecreatetruecolor($toWidth, $toHeight);
         $transparentColor = imagecolorallocatealpha($newImage, 0, 0, 0, 127);
@@ -92,8 +87,8 @@ class ThumbnailModule extends Module
             $oldImage,
             0,
             0,
-            $fromX,
-            $fromY,
+            0,
+            0,
             $toWidth,
             $toHeight,
             $fromWidth,
