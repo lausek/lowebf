@@ -155,4 +155,22 @@ class ThumbnailModule extends Module
 
         return $this->cachePathFor($subpath);
     }
+
+    public function provideAndExit(string $subpath, string $defaulPath = null)
+    {
+        try {
+            $path = $this->pathFor($subpath);
+        } catch(Exception $e) {
+            if($defaultPath === null) {
+                $this->env->runtime()->raiseFileNotFoundAndExit();
+            }
+
+            // exception occurred -> send placeholder thumbnail
+            $path = $defaultPath;
+        }
+
+        $this->env->runtime()->setContentTypeFromFile($path);
+        $this->env->runtime()->sendFromFile($this->env, $path);
+        $this->env->runtime()->exit();
+    }
 }
