@@ -160,7 +160,7 @@ class ThumbnailModule extends Module
     {
         try {
             $path = $this->pathFor($subpath);
-        } catch(Exception $e) {
+        } catch(\Exception $e) {
             if($defaultPath === null) {
                 $this->env->runtime()->raiseFileNotFoundAndExit();
             }
