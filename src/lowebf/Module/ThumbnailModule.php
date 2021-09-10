@@ -47,8 +47,8 @@ class ThumbnailModule extends Module
         $image->readImageBlob($result->unwrap());
         // remove metadata
         $image->stripImage();
-        // scale to thumbnail size with $bestfit option enabled
-        $image->thumbnailImage($width, $height, true);
+        // scale to thumbnail size
+        $image->thumbnailImage($width, $height);
 
         $blob = $image->getImageBlob();
 
