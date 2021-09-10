@@ -43,4 +43,19 @@ final class ThumbnailTest extends TestCase
         $this->assertTrue($env->cache()->exists("thumb/media/img/a.jpeg"));
         $this->assertSame("/ve/cache/thumb/media/img/a.jpeg", $env->thumbnail()->pathFor("/media/img/a.jpeg"));
     }
+
+    public function testDefaultThumbnailSize()
+    {
+        $env = new VirtualEnvironment();
+        // default size is 128
+        $this->assertSame(128, $env->thumbnail()->getThumbnailSize());
+    }
+
+    public function testSettingThumbnailSize()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/config.yaml", "lowebf:\n\tthumbnailSize: 432");
+
+        $this->assertSame(432, $env->thumbnail()->getThumbnailSize());
+    }
 }

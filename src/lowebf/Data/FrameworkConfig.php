@@ -7,6 +7,7 @@ class FrameworkConfig
     const CACHE_OPTION = "cacheEnabled";
     const DEBUG_OPTION = "debugEnabled";
     const ROUTE_PATH_OPTION = "routePath";
+    const THUMBNAIL_OPTION = "thumbnailSize";
 
     /** @var array */
     private $data;
@@ -42,6 +43,15 @@ class FrameworkConfig
     public function setDebugEnabled(bool $state)
     {
         $this->data[self::DEBUG_OPTION] = $state;
+    }
+
+    public function getThumbnailSize() : int
+    {
+        if (isset($this->data[self::THUMBNAIL_OPTION])) {
+            return $this->data[self::THUMBNAIL_OPTION];
+        }
+
+        return 128;
     }
 
     public function getRoutePath() : string

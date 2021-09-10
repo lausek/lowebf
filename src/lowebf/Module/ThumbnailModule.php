@@ -23,14 +23,19 @@ class ThumbnailModule extends Module
         return $this->env->hasFile($cachePath);
     }
 
+    public function getThumbnailSize() : int
+    {
+        return $this->env->config()->lowebf()->getThumbnailSize();
+    }
+
     /**
      * @return Result<string>
      * */
     private function generateThumbnailImagick(string $subpath) : Result
     {
         $originalPath = $this->env->route()->pathFor($subpath);
-        $height = 128;
-        $width = 128;
+        $height = $this->getThumbnailSize();
+        $width = $this->getThumbnailSize();
 
         $image = new \Imagick();
         $result = $this->env->filesystem()->loadFile($originalPath);
@@ -69,8 +74,8 @@ class ThumbnailModule extends Module
         $extension = pathinfo($subpath, PATHINFO_EXTENSION);
         $extension = strtolower($extension);
 
-        $toHeight = 128;
-        $toWidth = 128;
+        $toHeight = $this->getThumbnailSize();
+        $toWidth = $this->getThumbnailSize();
         $fromHeight = (int)imagesy($oldImage);
         $fromWidth = (int)imagesx($oldImage);
         // take thumbnail from center of image
