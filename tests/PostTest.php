@@ -282,4 +282,19 @@ final class PostTest extends TestCase
 
         $this->assertSame(1, count($env->posts()->loadPosts()));
     }
+
+    public function testOverwritingTitle()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "---\ntitle: Something different\n---\n");
+
+        $post = $env->posts()->load("2021-08-31-lazy-loading")->unwrap();
+
+        // title is equal to file name because file content was not loaded
+        $this->assertSame("Lazy Loading", $post->getTitle());
+
+        $post->getContent();
+
+        $this->assertSame("Something different", $post->getTitle());
+    }
 }

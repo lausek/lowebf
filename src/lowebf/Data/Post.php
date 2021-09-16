@@ -87,6 +87,10 @@ class Post
     {
         if ($this->contentUnit === null) {
             $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path)->unwrap();
+
+            if ($this->contentUnit->exists("title")) {
+                $this->title = $this->contentUnit->get("title");
+            }
         }
     }
 
