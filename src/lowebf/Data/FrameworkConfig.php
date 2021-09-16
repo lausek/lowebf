@@ -8,6 +8,7 @@ class FrameworkConfig
     const DEBUG_OPTION = "debugEnabled";
     const ROUTE_PATH_OPTION = "routePath";
     const THUMBNAIL_OPTION = "thumbnailSize";
+    const POST_DESCRIPTION_LENGTH_OPTION = "postDescriptionLength";
 
     /** @var array */
     private $data;
@@ -43,6 +44,15 @@ class FrameworkConfig
     public function setDebugEnabled(bool $state)
     {
         $this->data[self::DEBUG_OPTION] = $state;
+    }
+
+    public function getPostDescriptionLength() : int
+    {
+        if (isset($this->data[self::POST_DESCRIPTION_LENGTH_OPTION])) {
+            return $this->data[self::POST_DESCRIPTION_LENGTH_OPTION];
+        }
+
+        return 50;
     }
 
     public function getThumbnailSize() : int

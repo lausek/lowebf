@@ -205,6 +205,17 @@ final class PostTest extends TestCase
         $this->assertSame("description not…", $env->posts()->load("2021-01-01-a")->unwrap()->getDescription(16));
     }
 
+    public function testDescriptionLengthConfiguration()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/posts/2021-08-31-lazy-loading.md", "abcdef");
+        $env->saveFile("/ve/data/config.yaml", "lowebf:\n\tpostDescriptionLength: 4");
+
+        $post = $env->posts()->load("2021-08-31-lazy-loading")->unwrap();
+
+        $this->assertSame(4, mb_strlen($post->getDescription()));
+    }
+
     public function testUrlMarkdownFilter()
     {
         $env = new VirtualEnvironment("/ve");

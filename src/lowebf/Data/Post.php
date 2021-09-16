@@ -149,8 +149,12 @@ class Post
         return $dateTime;
     }
 
-    public function getDescription(int $maxLen = 50) : string
+    public function getDescription($maxLen = null) : string
     {
+        if ($maxLen === null) {
+            $maxLen = $this->env->config()->lowebf()->getPostDescriptionLength();
+        }
+
         $description = $this->getContent();
         $description = strip_tags($description);
 

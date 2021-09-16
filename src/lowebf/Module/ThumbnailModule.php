@@ -156,12 +156,13 @@ class ThumbnailModule extends Module
         return $this->cachePathFor($subpath);
     }
 
+    // TODO: test $defaultPath
     public function provideAndExit(string $subpath, string $defaulPath = null)
     {
         try {
             $path = $this->pathFor($subpath);
-        } catch(\Exception $e) {
-            if($defaultPath === null) {
+        } catch (\Exception $e) {
+            if ($defaultPath === null) {
                 $this->env->runtime()->raiseFileNotFoundAndExit();
             }
 
