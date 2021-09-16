@@ -86,9 +86,9 @@ final class PostTest extends TestCase
 
         $env->saveFile($postFilePath, "");
 
-        $env->expects($this->never())
+        $env->expects($this->once())
             ->method("loadFile")
-            ->with($postFilePath);
+            ->with($this->equalTo("/ve/data/config.yaml"));
 
         $post = $env->posts()->load("2021-01-02-ab-c-d")->unwrap();
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
@@ -107,10 +107,10 @@ final class PostTest extends TestCase
 
         $env->saveFile($postFilePath, $postFileContent);
 
-        $env->expects($this->once())
+        $env->expects($this->exactly(2))
             ->method("loadFile")
-            ->with($postFilePath)
-            ->will($this->returnValue(Result::ok($postFileContent)));
+            ->withConsecutive(["/ve/data/config.yaml"], [$postFilePath])
+            ->willReturnOnConsecutiveCalls(Result::ok(""), Result::ok($postFileContent));
 
         $post = $env->posts()->load("2021-01-02-ab-c-d")->unwrap();
         $this->assertSame("2021-01-02", $post->getDate()->format("Y-m-d"));
@@ -177,6 +177,25 @@ final class PostTest extends TestCase
         $this->assertSame(["A", "A", "B"], array_map($getTitle, $pageOne));
         $this->assertSame(["A", "C"], array_map($getTitle, $pageTwo));
         $this->assertEmpty($pageThree);
+    }
+
+    public function testPostsPerPageConfiguration()
+    {
+        $env = new VirtualEnvironment("/ve");
+        $this->populateFileSystem($env);
+
+        $env->saveFile("/ve/data/config.yaml", "lowebf:\n\tpostsPerPage: 2");
+
+        $pageOne = $env->posts()->loadPage(1)->unwrap();
+        $pageTwo = $env->posts()->loadPage(2)->unwrap();
+        $pageThree = $env->posts()->loadPage(3)->unwrap();
+        $pageFour = $env->posts()->loadPage(4)->unwrap();
+
+        $this->assertSame(3, $env->posts()->getMaxPage());
+        $this->assertSame(2, count($pageOne));
+        $this->assertSame(2, count($pageTwo));
+        $this->assertSame(2, count($pageThree));
+        $this->assertEmpty($pageFour);
     }
 
     public function testInvalidPageAccess()

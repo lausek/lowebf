@@ -11,9 +11,6 @@ use lowebf\Result;
 class PostModule extends Module
 {
     /** @var int */
-    const DEFAULT_POSTS_PER_PAGE = 15;
-
-    /** @var int */
 	    private $postsPerPage;
 
     /** @var array|null */
@@ -23,7 +20,9 @@ class PostModule extends Module
     {
         parent::__construct($env);
 
-        $this->setPostsPerPage(self::DEFAULT_POSTS_PER_PAGE);
+        $postsPerPage = $this->env->config()->lowebf()->getPostsPerPageAmount();
+
+        $this->setPostsPerPage($postsPerPage);
     }
 
     public function getMaxPage() : int

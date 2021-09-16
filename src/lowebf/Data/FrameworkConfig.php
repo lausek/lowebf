@@ -9,6 +9,7 @@ class FrameworkConfig
     const ROUTE_PATH_OPTION = "routePath";
     const THUMBNAIL_OPTION = "thumbnailSize";
     const POST_DESCRIPTION_LENGTH_OPTION = "postDescriptionLength";
+    const POSTS_PER_PAGE_AMOUNT_OPTION = "postsPerPage";
 
     /** @var array */
     private $data;
@@ -44,6 +45,15 @@ class FrameworkConfig
     public function setDebugEnabled(bool $state)
     {
         $this->data[self::DEBUG_OPTION] = $state;
+    }
+
+    public function getPostsPerPageAmount() : int
+    {
+        if (isset($this->data[self::POSTS_PER_PAGE_AMOUNT_OPTION])) {
+            return $this->data[self::POSTS_PER_PAGE_AMOUNT_OPTION];
+        }
+
+        return 15;
     }
 
     public function getPostDescriptionLength() : int
