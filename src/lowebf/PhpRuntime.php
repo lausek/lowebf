@@ -44,6 +44,17 @@ class PhpRuntime
             case "html":
                 return "text/html";
 
+            case "jpeg":
+                // fallthrough
+            case "jpg":
+                return "image/jpeg";
+
+            case "png":
+                return "image/png";
+
+            case "svg":
+                return "image/svg+xml";
+
             case "js":
                 return "text/javascript";
 
