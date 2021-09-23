@@ -195,4 +195,17 @@ final class ViewTest extends TestCase
         $this->assertSame("no", $env->view()->renderToString("is-array.html", 1));
         $this->assertSame("yes", $env->view()->renderToString("is-array.html", [1, 2]));
     }
+
+    public function testImportingScss()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/site/css/config.scss", "\$color: black;");
+        $env->saveFile("/ve/site/css/example-scss.scss", "@import 'config';");
+        $env->saveFile("/ve/site/template/includes-scss.html", "{{ stylesheet('example-scss.scss') }}");
+        $env->config()->lowebf()->setCacheEnabled(false);
+
+        $env->view()->renderToString("includes-scss.html");
+
+        $this->assertTrue(true);
+    }
 }

@@ -5,9 +5,46 @@ namespace lowebf\Twig\Extension;
 use lowebf\Environment;
 
 use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\Formatter\Crunched;
+use ScssPhp\ScssPhp\FileReader\FileReaderInterface;
+use ScssPhp\ScssPhp\OutputStyle;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+
+class FileReader implements FileReaderInterface
+{
+    /** @var Environment */
+    private $env = null;
+
+    public function __construct(Environment $env)
+    {
+        $this->env = $env;
+    }
+
+    public function isDirectory(string $key) : bool
+    {
+        throw new \Exception("not implemented");
+    }
+
+    public function isFile(string $key) : bool
+    {
+        return $this->env->filesystem()->exists($key);
+    }
+
+    public function getContent(string $key)
+    {
+        return $this->env->filesystem()->loadFile($key)->unwrap();
+    }
+
+    public function getKey(string $key)
+    {
+        return $key;
+    }
+
+    public function getTimestamp(string $key)
+    {
+        return $this->env->filesystem()->lastModified($key);
+    }
+}
 
 final class StylesheetExtension extends AbstractExtension
 {
@@ -22,7 +59,10 @@ final class StylesheetExtension extends AbstractExtension
         $this->env = $env;
 
         $this->scssCompiler = new Compiler();
-        $this->scssCompiler->setFormatter(new Crunched());
+        $this->scssCompiler->setOutputStyle(OutputStyle::COMPRESSED);
+        $this->scssCompiler->addImportPath($env->asAbsolutePath("site/css"));
+
+        $this->scssCompiler->setFileReader(new FileReader($env));
     }
 
     public function getFunctions()
@@ -47,7 +87,7 @@ final class StylesheetExtension extends AbstractExtension
                 if (!$this->env->cache()->exists($compiledCssPath)) {
                     $fileInputContent = $this->env->loadFile($fileInputPath)->unwrap();
 
-                    $compiledCss = $this->scssCompiler->compile($fileInputContent);
+                    $compiledCss = $this->scssCompiler->compileString($fileInputContent);
 
                     $this->env->cache()->set($compiledCssPath, $compiledCss);
                 }
