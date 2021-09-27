@@ -11,6 +11,13 @@ class FrameworkConfig
     const POST_DESCRIPTION_LENGTH_OPTION = "postDescriptionLength";
     const POSTS_PER_PAGE_AMOUNT_OPTION = "postsPerPage";
 
+    const DEFAULT_CACHING_ENABLED = true;
+    const DEFAULT_DEBUG_ENABLED = false;
+    const DEFAULT_POSTS_PER_PAGE = 15;
+    const DEFAULT_POST_DESCRIPTION_LENGTH = 50;
+    const DEFAULT_THUMBNAIL_SIZE = 128;
+    const DEFAULT_ROUTE_SCRIPT = "/route.php";
+
     /** @var array */
     private $data;
 
@@ -25,7 +32,7 @@ class FrameworkConfig
             return $this->data[self::CACHE_OPTION] === true;
         }
 
-        return true;
+        return self::DEFAULT_CACHING_ENABLED;
     }
 
     public function setCacheEnabled(bool $state)
@@ -39,7 +46,7 @@ class FrameworkConfig
             return $this->data[self::DEBUG_OPTION] === true;
         }
 
-        return false;
+        return self::DEFAULT_DEBUG_ENABLED;
     }
 
     public function setDebugEnabled(bool $state)
@@ -53,7 +60,7 @@ class FrameworkConfig
             return $this->data[self::POSTS_PER_PAGE_AMOUNT_OPTION];
         }
 
-        return 15;
+        return self::DEFAULT_POSTS_PER_PAGE;
     }
 
     public function getPostDescriptionLength() : int
@@ -62,7 +69,7 @@ class FrameworkConfig
             return $this->data[self::POST_DESCRIPTION_LENGTH_OPTION];
         }
 
-        return 50;
+        return self::DEFAULT_POST_DESCRIPTION_LENGTH;
     }
 
     public function getThumbnailSize() : int
@@ -71,7 +78,7 @@ class FrameworkConfig
             return $this->data[self::THUMBNAIL_OPTION];
         }
 
-        return 128;
+        return self::DEFAULT_THUMBNAIL_SIZE;
     }
 
     public function getRoutePath() : string
@@ -80,7 +87,7 @@ class FrameworkConfig
             return $this->data[self::ROUTE_PATH_OPTION];
         }
 
-        return "/route.php";
+        return self::DEFAULT_ROUTE_SCRIPT;
     }
 
     public function setRoutePath(string $path)
