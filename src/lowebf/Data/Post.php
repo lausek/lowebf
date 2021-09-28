@@ -83,7 +83,7 @@ class Post
         return self::loadFromFile($env, $path)->unwrap();
     }
 
-    public function loadContentUnit()
+    public function triggerLoading()
     {
         if ($this->contentUnit === null) {
             $this->contentUnit = ContentUnit::loadFromFile($this->env, $this->path)->unwrap();
@@ -101,7 +101,7 @@ class Post
         }
 
         // if the attribute is something else -> load content from file
-        $this->loadContentUnit();
+        $this->triggerLoading();
         return $this->contentUnit->exists($name);
     }
 
@@ -112,7 +112,7 @@ class Post
         }
 
         // if the attribute is something else -> load content from file
-        $this->loadContentUnit();
+        $this->triggerLoading();
         return $this->contentUnit->get($name);
     }
 
@@ -125,13 +125,13 @@ class Post
 
     public function getAuthor() : ?string
     {
-        $this->loadContentUnit();
+        $this->triggerLoading();
         return $this->contentUnit->get("author");
     }
 
     public function getContentRaw() : string
     {
-        $this->loadContentUnit();
+        $this->triggerLoading();
         return $this->contentUnit->get("content", "");
     }
 
@@ -176,7 +176,7 @@ class Post
 
     public function setAuthor(string $author) : Post
     {
-        $this->loadContentUnit();
+        $this->triggerLoading();
         $this->contentUnit->set("author", $author);
 
         return $this;
@@ -202,7 +202,7 @@ class Post
 
     public function save()
     {
-        $this->loadContentUnit();
+        $this->triggerLoading();
         $this->contentUnit->save();
     }
 }
