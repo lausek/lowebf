@@ -17,6 +17,9 @@ class Post
 	    private $path;
 
     /** @var string */
+	    private $id;
+
+    /** @var string */
 	    private $title;
 
     /** @var string */
@@ -27,6 +30,7 @@ class Post
 
     private function __construct(Environment $env, string $path, string $title, string $date)
     {
+        $this->id = pathinfo($path, PATHINFO_FILENAME);
         $this->env = $env;
         $this->path = $path;
         $this->title = $title;
@@ -118,9 +122,7 @@ class Post
 
     public function getId() : string
     {
-        $title = str_replace(" ", "-", $this->title);
-        $title = strtolower($title);
-        return $this->date . "-" . $title;
+        return $this->id;
     }
 
     public function getAuthor() : ?string
