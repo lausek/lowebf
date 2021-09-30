@@ -87,7 +87,7 @@ final class StylesheetExtension extends AbstractExtension
                 if (!$this->env->cache()->exists($compiledCssPath)) {
                     $fileInputContent = $this->env->loadFile($fileInputPath)->unwrap();
 
-                    $compiledCss = $this->scssCompiler->compileString($fileInputContent);
+                    $compiledCss = $this->scssCompiler->compileString($fileInputContent)->getCss();
 
                     $this->env->cache()->set($compiledCssPath, $compiledCss);
                 }
