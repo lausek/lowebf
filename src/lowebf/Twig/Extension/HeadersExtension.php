@@ -34,7 +34,7 @@ final class HeadersExtension extends AbstractExtension
         ];
     }
 
-    public function writeLinkPreviewHeaders(array $args)
+    public function writeLinkPreviewHeaders($args)
     {
         $defaultOptions = [
             "previewImageUrl" => "",
