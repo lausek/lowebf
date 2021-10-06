@@ -208,4 +208,18 @@ final class ViewTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    public function testBase64Filter()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/site/template/base64.txt", "{{ 'lowebf'|base64encode }}");
+        $env->saveFile("/ve/site/template/unbase64.txt", "{{ data.input|base64decode }}");
+        $env->config()->lowebf()->setCacheEnabled(false);
+
+        $output = $env->view()->renderToString("base64.txt");
+        $this->assertSame("lowebf", base64_decode($output));
+
+        $output = $env->view()->renderToString("unbase64.txt", ["input" => base64_encode("phpframework")]);
+        $this->assertSame("phpframework", $output);
+    }
 }

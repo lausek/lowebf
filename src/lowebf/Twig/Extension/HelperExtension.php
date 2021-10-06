@@ -21,6 +21,8 @@ final class HelperExtension extends AbstractExtension
     public function getFilters()
     {
         return [
+            new TwigFilter("base64encode", [$this, "getBase64EncodedString"]),
+            new TwigFilter("base64decode", [$this, "getBase64DecodedString"]),
             new TwigFilter("limitLength", [$this, "getTrimmedString"])
         ];
     }
@@ -44,5 +46,15 @@ final class HelperExtension extends AbstractExtension
         }
 
         return $full;
+    }
+
+    public function getBase64EncodedString(string $input)
+    {
+        return base64_encode($input);
+    }
+
+    public function getBase64DecodedString(string $input)
+    {
+        return base64_decode($input);
     }
 }
