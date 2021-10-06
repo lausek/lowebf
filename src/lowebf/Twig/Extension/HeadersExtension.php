@@ -3,6 +3,7 @@
 namespace lowebf\Twig\Extension;
 
 use lowebf\Environment;
+use lowebf\Twig\Extension\HelperExtension;
 
 use ScssPhp\ScssPhp\Compiler;
 use ScssPhp\ScssPhp\Formatter\Crunched;
@@ -26,27 +27,11 @@ final class HeadersExtension extends AbstractExtension
         $this->env = $env;
     }
 
-    public function getFilters()
-    {
-        return [
-            new TwigFilter("limitLength", [$this, "getTrimmedString"])
-        ];
-    }
-
     public function getFunctions()
     {
         return [
             new TwigFunction("linkPreviewHeaders", [$this, "writeLinkPreviewHeaders"])
         ];
-    }
-
-    public function getTrimmedString(string $full, int $maxLen)
-    {
-        if ($maxLen < strlen($full)) {
-            return substr($full, 0, $maxLen - 1) . '…';
-        }
-
-        return $full;
     }
 
     public function writeLinkPreviewHeaders(array $args)
@@ -61,8 +46,10 @@ final class HeadersExtension extends AbstractExtension
         ];
         $options = array_merge($defaultOptions, $args);
 
-        $options["title"] = $this->getTrimmedString($options["title"], self::MAX_TITLE_LENGTH);
-        $options["description"] = $this->getTrimmedString($options["description"], self::MAX_DESCRIPTION_LENGTH);
+        $helperExtension = new HelperExtension($this->env);
+
+        $options["title"] = $helperExtension->getTrimmedString($options["title"], self::MAX_TITLE_LENGTH);
+        $options["description"] = $helperExtension->getTrimmedString($options["description"], self::MAX_DESCRIPTION_LENGTH);
 
         $options = (object)$options;
 

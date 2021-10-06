@@ -5,6 +5,7 @@ namespace lowebf\Twig\Extension;
 use lowebf\Environment;
 
 use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 use Twig\TwigTest;
 
 final class HelperExtension extends AbstractExtension
@@ -17,6 +18,13 @@ final class HelperExtension extends AbstractExtension
         $this->env = $env;
     }
 
+    public function getFilters()
+    {
+        return [
+            new TwigFilter("limitLength", [$this, "getTrimmedString"])
+        ];
+    }
+
     public function getTests()
     {
         return [
@@ -27,5 +35,14 @@ final class HelperExtension extends AbstractExtension
                 }
             ),
         ];
+    }
+
+    public function getTrimmedString(string $full, int $maxLen)
+    {
+        if ($maxLen < strlen($full)) {
+            return substr($full, 0, $maxLen - 1) . '…';
+        }
+
+        return $full;
     }
 }

@@ -78,7 +78,7 @@ class RouteModule extends Module
             return;
         }
 
-        if(!$this->env->config()->lowebf()->isCacheEnabled()) {
+        if (!$this->env->config()->lowebf()->isCacheEnabled()) {
             // four hours
             $age = 60 * 60 * 4;
             $this->env->runtime()->setHeader("Cache-Control", "public, max-age=$age");
