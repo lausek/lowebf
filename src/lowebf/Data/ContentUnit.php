@@ -5,6 +5,7 @@ namespace lowebf\Data;
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
 use lowebf\Error\NotPersistableException;
+use lowebf\Parser\Markdown;
 use lowebf\Persistance\IPersistance;
 use lowebf\Persistance\PersistorJson;
 use lowebf\Persistance\PersistorMarkdown;
@@ -150,6 +151,18 @@ class ContentUnit implements IStorable
 
     public function unset(string $name) {
         unset($this->data[$name]);
+    }
+
+    public function getContentRaw() : string
+    {
+        return $this->get("content");
+    }
+
+    public function getContent() : string
+    {
+        $markdown = new Markdown($this->env);
+
+        return rtrim($markdown->transform($this->getContentRaw()), "\n ");
     }
 
     public function save()

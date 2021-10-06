@@ -77,4 +77,16 @@ final class ContentTest extends TestCase
 
         $this->assertSame("A", $contentUnitJson->get("team"));
     }
+
+    public function testContentUnitMarkdown()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/content/imprint.md", "# lowebf");
+        $env->config()->lowebf()->setCacheEnabled(false);
+
+        $contentUnit = $env->content()->load("imprint.md")->unwrap();
+
+        $this->assertSame("# lowebf", $contentUnit->getContentRaw());
+        $this->assertSame("<h1>lowebf</h1>", $contentUnit->getContent());
+    }
 }
