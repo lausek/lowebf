@@ -94,4 +94,31 @@ class Gallery
     {
         return $this->title;
     }
+
+    public function getItems() : array
+    {
+        $items = [];
+        $files = $this->env->listDirectory($this->path);
+
+        if ($files->isOk()) {
+            foreach ($files->unwrap() as $name => $absolutePath) {
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $extension = mb_strtolower($extension);
+
+                switch ($extension) {
+                    case "png":
+                        // fallthrough
+                    case "jpeg":
+                        // fallthrough
+                    case "jpg":
+                        // fallthrough
+                    case "mp4":
+                        $items[$name] = $absolutePath;
+                        break;
+                }
+            }
+        }
+
+        return $items;
+    }
 }

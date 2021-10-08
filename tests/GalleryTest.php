@@ -43,4 +43,24 @@ final class GalleryTest extends TestCase
 
         $this->assertSame($expected, $galleryNames);
     }
+
+    public function testReadingItems()
+    {
+        $env = new VirtualEnvironment();
+        $env->makeAllDirectories("/ve/data/galleries/2021-01-02-a/");
+        $env->saveFile("/ve/data/galleries/2021-01-02-a/a.png", "");
+        $env->saveFile("/ve/data/galleries/2021-01-02-a/b.jpeg", "");
+        $env->saveFile("/ve/data/galleries/2021-01-02-a/c.mp4", "");
+        $env->saveFile("/ve/data/galleries/2021-01-02-a/Thumbs.db", "");
+
+        $gallery = $env->galleries()->load("2021-01-02-a")->unwrap();
+        $items = $gallery->getItems();
+
+        $this->assertArrayHasKey("a.png", $items);
+        $this->assertArrayHasKey("b.jpeg", $items);
+        $this->assertArrayHasKey("c.mp4", $items);
+
+        // is not a supported file type
+        $this->assertArrayNotHasKey("Thumbs.db", $items);
+    }
 }
