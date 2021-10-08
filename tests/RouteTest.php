@@ -106,4 +106,15 @@ final class RouteTest extends TestCase
 
         $env->route()->provideAndExit("/css/main.css");
     }
+
+    public function testGalleryRouting()
+    {
+        $env = new VirtualEnvironment();
+
+        $this->assertSame("/route.php?x=/galleries/2021-01-01-a/abc.png", $env->route()->urlFor("galleries/2021-01-01-a/abc.png"));
+        $this->assertSame(
+            "https://localhost/route.php?x=/galleries/2021-01-01-a/abc.png",
+            $env->route()->absoluteUrlFor("galleries/2021-01-01-a/abc.png")
+        );
+    }
 }

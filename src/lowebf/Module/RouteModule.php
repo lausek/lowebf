@@ -35,6 +35,8 @@ class RouteModule extends Module
                 return $this->env->asAbsolutePath("$subpath");
 
             case "media":
+                // fallthrough
+            case "galleries":
                 return $this->env->asAbsoluteDataPath($subpath);
         }
 
