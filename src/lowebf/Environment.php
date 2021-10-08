@@ -17,6 +17,21 @@ use lowebf\Module\ThumbnailModule;
 use lowebf\Module\ViewModule;
 use lowebf\Result;
 
+function extractAttributesFromPath(string $path) : array
+{
+    $fileName = pathinfo($path, PATHINFO_FILENAME);
+    $date = substr($fileName, 0, 10);
+
+    $title = substr($fileName, 11);
+    $title = str_replace("-", " ", $title);
+    $title = ucwords($title);
+
+    return [
+        "date" => $date,
+        "title" => $title,
+    ];
+}
+
 class Environment
 {
     /** @var PhpRuntime */

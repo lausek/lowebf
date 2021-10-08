@@ -2,12 +2,12 @@
 
 namespace lowebf\Data;
 
-use lowebf\Environment;
-use lowebf\Error\FileNotFoundException;
-use lowebf\Result;
+use function lowebf \extractAttributesFromPath;
+use lowebf \Environment;
+use lowebf \Error \FileNotFoundException;
+use lowebf \Result;
 
-class Gallery
-{
+class Gallery {
     /** @var Environment */
 	    private $env;
 
@@ -29,21 +29,6 @@ class Gallery
         $this->date = $date;
     }
 
-    public static function extractAttributesFromPath(string $path) : array
-    {
-        $fileName = pathinfo($path, PATHINFO_FILENAME);
-        $date = substr($fileName, 0, 10);
-
-        $title = substr($fileName, 11);
-        $title = str_replace("-", " ", $title);
-        $title = ucwords($title);
-
-        return [
-            "date" => $date,
-            "title" => $title,
-        ];
-    }
-
     /**
      * @return Result<Gallery>
      * */
@@ -59,7 +44,7 @@ class Gallery
 
     public static function loadFromPathOrCreate(Environment $env, string $path) : Gallery
     {
-        $attributes = self::extractAttributesFromPath($path);
+        $attributes = extractAttributesFromPath($path);
         $title = $attributes["title"];
         $date = $attributes["date"];
 

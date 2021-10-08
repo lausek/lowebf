@@ -2,8 +2,6 @@
 
 namespace lowebf\Test;
 
-require_once("util.php");
-
 use lowebf\VirtualEnvironment;
 use PHPUnit\Framework\TestCase;
 

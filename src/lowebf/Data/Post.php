@@ -2,15 +2,15 @@
 
 namespace lowebf\Data;
 
-use lowebf\Data\Gallery;
-use lowebf\Environment;
-use lowebf\Error\FileNotFoundException;
-use lowebf\Error\NotPersistableException;
-use lowebf\Parser\Markdown;
-use lowebf\Result;
+use function lowebf \extractAttributesFromPath;
+use lowebf \Data \Gallery;
+use lowebf \Environment;
+use lowebf \Error \FileNotFoundException;
+use lowebf \Error \NotPersistableException;
+use lowebf \Parser \Markdown;
+use lowebf \Result;
 
-class Post
-{
+class Post {
     /** @var Environment */
 	    private $env;
 
@@ -38,21 +38,6 @@ class Post
         $this->date = $date;
     }
 
-    public static function extractAttributesFromPath(string $path) : array
-    {
-        $fileName = pathinfo($path, PATHINFO_FILENAME);
-        $date = substr($fileName, 0, 10);
-
-        $title = substr($fileName, 11);
-        $title = str_replace("-", " ", $title);
-        $title = ucwords($title);
-
-        return [
-            "date" => $date,
-            "title" => $title,
-        ];
-    }
-
     /**
      * @return Result<Post>
      * */
@@ -62,7 +47,7 @@ class Post
             return Result::error(new FileNotFoundException($path));
         }
 
-        $attributes = self::extractAttributesFromPath($path);
+        $attributes = extractAttributesFromPath($path);
         $title = $attributes["title"];
         $date = $attributes["date"];
 
