@@ -61,6 +61,7 @@ class PostModule extends Module
 
     public function &loadPosts() : array
     {
+        // TODO: this does not recognize newly created posts!
         if ($this->posts === null) {
             $postDirectory = $this->env->asAbsoluteDataPath("posts");
             $posts = $this->env->listDirectory($postDirectory)->unwrapOr([]);

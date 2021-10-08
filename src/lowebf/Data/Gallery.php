@@ -74,6 +74,11 @@ class Gallery
         }
     }
 
+    public function getId() : string
+    {
+        return basename($this->path);
+    }
+
     public function getDate() : \DateTime
     {
         $dateTime = \DateTime::createFromFormat("Y-m-d", $this->date);
