@@ -17,6 +17,19 @@ use lowebf\Module\ThumbnailModule;
 use lowebf\Module\ViewModule;
 use lowebf\Result;
 
+function getFileType(string $path) : string
+{
+    $extension = pathinfo($path, PATHINFO_EXTENSION);
+    $extension = mb_strtolower($extension);
+
+    switch ($extension) {
+        case "jpg":
+            return "jpeg";
+    }
+
+    return $extension;
+}
+
 function extractAttributesFromPath(string $path) : array
 {
     $fileName = pathinfo($path, PATHINFO_FILENAME);

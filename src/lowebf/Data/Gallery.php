@@ -2,12 +2,16 @@
 
 namespace lowebf\Data;
 
-use function lowebf \extractAttributesFromPath;
+use function lowebf \
+{
+    extractAttributesFromPath, getFileType
+};
 use lowebf \Environment;
 use lowebf \Error \FileNotFoundException;
 use lowebf \Result;
 
-class Gallery {
+class Gallery
+{
     /** @var Environment */
 	    private $env;
 
@@ -87,15 +91,12 @@ class Gallery {
 
         if ($files->isOk()) {
             foreach ($files->unwrap() as $name => $absolutePath) {
-                $extension = pathinfo($name, PATHINFO_EXTENSION);
-                $extension = mb_strtolower($extension);
+                $fileType = getFileType($name);
 
-                switch ($extension) {
+                switch ($fileType) {
                     case "png":
                         // fallthrough
                     case "jpeg":
-                        // fallthrough
-                    case "jpg":
                         // fallthrough
                     case "mp4":
                         $items[$name] = $absolutePath;

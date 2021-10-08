@@ -34,10 +34,9 @@ class PhpRuntime
 
     public function getContentType(string $path)
     {
-        $fileExtension = pathinfo($path, PATHINFO_EXTENSION);
-        $fileExtension = strtolower($fileExtension);
+        $fileType = getFileType($path);
 
-        switch ($fileExtension) {
+        switch ($fileType) {
             case "css":
                 return "text/css";
 
@@ -45,8 +44,6 @@ class PhpRuntime
                 return "text/html";
 
             case "jpeg":
-                // fallthrough
-            case "jpg":
                 return "image/jpeg";
 
             case "png":

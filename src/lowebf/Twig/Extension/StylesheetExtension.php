@@ -2,16 +2,16 @@
 
 namespace lowebf\Twig\Extension;
 
-use lowebf\Environment;
+use function lowebf \getFileType;
+use lowebf \Environment;
 
-use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\FileReader\FileReaderInterface;
-use ScssPhp\ScssPhp\OutputStyle;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
+use ScssPhp \ScssPhp \Compiler;
+use ScssPhp \ScssPhp \FileReader \FileReaderInterface;
+use ScssPhp \ScssPhp \OutputStyle;
+use Twig \Extension \AbstractExtension;
+use Twig \TwigFunction;
 
-class FileReader implements FileReaderInterface
-{
+class FileReader implements FileReaderInterface {
     /** @var Environment */
     private $env = null;
 
@@ -75,10 +75,9 @@ final class StylesheetExtension extends AbstractExtension
     public function writeStylesheet(string $sheet)
     {
         $fileInputPath = $this->env->asAbsolutePath("site/css/$sheet");
-        $fileExtension = pathinfo($fileInputPath, PATHINFO_EXTENSION);
-        $fileExtension = strtolower($fileExtension);
+        $fileType = getFileType($fileInputPath);
 
-        switch ($fileExtension) {
+        switch ($fileType) {
             case "scss":
                 $fileName = pathinfo($fileInputPath, PATHINFO_FILENAME);
                 $lastModified = $this->env->getLastModified($fileInputPath);

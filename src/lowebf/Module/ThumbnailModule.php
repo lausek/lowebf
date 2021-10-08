@@ -71,8 +71,7 @@ class ThumbnailModule extends Module
         $content = $result->unwrap();
 
         $oldImage = imagecreatefromstring($content);
-        $extension = pathinfo($subpath, PATHINFO_EXTENSION);
-        $extension = strtolower($extension);
+        $fileType = getFileType($subpath);
 
         $toHeight = $this->getThumbnailSize();
         $toWidth = $this->getThumbnailSize();
@@ -100,7 +99,7 @@ class ThumbnailModule extends Module
         try {
             ob_start();
 
-            switch ($extension) {
+            switch ($fileType) {
                 case "gif":
                     imagegif($newImage);
                     break;
@@ -110,13 +109,11 @@ class ThumbnailModule extends Module
                     break;
 
                 case "jpeg":
-                // fallthrough
-                case "jpg":
                     imagejpeg($newImage);
                     break;
 
                 default:
-                    throw new \Exception("unknown file extension: $extension");
+                    throw new \Exception("unknown file type: $fileType");
             }
 
             $buffer = ob_get_contents();

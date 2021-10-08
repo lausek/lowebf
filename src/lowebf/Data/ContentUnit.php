@@ -2,18 +2,18 @@
 
 namespace lowebf\Data;
 
-use lowebf\Environment;
-use lowebf\Error\FileNotFoundException;
-use lowebf\Error\NotPersistableException;
-use lowebf\Parser\Markdown;
-use lowebf\Persistance\IPersistance;
-use lowebf\Persistance\PersistorJson;
-use lowebf\Persistance\PersistorMarkdown;
-use lowebf\Persistance\PersistorYaml;
-use lowebf\Result;
+use function lowebf \getFileType;
+use lowebf \Environment;
+use lowebf \Error \FileNotFoundException;
+use lowebf \Error \NotPersistableException;
+use lowebf \Parser \Markdown;
+use lowebf \Persistance \IPersistance;
+use lowebf \Persistance \PersistorJson;
+use lowebf \Persistance \PersistorMarkdown;
+use lowebf \Persistance \PersistorYaml;
+use lowebf \Result;
 
-class ContentUnit
-{
+class ContentUnit {
     /** @var Environment */
     private $env;
     /** @var array */
@@ -40,10 +40,9 @@ class ContentUnit
 
     public static function getPersistorFromPath(string $path) : IPersistance
     {
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
-        $extension = strtolower($extension);
+        $fileType = getFileType($path);
 
-        switch ($extension) {
+        switch ($fileType) {
             case "yml":
             // fallthrough
             case "yaml":
@@ -58,7 +57,7 @@ class ContentUnit
                 return PersistorJson::getInstance();
         }
 
-        throw new NotPersistableException($extension);
+        throw new NotPersistableException($fileType);
     }
 
     /*

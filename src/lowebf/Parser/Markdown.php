@@ -2,11 +2,11 @@
 
 namespace lowebf\Parser;
 
-use lowebf\Environment;
-use lowebf\Error\FileNotFoundException;
+use function lowebf \getFileType;
+use lowebf \Environment;
+use lowebf \Error \FileNotFoundException;
 
-class Markdown extends \Michelf\Markdown
-{
+class Markdown extends \Michelf \Markdown {
     /** @var Environment */
     protected $env;
 
@@ -36,12 +36,11 @@ class Markdown extends \Michelf\Markdown
         $url = $matches[3] == '' ? $matches[4] : $matches[3];
         $title = &$matches[7];
 
-        $extension = pathinfo($url, PATHINFO_EXTENSION);
-        $extension = strtolower($extension);
+        $fileType = getFileType($url);
 
-        switch ($extension) {
+        switch ($fileType) {
             case "mp4":
-                $result = $this->createVideoElement($altText, $url, $title, $extension);
+                $result = $this->createVideoElement($altText, $url, $title, $fileType);
                 break;
 
             default:
