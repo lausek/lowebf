@@ -4,10 +4,9 @@ namespace lowebf\Module;
 
 use lowebf\Data\ContentUnit;
 use lowebf\Data\FrameworkConfig;
-use lowebf\Data\IStorable;
 use lowebf\Environment;
 
-class ConfigModule extends Module implements IStorable
+class ConfigModule extends Module
 {
     /** @var ContentUnit */
 	    private $contentUnit;

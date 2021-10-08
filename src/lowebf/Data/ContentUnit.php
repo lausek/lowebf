@@ -12,7 +12,7 @@ use lowebf\Persistance\PersistorMarkdown;
 use lowebf\Persistance\PersistorYaml;
 use lowebf\Result;
 
-class ContentUnit implements IStorable
+class ContentUnit
 {
     /** @var Environment */
     private $env;
