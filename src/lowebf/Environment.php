@@ -9,6 +9,7 @@ use lowebf\Module\CacheModule;
 use lowebf\Module\ConfigModule;
 use lowebf\Module\ContentModule;
 use lowebf\Module\DownloadModule;
+use lowebf\Module\GalleryModule;
 use lowebf\Module\GlobalsModule;
 use lowebf\Module\PostModule;
 use lowebf\Module\RouteModule;
@@ -35,6 +36,8 @@ class Environment
 	    protected $contentModule = null;
     /** @var DownloadModule|null */
 	    protected $downloadModule = null;
+    /** @var GalleryModule|null */
+	    protected $galleryModule = null;
     /** @var GlobalsModule|null */
 	    protected $globalsModule = null;
     /** @var PostModule|null */
@@ -262,6 +265,15 @@ class Environment
         }
 
         return $this->downloadModule;
+    }
+
+    public function galleries() : GalleryModule
+    {
+        if ($this->galleryModule === null) {
+            $this->galleryModule = new GalleryModule($this);
+        }
+
+        return $this->galleryModule;
     }
 
     public function globals() : GlobalsModule
