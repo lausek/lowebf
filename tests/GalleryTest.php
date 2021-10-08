@@ -63,4 +63,18 @@ final class GalleryTest extends TestCase
         // is not a supported file type
         $this->assertArrayNotHasKey("Thumbs.db", $items);
     }
+
+    public function testPostAssociation()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/galleries/2021-01-02-a/a.png", "");
+        $env->saveFile("/ve/data/posts/2021-01-02-a.md", "---\ngallery: 2021-01-02-a\n---\n");
+        $env->saveFile("/ve/data/posts/2021-01-02-b.md", "---\n---\n");
+
+        $postWithGallery = $env->posts()->load("2021-01-02-a")->unwrap();
+        $postwithoutGallery = $env->posts()->load("2021-01-02-b")->unwrap();
+
+        $this->assertNull($postwithoutGallery->getGallery());
+        $this->assertArrayHasKey("a.png", $postWithGallery->getGallery()->getItems());
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace lowebf\Data;
 
+use lowebf\Data\Gallery;
 use lowebf\Environment;
 use lowebf\Error\FileNotFoundException;
 use lowebf\Error\NotPersistableException;
@@ -174,6 +175,19 @@ class Post
     public function getTitle() : string
     {
         return $this->title;
+    }
+
+    public function getGallery() : ?Gallery
+    {
+        $this->triggerLoading();
+
+        $galleryId = $this->contentUnit->get("gallery");
+
+        if ($galleryId !== null) {
+            return $this->env->galleries()->load($galleryId)->unwrap();
+        }
+
+        return null;
     }
 
     public function setAuthor(string $author) : Post
