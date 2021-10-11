@@ -33,7 +33,6 @@ class ViewModule extends Module
         $this->twig->addExtension(new StylesheetExtension($env));
         $this->twig->addExtension(new UrlExtension($env));
         $this->twig->addFilter(new \Twig\TwigFilter("hash", function ($data) { return hash("sha256", $data); }));
-        $this->twig->addFilter(new \Twig\TwigFilter("base64", function ($data) { return base64_encode($data); }));
         $this->twig->addFunction(new \Twig\TwigFunction("dump", function ($data) { var_dump($data); }));
     }
 
