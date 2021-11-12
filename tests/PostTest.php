@@ -327,4 +327,15 @@ final class PostTest extends TestCase
 
         $this->assertSame("2021-08-31-lazy-loading", $post->getId());
     }
+
+    public function testLoadingPostsAfterCreate()
+    {
+        $env = new VirtualEnvironment();
+
+        $this->assertEmpty($env->posts()->loadPage(1)->unwrap());
+
+        $env->posts()->loadOrCreate("2021-01-01-a")->save();
+
+        $this->assertEquals(1, count($env->posts()->loadPage(1)->unwrap()));
+    }
 }

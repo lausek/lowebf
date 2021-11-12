@@ -13,9 +13,6 @@ class PostModule extends Module
     /** @var int */
 	    private $postsPerPage;
 
-    /** @var array|null */
-	    private $posts = null;
-
     public function __construct(Environment $env)
     {
         parent::__construct($env);
@@ -61,25 +58,22 @@ class PostModule extends Module
 
     public function &loadPosts() : array
     {
-        // TODO: this does not recognize newly created posts!
-        if ($this->posts === null) {
-            $postDirectory = $this->env->asAbsoluteDataPath("posts");
-            $posts = $this->env->listDirectory($postDirectory)->unwrapOr([]);
-            $this->posts = [];
+        $postDirectory = $this->env->asAbsoluteDataPath("posts");
+        $postsInDirectory = $this->env->listDirectory($postDirectory)->unwrapOr([]);
+        $posts = [];
 
-            foreach ($posts as $postPath) {
-                // TODO: how to handle other exceptions?
-                try {
-                    $this->posts[] = Post::loadFromFile($this->env, $postPath)->unwrap();
-                } catch (NotPersistableException $e) {
-                    // file has an unsupported extension and cannot be parsed. skipping.
-                }
+        foreach ($postsInDirectory as $postPath) {
+            // TODO: how to handle other exceptions?
+            try {
+                $posts[] = Post::loadFromFile($this->env, $postPath)->unwrap();
+            } catch (NotPersistableException $e) {
+                // file has an unsupported extension and cannot be parsed. skipping.
             }
-
-            rsort($this->posts);
         }
 
-        return $this->posts;
+        rsort($posts);
+
+        return $posts;
     }
 
     /**
