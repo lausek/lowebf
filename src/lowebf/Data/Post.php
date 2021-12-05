@@ -123,11 +123,10 @@ class Post {
         return $this->contentUnit->get("content", "");
     }
 
-    public function getContent() : string
+    public function getContent(bool $useAbsoluteUrls = false) : string
     {
-        $markdown = new Markdown($this->env);
-
-        return rtrim($markdown->transform($this->getContentRaw()), "\n ");
+        $this->triggerLoading();
+        return $this->contentUnit->getContent($useAbsoluteUrls);
     }
 
     public function getDate() : \DateTime
@@ -185,18 +184,21 @@ class Post {
 
     public function setContent(string $content) : Post
     {
+        $this->triggerLoading();
         $this->contentUnit->set("content", $content);
         return $this;
     }
 
     public function setDate(string $date) : Post
     {
+        $this->triggerLoading();
         $this->contentUnit->set("date", $date);
         return $this;
     }
 
     public function setTitle(string $title) : Post
     {
+        $this->triggerLoading();
         $this->contentUnit->set("title", $title);
         return $this;
     }

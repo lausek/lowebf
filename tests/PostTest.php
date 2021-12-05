@@ -338,4 +338,14 @@ final class PostTest extends TestCase
 
         $this->assertEquals(1, count($env->posts()->loadPage(1)->unwrap()));
     }
+
+    public function testAbsoluteUrlContent()
+    {
+        $env = new VirtualEnvironment();
+        $env->posts()->loadOrCreate("2021-01-01-a")->setContent("[Home](/home)")->save();
+        $post = $env->posts()->load("2021-01-01-a")->unwrap();
+
+        $this->assertEquals("<p><a href=\"/home\">Home</a></p>", $post->getContent());
+        $this->assertEquals("<p><a href=\"https://localhost/home\">Home</a></p>", $post->getContent(true));
+    }
 }
