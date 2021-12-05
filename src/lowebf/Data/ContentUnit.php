@@ -13,7 +13,22 @@ use lowebf \Persistance \PersistorMarkdown;
 use lowebf \Persistance \PersistorYaml;
 use lowebf \Result;
 
-class ContentUnit {
+function unparse_url($parsed_url)
+{
+    $scheme   = isset($parsed_url['scheme']) ? $parsed_url['scheme'] . '://' : '';
+    $host     = isset($parsed_url['host']) ? $parsed_url['host'] : '';
+    $port     = isset($parsed_url['port']) ? ':' . $parsed_url['port'] : '';
+    $user     = isset($parsed_url['user']) ? $parsed_url['user'] : '';
+    $pass     = isset($parsed_url['pass']) ? ':' . $parsed_url['pass'] : '';
+    $pass     = ($user || $pass) ? "$pass@" : '';
+    $path     = isset($parsed_url['path']) ? $parsed_url['path'] : '';
+    $query    = isset($parsed_url['query']) ? '?' . $parsed_url['query'] : '';
+    $fragment = isset($parsed_url['fragment']) ? '#' . $parsed_url['fragment'] : '';
+    return "$scheme$user$pass$host$port$path$query$fragment";
+}
+
+class ContentUnit
+{
     /** @var Environment */
     private $env;
     /** @var array */
@@ -157,9 +172,27 @@ class ContentUnit {
         return $this->get("content");
     }
 
-    public function getContent() : string
+    public function getContent(bool $useAbsoluteUrls = false) : string
     {
         $markdown = new Markdown($this->env);
+
+        if ($useAbsoluteUrls) {
+            $env = $this->env;
+
+            $markdown->url_filter_func = function($url) use ($env) {
+                $components = parse_url($url);
+
+                if (!isset($components["host"]) || empty($components["host"])) {
+                    $components["host"] = $env->route()->getServerName();
+                }
+
+                if (!isset($components["scheme"]) || empty($components["scheme"])) {
+                    $components["scheme"] = $env->route()->getScheme();
+                }
+
+                return unparse_url($components);
+            };
+        }
 
         return rtrim($markdown->transform($this->getContentRaw()), "\n ");
     }

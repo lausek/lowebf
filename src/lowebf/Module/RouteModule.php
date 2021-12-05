@@ -18,6 +18,18 @@ class RouteModule extends Module
         return substr($subpath, 0, $firstSeparatorIndex);
     }
 
+    public function getServerName() : string
+    {
+        // TODO: access superglobals through lowebf
+        return isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "localhost";
+    }
+
+    public function getScheme() : string
+    {
+        // TODO: access superglobals through lowebf
+        return isset($_SERVER["PROTOCOL"]) ? $_SERVER["PROTOCOL"] : "https";
+    }
+
     public function pathFor(string $subpath) : string
     {
         $subpath = ltrim($subpath, "/");
@@ -60,13 +72,12 @@ class RouteModule extends Module
 
     public function absoluteUrlFor(string $subpath) : string
     {
-        // TODO: access superglobals through lowebf
-        $protocol = isset($_SERVER["PROTOCOL"]) ? $_SERVER["PROTOCOL"] : "https";
-        $host = isset($_SERVER["SERVER_NAME"]) ? $_SERVER["SERVER_NAME"] : "localhost";
+        $scheme = $this->getScheme();
+        $host = $this->getServerName();
 
         $url = $this->urlFor($subpath);
 
-        return "$protocol://$host$url";
+        return "$scheme://$host$url";
     }
 
     public function provideAndExit(string $subpath)

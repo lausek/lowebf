@@ -89,4 +89,16 @@ final class ContentTest extends TestCase
         $this->assertSame("# lowebf", $contentUnit->getContentRaw());
         $this->assertSame("<h1>lowebf</h1>", $contentUnit->getContent());
     }
+
+    public function testAbsoluteUrls()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/content/index.md", "[home](/home)");
+        $env->config()->lowebf()->setCacheEnabled(false);
+
+        $contentUnit = $env->content()->load("index.md")->unwrap();
+
+        $this->assertSame("<p><a href=\"/home\">home</a></p>", $contentUnit->getContent());
+        $this->assertSame("<p><a href=\"https://localhost/home\">home</a></p>", $contentUnit->getContent(true));
+    }
 }
