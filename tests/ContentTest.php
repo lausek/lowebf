@@ -101,4 +101,19 @@ final class ContentTest extends TestCase
         $this->assertSame("<p><a href=\"/home\">home</a></p>", $contentUnit->getContent());
         $this->assertSame("<p><a href=\"https://localhost/home\">home</a></p>", $contentUnit->getContent(true));
     }
+
+    public function testAbsoluteUrlsForMedia()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/content/index.md", "![icon](/media/img/icon.png)");
+        $env->config()->lowebf()->setCacheEnabled(false);
+
+        $contentUnit = $env->content()->load("index.md")->unwrap();
+
+        $this->assertSame("<p><img src=\"/route.php?x=/media/img/icon.png\" alt=\"icon\" /></p>", $contentUnit->getContent());
+        $this->assertSame(
+            "<p><img src=\"https://localhost/route.php?x=/media/img/icon.png\" alt=\"icon\" /></p>",
+            $contentUnit->getContent(true)
+        );
+    }
 }

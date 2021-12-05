@@ -183,11 +183,13 @@ class ContentUnit
                 $components = parse_url($url);
 
                 if (!isset($components["host"]) || empty($components["host"])) {
-                    $components["host"] = $env->route()->getServerName();
-                }
-
-                if (!isset($components["scheme"]) || empty($components["scheme"])) {
-                    $components["scheme"] = $env->route()->getScheme();
+                    try {
+                        // try conversion to absolute url
+                        return $env->route()->absoluteUrlFor($url);
+                    } catch (\Exception $e) {
+                        $components["scheme"] = $env->route()->getScheme();
+                        $components["host"] = $env->route()->getServerName();
+                    }
                 }
 
                 return unparse_url($components);
