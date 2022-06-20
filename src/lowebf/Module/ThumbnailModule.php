@@ -2,6 +2,7 @@
 
 namespace lowebf\Module;
 
+use function lowebf\getFileType;
 use lowebf\Result;
 
 class ThumbnailModule extends Module
