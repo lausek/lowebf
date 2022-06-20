@@ -83,6 +83,7 @@ class RouteModule extends Module
     public function provideAndExit(string $subpath)
     {
         $path = $this->pathFor($subpath);
+        $filename = pathinfo($path, PATHINFO_BASENAME);
 
         if (!$this->env->hasFile($path)) {
             $this->env->runtime()->raiseFileNotFoundAndExit();
@@ -98,6 +99,7 @@ class RouteModule extends Module
         }
 
         $this->env->runtime()->setContentTypeFromFile($path);
+        $this->env->runtime()->setHeader("Content-Disposition", "inline; filename=\"$filename\"");
         $this->env->runtime()->sendFromFile($this->env, $path);
         $this->env->runtime()->exit();
     }

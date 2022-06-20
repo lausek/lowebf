@@ -117,4 +117,19 @@ final class RouteTest extends TestCase
             $env->route()->absoluteUrlFor("galleries/2021-01-01-a/abc.png")
         );
     }
+
+    public function testSetDispositionFilename()
+    {
+        $env = new VirtualEnvironment();
+        $env->saveFile("/ve/data/media/img/filename-of-img.png", "");
+        $runtime = $this->createMock(PhpRuntime::class);
+
+        $runtime->expects($this->once())
+            ->method("setHeader")
+            ->with("Content-Disposition", "inline; filename=\"filename-of-img.png\"");
+
+        $env->setRuntime($runtime);
+
+        $env->route()->provideAndExit("/media/img/filename-of-img.png");
+    }
 }
