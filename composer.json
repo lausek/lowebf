@@ -5,8 +5,8 @@
     "require": {
         "php": "^7.3||^8.0",
         "twig/twig": "^3.3.2",
-        "michelf/php-markdown": "1.8.0",
-        "mustangostang/spyc": "0.6.2",
+        "michelf/php-markdown": "^1.8.0",
+        "mustangostang/spyc": "^0.6.2",
         "lausek/scssphp": "dev-master",
         "symfony/filesystem": "^5.3"
     },
