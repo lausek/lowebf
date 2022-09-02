@@ -5,10 +5,7 @@ namespace lowebf\Twig\Extension;
 use lowebf\Environment;
 use lowebf\Twig\Extension\HelperExtension;
 
-use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\Formatter\Crunched;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 final class HeadersExtension extends AbstractExtension

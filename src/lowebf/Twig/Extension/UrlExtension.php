@@ -4,8 +4,6 @@ namespace lowebf\Twig\Extension;
 
 use lowebf\Environment;
 
-use ScssPhp\ScssPhp\Compiler;
-use ScssPhp\ScssPhp\Formatter\Crunched;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -50,7 +48,7 @@ final class UrlExtension extends AbstractExtension
                 $urlArguments[] = "$key=$value";
             }
 
-            $urlArgumentString = "?" . implode($urlArguments, "&");
+            $urlArgumentString = "?" . implode("&", $urlArguments);
         }
 
         return "/$path$urlArgumentString";

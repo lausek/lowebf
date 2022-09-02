@@ -2,13 +2,11 @@
 
 namespace lowebf\Data;
 
-use function lowebf \extractAttributesFromPath;
-use lowebf \Data \Gallery;
-use lowebf \Environment;
-use lowebf \Error \FileNotFoundException;
-use lowebf \Error \NotPersistableException;
-use lowebf \Parser \Markdown;
-use lowebf \Result;
+use function lowebf\extractAttributesFromPath;
+use lowebf\Data\Gallery;
+use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
+use lowebf\Result;
 
 class Post {
     /** @var Environment */

@@ -2,11 +2,11 @@
 
 namespace lowebf\Parser;
 
-use function lowebf \getFileType;
-use lowebf \Environment;
-use lowebf \Error \FileNotFoundException;
+use function lowebf\getFileType;
+use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
 
-class Markdown extends \Michelf \Markdown {
+class Markdown extends \Michelf\Markdown {
     /** @var Environment */
     protected $env;
 

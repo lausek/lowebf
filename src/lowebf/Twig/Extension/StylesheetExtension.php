@@ -2,14 +2,14 @@
 
 namespace lowebf\Twig\Extension;
 
-use function lowebf \getFileType;
-use lowebf \Environment;
+use function lowebf\getFileType;
+use lowebf\Environment;
 
-use ScssPhp \ScssPhp \Compiler;
-use ScssPhp \ScssPhp \FileReader \FileReaderInterface;
-use ScssPhp \ScssPhp \OutputStyle;
-use Twig \Extension \AbstractExtension;
-use Twig \TwigFunction;
+use ScssPhp\ScssPhp\Compiler;
+use ScssPhp\ScssPhp\FileReader\FileReaderInterface;
+use ScssPhp\ScssPhp\OutputStyle;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 class FileReader implements FileReaderInterface {
     /** @var Environment */

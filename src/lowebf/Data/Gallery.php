@@ -1,14 +1,11 @@
-<?php
-
+<?php 
 namespace lowebf\Data;
 
-use function lowebf \
-{
-    extractAttributesFromPath, getFileType
-};
-use lowebf \Environment;
-use lowebf \Error \FileNotFoundException;
-use lowebf \Result;
+use function lowebf\extractAttributesFromPath;
+use function lowebf\getFileType;
+use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
+use lowebf\Result;
 
 class Gallery
 {

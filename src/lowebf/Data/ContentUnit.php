@@ -2,16 +2,16 @@
 
 namespace lowebf\Data;
 
-use function lowebf \getFileType;
-use lowebf \Environment;
-use lowebf \Error \FileNotFoundException;
-use lowebf \Error \NotPersistableException;
-use lowebf \Parser \Markdown;
-use lowebf \Persistance \IPersistance;
-use lowebf \Persistance \PersistorJson;
-use lowebf \Persistance \PersistorMarkdown;
-use lowebf \Persistance \PersistorYaml;
-use lowebf \Result;
+use function lowebf\getFileType;
+use lowebf\Environment;
+use lowebf\Error\FileNotFoundException;
+use lowebf\Error\NotPersistableException;
+use lowebf\Parser\Markdown;
+use lowebf\Persistance\IPersistance;
+use lowebf\Persistance\PersistorJson;
+use lowebf\Persistance\PersistorMarkdown;
+use lowebf\Persistance\PersistorYaml;
+use lowebf\Result;
 
 function unparse_url($parsed_url)
 {
