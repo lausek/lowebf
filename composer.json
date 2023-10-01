@@ -26,5 +26,7 @@
         "phan/phan": "^5.1",
         "phpunit/phpunit": "^9.5",
         "badoo/phpcf": "1.0.0rc1"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
